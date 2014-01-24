@@ -1,0 +1,36 @@
+/* Sticky footer */
+html,
+body,
+body > .ember-view {
+  height: 100%;
+  /* The html and body elements cannot have any padding or margin. */
+}
+
+/* Wrapper for page content to push down footer */
+#wrap {
+  min-height: 100%;
+  height: auto;
+  /* Negative indent footer by its height */
+  margin: 0 auto -60px;
+  /* Pad bottom by footer height */
+  padding: 0 0 60px;
+}
+
+/* Set the fixed height of the footer here */
+#footer {
+  height: 60px;
+  background-color: #f5f5f5;
+}
+
+#wrap > .container {
+  padding: 140px 15px 0; /* 60px for footer + the rest for tooltip */
+}
+/* End of sticky footer */
+
+.peer.disconnected .gravatar {
+  -webkit-filter: opacity(20%);
+  -moz-filter: opacity(20%);
+  -ms-filter: opacity(20%);
+  -o-filter: opacity(20%);
+  filter: opacity(20%);
+}

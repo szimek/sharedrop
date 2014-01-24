@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <title>P2P file sharing</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+
+  <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
+  <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap-theme.min.css">
+  <link rel="stylesheet" href="/css/app.css">
+</head>
+
+<body>
+  <script type="text/x-handlebars">
+    <div id="wrap">
+      <nav id="header" class="navbar navbar-default navbar-fixed-top" role="navigation">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">FileDrop - P2P file transfer</a>
+        </div>
+
+        <div class="collapse navbar-collapse">
+          <ul class="nav navbar-nav navbar-right">
+            {{#if 'user.email' }}
+              <li><a href="javascript:void(0)" {{action 'signOut'}}>Sign out</a></li>
+            {{else}}
+              <li><a href="javascript:void(0)" {{action 'signIn'}}>Sign in</a></li>
+            {{/if}}
+          </ul>
+        </div>
+      </nav>
+
+      {{outlet}}
+    </div>
+    <div id="footer"></div
+  </script>
+
+  <script type="text/x-handlebars" data-template-name="index">
+    <div class="row">
+      <div class="col-md-4 col-md-offset-4">
+        {{#each peer in model}}
+          {{render "peer" peer}}
+        {{/each}}
+      </div>
+    </div>
+
+    {{#if user.uuid}}
+      <div class="row you">
+        <div class="col-md-4 col-md-offset-4">
+          {{ render "peer" user}}
+        </div>
+      </div>
+    {{/if}}
+  </script>
+
+  <script type="text/x-handlebars" data-template-name="peer">
+    {{#pop-over confirm-button-label="Send" cancel-button-label="Cancel"}}
+      Do you want to send "{{filename}}" to "{{recipient}}"?
+    {{/pop-over}}
+
+    {{#pop-over confirm-button-label="Save" cancel-button-label="Decline"}}
+      "{{sender}}" wants to send you "{{filename}}".
+    {{/pop-over}}
+
+    <div class="pull-left">
+      <img class="gravatar img-circle media-object" {{bind-attr src="avatarUrl" alt="label" title="email"}}>
+    </div>
+      <div class="media-body">
+        <h4 class="media-heading">{{label}}</h4>
+        {{#if isConnected}}<span class="label label-success">connected</span>{{/if}}
+      </div>
+    </div>
+  </script>
+
+  <script type="text/x-handlebars" data-template-name="sign-in">
+    <a href="#">Sign in using Persona</a>
+  </script>
+
+  <script type="text/x-handlebars" data-template-name="sign-out">
+    <a href="#">Sign out</a>
+  </script>
+
+  <script type="text/x-handlebars" data-template-name="components/pop-over">
+    <div class="media">
+      <div class="pull-left" href="#">
+        <img class="media-object" src="" alt="" />
+      </div>
+      <div class="media-body">{{yield}}</div>
+    </div>
+
+    <div class="pull-right">
+      <button type="button" class="btn btn-default btn-sm" {{action "cancel"}}>{{cancel-button-label}}</button>
+      <button type="button" class="btn btn-default btn-sm" {{action "confirm"}}>{{confirm-button-label}}</button>
+    </div>
+  </script>
+
+  <script src="https://login.persona.org/include.js"></script>
+  <script src="/js/vendor/peer.js"></script>
+  <script src="/js/vendor/socket.io/socket.io.js"></script>
+
+  <script src="/js/vendor/jquery-2.0.3.js"></script>
+  <script src="/js/vendor/ba-tiny-pubsub.js"></script>
+
+  <!-- Ember -->
+  <script src="/js/vendor/handlebars-1.1.2.js"></script>
+  <script src="/js/vendor/ember-1.3.1.js"></script>
+
+  <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+
+  <!-- Application -->
+  <script>var FileDrop = {};</script>
+  <script src="/js/filedrop-room.js"></script>
+  <script src="/js/filedrop-peer.js"></script>
+  <script src="/js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,21 @@
+{
+  "name": "file-drop",
+  "version": "0.0.1",
+  "description": "P2P file sharing",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Szymon Nowak",
+  "license": "MIT",
+  "dependencies": {
+    "socket.io": "~0.9.16",
+    "express": "~3.4.7",
+    "express-persona": "~0.1.1",
+    "node-uuid": "~1.4.1",
+    "deep-extend": "~0.2.6"
+  },
+  "engines": {
+    "node": "~0.10.0"
+  }
+}
