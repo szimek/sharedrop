@@ -16,7 +16,10 @@ FileDrop.Room.prototype.join = function (user) {
 
         self.name = data.name,
 
-        $.extend(user, {uuid: data.uuid});
+        $.extend(user, {
+            uuid: data.uuid,
+            public_ip: data.public_ip
+        });
 
         socket.emit('join', {
             room: self.name,

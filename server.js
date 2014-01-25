@@ -44,7 +44,8 @@ app.get('/room', function (req, res) {
 
     res.json({
         name: name,
-        uuid: uuid.v1()
+        uuid: uuid.v1(),
+        public_ip: ip
     });
 });
 
