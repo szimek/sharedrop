@@ -60,13 +60,13 @@
   </script>
 
   <script type="text/x-handlebars" data-template-name="peer">
-    {{#pop-over confirm-button-label="Send" cancel-button-label="Cancel"}}
+    {{#confirm-popover confirm-button-label="Send" cancel-button-label="Cancel"}}
       Do you want to send "{{filename}}" to "{{recipient}}"?
-    {{/pop-over}}
+    {{/confirm-popover}}
 
-    {{#pop-over confirm-button-label="Save" cancel-button-label="Decline"}}
+    {{#confirm-popover confirm-button-label="Save" cancel-button-label="Decline"}}
       "{{sender}}" wants to send you "{{filename}}".
-    {{/pop-over}}
+    {{/confirm-popover}}
 
     <div class="pull-left">
       <img class="gravatar img-circle media-object" {{bind-attr src="avatarUrl" alt="label" title="email"}}>
@@ -86,7 +86,7 @@
     <a href="#">Sign out</a>
   </script>
 
-  <script type="text/x-handlebars" data-template-name="components/pop-over">
+  <script type="text/x-handlebars" data-template-name="components/confirm-popover">
     <div class="media">
       <div class="pull-left" href="#">
         <img class="media-object" src="" alt="" />

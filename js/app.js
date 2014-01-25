@@ -330,9 +330,7 @@
         }
     });
 
-    App.PopOverComponent = Ember.Component.extend({
-        isVisibleBinding: 'askIfWantToSendAFile',
-
+    App.ConfirmPopoverComponent = Ember.Component.extend({
         didInsertElement: function () {
             this._super();
 

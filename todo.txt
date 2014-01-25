@@ -1,0 +1,19 @@
+# V1
+- persona + email update
+  - fix broadcasting emails on page load
+  - ensure that socket.io has the most recent version with emails
+- tooltips
+
+# V2 (needs changes to PeerJS library)
+- serialize files asynchronously
+- show progress bar for sender and recipient
+
+# V3:
+- set email from Persona on server side to avoid faking it
+- send multiple files (one after another)
+- allow to get room name from URL (provided or generated) for wan connections; don't get public IP in this case
+
+# Firebase (?)
+- use Firebase instead of socket.io for room server
+  - initial vs new peers https://groups.google.com/forum/#!topic/firebase-talk/iZ3eLYAZBkU
+- less hosting issues, but only max 50 connections on free plan...
