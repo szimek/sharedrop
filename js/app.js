@@ -307,11 +307,15 @@
             this.cancelEvent(event);
 
             var _peer = this.get('controller._peer'),
+                user = this.get('controller.controllers.index.user'),
                 peer = this.get('controller.model'),
                 connection = peer.get('peer.connection'),
                 dt = event.originalEvent.dataTransfer,
                 files = dt.files,
                 file = files[0];
+
+            // Can't send files to yourself.
+            if (user.get('uuid') === peer.get('uuid')) return;
 
             console.log('Sending a file...');
 
