@@ -1,7 +1,7 @@
 // TODO: provide TURN server config
 
-FileDrop.Peer = function (options) {
-    this.conn = new Peer({
+FileDrop.WebRTC = function (options) {
+    this.conn = new Peer({ // PeerJS client library
         host: 'file-drop-peer-server.herokuapp.com',
         port: 80,
         config: {'iceServers': [
@@ -44,7 +44,7 @@ FileDrop.Peer = function (options) {
     };
 };
 
-FileDrop.Peer.prototype.connect = function (id) {
+FileDrop.WebRTC.prototype.connect = function (id) {
     connection = this.conn.connect(id, {
         label: 'file',
         reliable: true
@@ -59,7 +59,7 @@ FileDrop.Peer.prototype.connect = function (id) {
     }.bind(this));
 };
 
-FileDrop.Peer.prototype._onConnection = function (connection) {
+FileDrop.WebRTC.prototype._onConnection = function (connection) {
     $.publish('connected.p2p.peer', {connection: connection});
     console.log('Peer:\t P2P connection opened: ', connection);
 
@@ -97,7 +97,7 @@ FileDrop.Peer.prototype._onConnection = function (connection) {
     });
 };
 
-FileDrop.Peer.prototype.sendFileInfo = function (connection, file) {
+FileDrop.WebRTC.prototype.sendFileInfo = function (connection, file) {
     var info = {
         lastModifiedDate: file.lastModifiedDate,
         name: file.name,
@@ -111,14 +111,14 @@ FileDrop.Peer.prototype.sendFileInfo = function (connection, file) {
     });
 };
 
-FileDrop.Peer.prototype.sendFileResponse = function (connection, response) {
+FileDrop.WebRTC.prototype.sendFileResponse = function (connection, response) {
     connection.send({
         type: 'response',
         payload: response
     });
 };
 
-FileDrop.Peer.prototype.sendFile = function (connection, file) {
+FileDrop.WebRTC.prototype.sendFile = function (connection, file) {
     connection.send({
         type: 'file',
         payload: {
