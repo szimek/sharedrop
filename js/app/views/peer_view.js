@@ -1,6 +1,6 @@
 FileDrop.PeerView = Ember.View.extend({
     isConnected: Ember.computed.alias('controller.model.isConnected'),
-    classNames: ['media', 'peer'],
+    classNames: ['peer'],
     classNameBindings: ['isConnected:connected:disconnected'],
 
     // Handle drop events

@@ -37,24 +37,29 @@
       </nav>
 
       {{outlet}}
+
+      <svg class="circles" viewBox="-0.5 -0.5 1140 500">
+        <circle cx="570" cy="600" r="200" stroke="rgba(160,160,160, 1)" stroke-width="0.4" stroke-dashoffset="0" fill="rgba(0,0,0,0)"/>
+        <circle cx="570" cy="600" r="300" stroke="rgba(160,160,160, 9)" stroke-width="0.4" stroke-dashoffset="0" fill="rgba(0,0,0,0)"/>
+        <circle cx="570" cy="600" r="400" stroke="rgba(160,160,160,.8)" stroke-width="0.4" stroke-dashoffset="0" fill="rgba(0,0,0,0)"/>
+        <circle cx="570" cy="600" r="500" stroke="rgba(160,160,160,.7)" stroke-width="0.4" stroke-dashoffset="0" fill="rgba(0,0,0,0)"/>
+        <circle cx="570" cy="600" r="600" stroke="rgba(160,160,160,.6)" stroke-width="0.4" stroke-dashoffset="0" fill="rgba(0,0,0,0)"/>
+
+      </svg>
     </div>
     <div id="footer"></div
   </script>
 
   <script type="text/x-handlebars" data-template-name="index">
-    <div class="row">
-      <div class="col-md-4 col-md-offset-4">
-        {{#each peer in model}}
-          {{render "peer" peer}}
-        {{/each}}
-      </div>
+    <div class="users">
+      {{#each peer in model}}
+        {{render "peer" peer}}
+      {{/each}}
     </div>
 
     {{#if user.uuid}}
-      <div class="row you">
-        <div class="col-md-4 col-md-offset-4">
-          {{ render "peer" user}}
-        </div>
+      <div class="user you">
+        {{ render "peer" user}}
       </div>
     {{/if}}
   </script>
@@ -68,13 +73,10 @@
       "{{sender}}" wants to send you "{{filename}}".
     {{/confirm-popover}}
 
-    <div class="pull-left">
-      <img class="gravatar img-circle media-object" {{bind-attr src="avatarUrl" alt="label" title="email"}}>
-    </div>
-      <div class="media-body">
-        <h4 class="media-heading">{{label}}</h4>
-        {{#if isConnected}}<span class="label label-success">connected</span>{{/if}}
-      </div>
+    <img class="gravatar img-circle" {{bind-attr src="avatarUrl" alt="label" title="email"}}>
+    <div class="user-info">
+      <p>{{label}}</p>
+      {{#if isConnected}}<span class="label label-success">connected</span>{{/if}}
     </div>
   </script>
 
