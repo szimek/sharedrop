@@ -1,0 +1,13 @@
+{{#confirm-popover confirm-button-label="Send" cancel-button-label="Cancel"}}
+  Do you want to send "{{filename}}" to "{{recipient}}"?
+{{/confirm-popover}}
+
+{{#confirm-popover confirm-button-label="Save" cancel-button-label="Decline"}}
+  "{{sender}}" wants to send you "{{filename}}".
+{{/confirm-popover}}
+
+<img class="gravatar img-circle" {{bind-attr src="avatarUrl" alt="label" title="email"}}>
+<div class="user-info">
+  <p>{{label}}</p>
+  {{#if isConnected}}<span class="label label-success">connected</span>{{/if}}
+</div>

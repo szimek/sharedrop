@@ -1,0 +1,33 @@
+<div id="wrap">
+  <nav id="header" class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="#">FileDrop - P2P file transfer</a>
+    </div>
+
+    <div class="collapse navbar-collapse">
+      <ul class="nav navbar-nav navbar-right">
+        {{#if 'user.email' }}
+          <li><a href="javascript:void(0)" {{action 'signOut'}}>Sign out</a></li>
+        {{else}}
+          <li><a href="javascript:void(0)" {{action 'signIn'}}>Sign in</a></li>
+        {{/if}}
+      </ul>
+    </div>
+  </nav>
+
+  {{outlet}}
+
+  <svg class="circles" viewBox="-0.5 -0.5 1140 600">
+    <circle cx="570" cy="500" r="120" stroke="rgba(160,160,160, 1)" stroke-width="0.4" stroke-dashoffset="0" fill="rgba(0,0,0,0)"/>
+    <circle cx="570" cy="500" r="220" stroke="rgba(160,160,160, 9)" stroke-width="0.4" stroke-dashoffset="0" fill="rgba(0,0,0,0)"/>
+    <circle cx="570" cy="500" r="320" stroke="rgba(160,160,160,.8)" stroke-width="0.4" stroke-dashoffset="0" fill="rgba(0,0,0,0)"/>
+    <circle cx="570" cy="500" r="420" stroke="rgba(160,160,160,.7)" stroke-width="0.4" stroke-dashoffset="0" fill="rgba(0,0,0,0)"/>
+    <circle cx="570" cy="500" r="520" stroke="rgba(160,160,160,.6)" stroke-width="0.4" stroke-dashoffset="0" fill="rgba(0,0,0,0)"/>
+  </svg>
+</div>

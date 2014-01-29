@@ -1,5 +1,5 @@
 {
-  "name": "file-drop",
+  "name": "filedrop",
   "version": "0.0.1",
   "description": "P2P file sharing",
   "main": "index.js",
@@ -13,7 +13,23 @@
     "express": "~3.4.7",
     "express-persona": "~0.1.1",
     "node-uuid": "~1.4.1",
-    "deep-extend": "~0.2.6"
+    "deep-extend": "~0.2.6",
+
+    "grunt": "~0.4.2",
+    "grunt-cli": "~0.1.9",
+    "load-grunt-tasks": "~0.2.1",
+    "time-grunt": "~0.2.8",
+    "grunt-contrib-watch": "~0.5.3",
+    "grunt-contrib-clean": "~0.5.0",
+    "grunt-contrib-concat": "~0.3.0",
+    "grunt-contrib-uglify": "~0.3.2",
+    "grunt-contrib-copy": "~0.5.0",
+    "grunt-contrib-cssmin": "~0.7.0",
+    "grunt-ember-templates": "~0.4.18",
+    "grunt-usemin": "~2.0.2",
+    "grunt-concurrent": "~0.4.3",
+    "grunt-contrib-compass": "~0.7.1",
+    "grunt-env": "~0.4.1"
   },
   "engines": {
     "node": "~0.10.0"

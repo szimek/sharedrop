@@ -1,0 +1,11 @@
+<div class="media">
+  <div class="pull-left" href="#">
+    <img class="media-object" src="" alt="" />
+  </div>
+  <div class="media-body">{{yield}}</div>
+</div>
+
+<div class="pull-right">
+  <button type="button" class="btn btn-default btn-sm" {{action "cancel"}}>{{cancel-button-label}}</button>
+  <button type="button" class="btn btn-default btn-sm" {{action "confirm"}}>{{confirm-button-label}}</button>
+</div>

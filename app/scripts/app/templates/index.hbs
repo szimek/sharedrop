@@ -1,0 +1,11 @@
+<div class="users">
+  {{#each peer in model}}
+    {{render "peer" peer}}
+  {{/each}}
+</div>
+
+{{#if user.uuid}}
+  <div class="user you">
+    {{ render "peer" user}}
+  </div>
+{{/if}}

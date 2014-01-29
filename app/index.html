@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <title>P2P file sharing</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+
+  <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
+  <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap-theme.min.css">
+
+  <!-- build:css(.tmp) /styles/app.css -->
+  <link rel="stylesheet" href="/styles/app.css">
+  <!-- endbuild -->
+</head>
+
+<body>
+  <!-- build:js(app) /scripts/vendor.js -->
+  <script src="/scripts/vendor/peer.js"></script>
+  <script src="/scripts/vendor/socket.io/socket.io.js"></script>
+
+  <script src="/scripts/vendor/jquery-2.0.3.js"></script>
+  <script src="/scripts/vendor/ba-tiny-pubsub.js"></script>
+
+  <script src="/scripts/vendor/handlebars-1.1.2.js"></script>
+  <script src="/scripts/vendor/ember-1.3.1.js"></script>
+  <!-- endbuild -->
+
+  <script src="https://login.persona.org/include.js"></script>
+  <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+
+  <!-- build:js({.tmp,app}) /scripts/app.js -->
+  <script src="/scripts/app.js"></script>
+  <script src="/scripts/app/lib/room.js"></script>
+  <script src="/scripts/app/lib/webrtc.js"></script>
+  <script src="/scripts/app/components/confirm_popover_component.js"></script>
+  <script src="/scripts/app/controllers/application_controller.js"></script>
+  <script src="/scripts/app/controllers/index_controller.js"></script>
+  <script src="/scripts/app/controllers/peer_controller.js"></script>
+  <script src="/scripts/app/models/peer.js"></script>
+  <script src="/scripts/app/views/index_view.js"></script>
+  <script src="/scripts/app/views/peer_view.js"></script>
+
+  <script src="/scripts/app/compiled_templates.js"></script>
+  <!-- endbuild -->
+</body>
+</html>
