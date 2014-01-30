@@ -94,19 +94,6 @@ FileDrop.IndexController = Ember.ArrayController.extend({
         if (peer) peer.set('peer.connection', null);
     },
 
-    _onFileUpload: function (connection, file) {
-        var _peer = this.get('_peer'),
-            peer = this.findBy('peer.id', connection.peer);
-
-        // Store file, so it's available when the response from the recipient comes in
-        peer.set('peer.file', file);
-
-        var response = window.confirm('Do you want to send "' + file.name + '" to "' + peer.get('label') + '"?');
-        if (response) {
-            _peer.sendFileInfo(connection, file);
-        }
-    },
-
     _onPeerP2PFileInfo: function (event, data) {
         console.log('Peer:\t Received file info', data);
 
