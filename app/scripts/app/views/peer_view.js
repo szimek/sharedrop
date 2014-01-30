@@ -3,6 +3,17 @@ FileDrop.PeerView = Ember.View.extend({
     classNames: ['peer'],
     classNameBindings: ['isConnected:connected:disconnected'],
 
+    // Delegate click to hidden file field
+    click: function (event) {
+        var user = this.get('controller.controllers.index.user'),
+            peer = this.get('controller.model');
+
+        // Can't send files to yourself.
+        if (user.get('uuid') === peer.get('uuid')) return;
+
+        this.$('input[type=file]').click();
+    },
+
     // Handle drop events
     dragEnter: function (event) {
         this.cancelEvent(event);
@@ -15,7 +26,7 @@ FileDrop.PeerView = Ember.View.extend({
     drop: function (event) {
         this.cancelEvent(event);
 
-        var _peer = this.get('controller._peer'),
+        var ctrl = this.get('controller'),
             user = this.get('controller.controllers.index.user'),
             peer = this.get('controller.model'),
             connection = peer.get('peer.connection'),
@@ -26,15 +37,9 @@ FileDrop.PeerView = Ember.View.extend({
         // Can't send files to yourself.
         if (user.get('uuid') === peer.get('uuid')) return;
 
-        console.log('Sending a file...');
+        console.log('Sending a file...', file);
 
-        // Store file, so it's available when a response from the recipient comes in.
-        peer.set('peer.file', file);
-
-        var response = window.confirm('Do you want to send "' + file.name + '" to "' + peer.get('label') + '"?');
-        if (response) {
-            _peer.sendFileInfo(connection, file);
-        }
+        ctrl.send('onFileUpload', file);
     },
 
     cancelEvent: function (event) {
