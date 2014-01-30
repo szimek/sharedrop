@@ -16,7 +16,12 @@ module.exports = function (grunt) {
     watch: {
       emberTemplates: {
         files: 'app/scripts/app/templates/**/*.{hbs,hjs,handlebars}',
-        tasks: ['emberTemplates']
+        tasks: ['emberTemplates:dev']
+      },
+
+      compass: {
+        files: 'app/styles//**/*.{sass,scss}',
+        tasks: ['compass:dev']
       }
     },
 
@@ -149,7 +154,7 @@ module.exports = function (grunt) {
       'clean:dev',
       'env:dev',
       'concurrent:dev',
-      'server:dev:keepalive',
+      'server:dev',
       'watch'
     ]);
   });
