@@ -9,6 +9,8 @@ module.exports.server = function (options) {
         uuid = require('node-uuid'),
         crypto = require('crypto'),
         extend = require('deep-extend'),
+        persona = require('express-persona'),
+        socketIo = require('socket.io'),
         app = express(),
         host = process.env.HOST,
         port = process.env.PORT,
@@ -16,14 +18,12 @@ module.exports.server = function (options) {
         secret = process.env.SECRET,
         server, io, base;
 
-    options = options  || {};
+    options = options || {};
     base = options.base || ['.'];
 
     app.use(express.urlencoded());
     app.use(express.cookieParser());
-    app.use(express.session({
-        secret: secret
-    }));
+    app.use(express.session({ secret: secret }));
     app.use(express.compress());
     app.use(express.json());
 
@@ -38,9 +38,7 @@ module.exports.server = function (options) {
     //
 
     // Handle Persona authentication
-    require('express-persona')(app, {
-      audience: 'http://' + host + ':' + webPort
-    });
+    persona(app, { audience: 'http://' + host + ':' + webPort });
 
     app.get('/', function (req, res) {
         res.sendfile(__dirname + '/index.html');
@@ -50,18 +48,14 @@ module.exports.server = function (options) {
         var ip = req.headers['x-forwarded-for'] || req.ip,
             name = crypto.createHmac('md5', secret).update(ip).digest('hex');
 
-        res.json({
-            name: name,
-            uuid: uuid.v1(),
-            public_ip: ip
-        });
+        res.json({ name: name, uuid: uuid.v1(), public_ip: ip });
     });
 
     //
     // Room server
     //
     server = http.createServer(app);
-    io = require('socket.io').listen(server);
+    io = socketIo.listen(server);
 
     io.sockets.on('connection', function (client) {
 
@@ -105,4 +99,3 @@ module.exports.server = function (options) {
 
     return server;
 };
-
