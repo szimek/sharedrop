@@ -29,8 +29,10 @@ FileDrop.IndexController = Ember.ArrayController.extend({
 
     _onRoomConnected: function (event, data) {
         var user = this.get('user');
-
         user.setProperties(data);
+
+        // Find and set user's local IP
+        this._setUserLocalIP();
     },
 
     _onRoomUserList: function (event, data) {
@@ -78,9 +80,6 @@ FileDrop.IndexController = Ember.ArrayController.extend({
         room.join(user.serialize());
         user.set('room', room);
         this.set('room', room);
-
-        // Find and set user's local IP
-        this._setUserLocalIP();
     },
 
     _onPeerP2PConnected: function (event, data) {
@@ -148,27 +147,47 @@ FileDrop.IndexController = Ember.ArrayController.extend({
         }
     },
 
+    // Based on http://net.ipcalf.com/
+    // SDP offer is used on Firefox, ICE candidate on Chrome
     _setUserLocalIP: function () {
         var user = this.get('user');
 
         // RTCPeerConnection is provided by PeerJS library
-        var rtc = new window.RTCPeerConnection({iceServers:[]});
+        var rtc = new window.RTCPeerConnection({iceServers: []});
+
+        // Firefox needs a channel/stream to proceed
+        if (window.mozRTCPeerConnection) {
+            rtc.createDataChannel('', {reliable: false});
+        }
 
         rtc.onicecandidate = function (event) {
             if (event.candidate) {
                 var addr = grep(event.candidate.candidate);
-                console.log('Local IP found: ', addr);
-                user.set('local_ip', addr);
+                if (addr) {
+                    console.log('Local IP found: ', addr);
+                    user.set('local_ip', addr);
+                }
             }
         };
 
         rtc.createOffer(
-            function (offer) { rtc.setLocalDescription(offer); },
-            function (error) { console.warn("Fetching local IP failed", error); }
+            function (offer) {
+                rtc.setLocalDescription(offer);
+
+                var addr = grep(offer.sdp);
+                if (addr) {
+                    console.log('Local IP found: ', addr);
+                    user.set('local_ip', addr);
+                }
+
+            },
+            function (error) {
+                console.warn("Fetching local IP failed", error);
+            }
         );
 
-        function grep(candidate) {
-            var lines = candidate.split('\r\n'),
+        function grep(sdpOrCandidate) {
+            var lines = sdpOrCandidate.split('\r\n'),
                 i, parts, addr, type;
 
             for (i = 0; i < lines.length; i++) {
@@ -182,6 +201,11 @@ FileDrop.IndexController = Ember.ArrayController.extend({
                     if (type === 'host') {
                         return addr;
                     }
+                } else if (~line.indexOf("c=")) {
+                    parts = line.split(' ');
+                    addr = parts[2];
+
+                    return addr;
                 }
             }
         }
