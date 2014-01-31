@@ -14,7 +14,7 @@ module.exports.server = function (options) {
         port = process.env.PORT,
         webPort = process.env.WEB_PORT, // 80 or 443
         secret = process.env.SECRET,
-        server, io;
+        server, io, base;
 
     options = options  || {};
     base = options.base || ['.'];
