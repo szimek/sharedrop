@@ -4,7 +4,7 @@ FileDrop.PeerController = Ember.ObjectController.extend({
     _peer: Ember.computed.alias('controllers.index._peer'),
 
     actions: {
-        onFileUpload: function (file) {
+        uploadFile: function (file) {
             var _peer = this.get('_peer'),
                 peer = this.get('model'),
                 connection = peer.get('peer.connection');

@@ -1,4 +1,4 @@
-FileDrop.PeerView = Ember.View.extend({
+FileDrop.PeerView = Ember.View.extend(Ember.ViewTargetActionSupport, {
     isConnected: Ember.computed.alias('controller.model.isConnected'),
     classNames: ['peer'],
     classNameBindings: ['isConnected:connected:disconnected'],
@@ -26,8 +26,7 @@ FileDrop.PeerView = Ember.View.extend({
     drop: function (event) {
         this.cancelEvent(event);
 
-        var ctrl = this.get('controller'),
-            user = this.get('controller.controllers.index.user'),
+        var user = this.get('controller.controllers.index.user'),
             peer = this.get('controller.model'),
             connection = peer.get('peer.connection'),
             dt = event.originalEvent.dataTransfer,
@@ -39,7 +38,7 @@ FileDrop.PeerView = Ember.View.extend({
 
         console.log('Sending a file...', file);
 
-        ctrl.send('onFileUpload', file);
+        this.triggerAction("uploadFile", file);
     },
 
     cancelEvent: function (event) {

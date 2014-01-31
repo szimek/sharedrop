@@ -6,8 +6,8 @@ FileDrop.ApplicationController = Ember.Controller.extend({
             email: localStorage.email || null,
             label: 'You'
         });
-        this.set('user', user);
 
+        this.set('user', user);
         this.handlePersonaAuth();
     },
 
@@ -31,7 +31,7 @@ FileDrop.ApplicationController = Ember.Controller.extend({
                 $.ajax({
                     type: 'POST',
                     url: '/persona/verify',
-                    data: {assertion: assertion},
+                    data: { assertion: assertion },
                     success: function (res, status, xhr) {
                         console.log('Persona: Signed in as: "' + res.email + '"');
 
@@ -63,7 +63,7 @@ FileDrop.ApplicationController = Ember.Controller.extend({
     },
 
     // Store user's email in localStorage
-    userEmailHasChanged: function () {
+    userEmailDidChange: function () {
         var email = this.get('user.email');
 
         if (email) {
@@ -71,5 +71,5 @@ FileDrop.ApplicationController = Ember.Controller.extend({
         } else {
             localStorage.removeItem('email');
         }
-    }.observes('user.email'),
+    }.observes('user.email')
 });

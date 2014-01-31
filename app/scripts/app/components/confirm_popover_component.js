@@ -9,15 +9,16 @@ FileDrop.ConfirmPopoverComponent = Ember.Component.extend({
             content: html,
             placement: 'top'
         });
+
         this.$().html("");
     },
 
     show: function () {
-      this.$().popover('show');
+        this.$().popover('show');
     },
 
     hide: function () {
-      this.$().popover('hide');
+        this.$().popover('hide');
     },
 
     actions: {

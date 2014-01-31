@@ -146,7 +146,7 @@ FileDrop.IndexController = Ember.ArrayController.extend({
     },
 
     // Broadcast user's email changes to other peers
-    userEmailHasChanged: function () {
+    userEmailDidChange: function () {
         var email = this.get('user.email'),
             room  = this.get('room');
 

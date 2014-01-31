@@ -1,18 +1,18 @@
 <div id="wrap">
   <nav id="header" class="navbar navbar-default navbar-fixed-top" role="navigation">
     <div class="navbar-header">
-      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse">
         <span class="sr-only">Toggle navigation</span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="#">FileDrop - P2P file transfer</a>
+      {{link-to "FileDrop - P2P file transfer" "index" class="navbar-brand"}}
     </div>
 
-    <div class="collapse navbar-collapse">
+    <div class="collapse navbar-collapse" id="navbar-collapse">
       <ul class="nav navbar-nav navbar-right">
-        {{#if 'user.email' }}
+        {{#if user.email}}
           <li><a href="javascript:void(0)" {{action 'signOut'}}>Sign out</a></li>
         {{else}}
           <li><a href="javascript:void(0)" {{action 'signIn'}}>Sign in</a></li>
