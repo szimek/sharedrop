@@ -29,6 +29,9 @@ FileDrop.IndexController = Ember.ArrayController.extend({
 
     _onRoomConnected: function (event, data) {
         var user = this.get('user');
+
+        user.get('peer').setProperties(data.peer);
+        delete data.peer;
         user.setProperties(data);
 
         // Find and set user's local IP
@@ -41,7 +44,12 @@ FileDrop.IndexController = Ember.ArrayController.extend({
         var _peer = this.get('_peer');
 
         data.forEach(function (attrs) {
-            var peer = FileDrop.Peer.create(attrs);
+            var peerAttrs = attrs.peer,
+                peer;
+
+            delete attrs.peer;
+            peer = FileDrop.Peer.create(attrs);
+            peer.get('peer').setProperties(peerAttrs);
 
             this.pushObject(peer);
             _peer.connect(peer.get('peer.id'));
@@ -50,18 +58,28 @@ FileDrop.IndexController = Ember.ArrayController.extend({
 
     _onRoomUserAdded: function (event, data) {
         var user = this.get('user'),
+            peerAttrs = data.peer,
             peer;
 
+        // Add peer to the list of peers in the room
         if (user.get('uuid') !== data.uuid) {
-            // Add peer to the list of peers in the room
+            delete data.peer;
             peer = FileDrop.Peer.create(data);
+            peer.get('peer').setProperties(peerAttrs);
+
             this.pushObject(peer);
         }
     },
 
     _onRoomUserChanged: function (event, data) {
-        var peer = this.findBy('uuid', data.uuid);
-        if (peer) peer.setProperties(data);
+        var peer = this.findBy('uuid', data.uuid),
+            peerAttrs = data.peer;
+
+        if (peer) {
+            delete data.peer;
+            peer.setProperties(data);
+            peer.get('peer').setProperties(peerAttrs);
+        }
     },
 
     _onRoomUserRemoved: function (event, data) {
@@ -72,8 +90,8 @@ FileDrop.IndexController = Ember.ArrayController.extend({
     _onPeerServerConnected: function (event, data) {
         var user = this.get('user');
 
-        user.setProperties({isConnected: true});
-        user.get('peer').setProperties({id: data.id});
+        user.set('isConnected', true);
+        user.set('peer.id', data.id);
 
         // Join room and broadcast user attributes
         var room = new FileDrop.Room();
@@ -91,7 +109,7 @@ FileDrop.IndexController = Ember.ArrayController.extend({
 
     _onPeerP2PDisconnected: function (event, data) {
         var connection = data.connection,
-            peer = this.findBy('peer.d', connection.peer);
+            peer = this.findBy('peer.id', connection.peer);
 
         if (peer) peer.set('peer.connection', null);
     },
