@@ -30,7 +30,6 @@ FileDrop.IndexController = Ember.ArrayController.extend({
     _onRoomConnected: function (event, data) {
         var user = this.get('user');
 
-        data.label = 'You (' + data.uuid + ')';
         user.setProperties(data);
     },
 
@@ -77,7 +76,11 @@ FileDrop.IndexController = Ember.ArrayController.extend({
         // Join room and broadcast user attributes
         var room = new FileDrop.Room();
         room.join(user.serialize());
+        user.set('room', room);
         this.set('room', room);
+
+        // Find and set user's local IP
+        this._setUserLocalIP();
     },
 
     _onPeerP2PConnected: function (event, data) {
@@ -145,11 +148,63 @@ FileDrop.IndexController = Ember.ArrayController.extend({
         }
     },
 
-    // Broadcast user's email changes to other peers
+    _setUserLocalIP: function () {
+        var user = this.get('user');
+
+        // RTCPeerConnection is provided by PeerJS library
+        var rtc = new window.RTCPeerConnection({iceServers:[]});
+
+        rtc.onicecandidate = function (event) {
+            if (event.candidate) {
+                var addr = grep(event.candidate.candidate);
+                console.log('Local IP found: ', addr);
+                user.set('local_ip', addr);
+            }
+        };
+
+        rtc.createOffer(
+            function (offer) { rtc.setLocalDescription(offer); },
+            function (error) { console.warn("Fetching local IP failed", error); }
+        );
+
+        function grep(candidate) {
+            var lines = candidate.split('\r\n'),
+                i, parts, addr, type;
+
+            for (i = 0; i < lines.length; i++) {
+                var line = lines[i];
+
+                if (~line.indexOf("a=candidate")) {
+                    parts = line.split(' ');
+                    addr = parts[4];
+                    type = parts[7];
+
+                    if (type === 'host') {
+                        return addr;
+                    }
+                }
+            }
+        }
+    },
+
+    // Broadcast user's selected changes to other peers
     userEmailDidChange: function () {
         var email = this.get('user.email'),
             room  = this.get('room');
 
-        if (room) room.update({email: email});
-    }.observes('user.email')
+        if (room) {
+            console.log('Broadcasting user\'s email: ', email);
+            room.update({email: email});
+        }
+    }.observes('user.email'),
+
+    userLocalIPDidChange: function () {
+        var addr = this.get('user.local_ip'),
+            room  = this.get('room');
+
+        if (room && addr !== undefined) {
+            console.log('Broadcasting user\'s local IP: ', addr);
+            room.update({local_ip: addr});
+        }
+    }.observes('user.local_ip')
 });

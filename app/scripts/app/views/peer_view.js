@@ -28,7 +28,6 @@ FileDrop.PeerView = Ember.View.extend(Ember.ViewTargetActionSupport, {
 
         var user = this.get('controller.controllers.index.user'),
             peer = this.get('controller.model'),
-            connection = peer.get('peer.connection'),
             dt = event.originalEvent.dataTransfer,
             files = dt.files,
             file = files[0];

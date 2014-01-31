@@ -6,9 +6,10 @@
   "{{sender}}" wants to send you "{{filename}}".
 {{/confirm-popover}}
 
-<img class="gravatar img-circle" {{bind-attr src="avatarUrl" alt="label" title="email"}}>
+<img class="gravatar img-circle" {{bind-attr src="avatarUrl" alt="label" title="uuid"}}>
 <div class="user-info">
-  <p>{{label}}</p>
+  {{#if label}}<p>{{label}}</p>{{/if}}
+  {{#if local_ip}}<p>{{local_ip}}</p>{{/if}}
   {{#if isConnected}}
     <span class="label label-success">connected</span>
   {{/if}}

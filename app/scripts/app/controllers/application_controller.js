@@ -2,9 +2,8 @@ FileDrop.ApplicationController = Ember.Controller.extend({
     init: function () {
         this._super();
 
-        var user = FileDrop.Peer.create({
-            email: localStorage.email || null,
-            label: 'You'
+        var user = FileDrop.User.create({
+            email: localStorage.email || null
         });
 
         this.set('user', user);
@@ -60,16 +59,5 @@ FileDrop.ApplicationController = Ember.Controller.extend({
                 });
             }
         });
-    },
-
-    // Store user's email in localStorage
-    userEmailDidChange: function () {
-        var email = this.get('user.email');
-
-        if (email) {
-            localStorage.email = email;
-        } else {
-            localStorage.removeItem('email');
-        }
-    }.observes('user.email')
+    }
 });

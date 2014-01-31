@@ -18,6 +18,9 @@
           <li><a href="javascript:void(0)" {{action 'signIn'}}>Sign in</a></li>
         {{/if}}
       </ul>
+      {{#if user.email}}
+        <p class="navbar-text navbar-right">Signed in as {{user.email}}</p>
+      {{/if}}
     </div>
   </nav>
 
