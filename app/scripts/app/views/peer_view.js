@@ -8,9 +8,6 @@ FileDrop.PeerView = Ember.View.extend(Ember.ViewTargetActionSupport, {
         var user = this.get('controller.controllers.index.user'),
             peer = this.get('controller.model');
 
-        // Can't send files to yourself.
-        if (user.get('uuid') === peer.get('uuid')) return;
-
         // Can't send files to disconnected user.
         if (!peer.get('isConnected')) return;
 
@@ -34,9 +31,6 @@ FileDrop.PeerView = Ember.View.extend(Ember.ViewTargetActionSupport, {
             dt = event.originalEvent.dataTransfer,
             files = dt.files,
             file = files[0];
-
-        // Can't send files to yourself.
-        if (user.get('uuid') === peer.get('uuid')) return;
 
         // Can't send files to disconnected user.
         if (!peer.get('isConnected')) return;
