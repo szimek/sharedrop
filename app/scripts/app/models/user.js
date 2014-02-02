@@ -1,11 +1,5 @@
 FileDrop.User = FileDrop.Peer.extend({
     room: null,
-
-    peer: Ember.Object.create({
-        id: null,
-        connection: null
-    }),
-
     label: 'You',
 
     serialize: function () {

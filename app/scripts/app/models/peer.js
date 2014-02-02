@@ -3,11 +3,18 @@ FileDrop.Peer = Ember.Object.extend({
     email: null,
     public_ip: null,
 
-    peer: Ember.Object.create({
-        id: null,
-        connection: null,
-        file: null,
-    }),
+    init: function () {
+        this.set('peer', Ember.Object.create({
+            id: null,
+            connection: null
+        }));
+
+        this.set('transfer', Ember.Object.create({
+            file: null
+        }));
+
+        this._super();
+    },
 
     label: Ember.computed.alias('email'),
 

@@ -117,14 +117,11 @@ FileDrop.IndexController = Ember.ArrayController.extend({
     _onPeerP2PFileInfo: function (event, data) {
         console.log('Peer:\t Received file info', data);
 
-        var _peer = this.get('_peer'),
-            connection = data.connection,
+        var connection = data.connection,
             peer = this.findBy('peer.id', connection.peer),
-            info = data.info,
-            response;
+            info = data.info;
 
-        response = window.confirm('"' + peer.uuid + '"' + ' wants to send you "' + info.name + '".');
-        _peer.sendFileResponse(connection, response);
+        peer.set('transfer.info', info);
     },
 
     _onPeerP2PFileResponse: function (event, data) {
@@ -137,12 +134,12 @@ FileDrop.IndexController = Ember.ArrayController.extend({
             file;
 
         if (response) {
-            file = peer.get('peer.file');
+            file = peer.get('transfer.file');
             _peer.sendFile(connection, file);
         }
 
         // Remove "cached" file for that peer now that we have a response
-        peer.set('peer.file', null);
+        peer.set('transfer.file', null);
     },
 
     _onPeerP2PFileTransfer: function (event, data) {

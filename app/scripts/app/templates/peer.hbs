@@ -1,12 +1,12 @@
-{{#confirm-popover confirm-button-label="Send" cancel-button-label="Cancel"}}
-  Do you want to send "{{filename}}" to "{{recipient}}"?
+{{#confirm-popover confirm="sendFileTransferInquiry" cancel="cancelFileTransfer" opened=transfer.file confirm-button-label="Send" cancel-button-label="Cancel"}}
+  Do you want to send "{{label}}" to "{{recipient}}"?
 {{/confirm-popover}}
 
-{{#confirm-popover confirm-button-label="Save" cancel-button-label="Decline"}}
-  "{{sender}}" wants to send you "{{filename}}".
+{{#confirm-popover confirm="acceptFileTransfer" cancel="rejectFileTransfer" opened=transfer.info confirm-button-label="Save" cancel-button-label="Decline"}}
+  "{{label}}" wants to send you "{{filename}}".
 {{/confirm-popover}}
 
-<img class="gravatar img-circle" {{bind-attr src="avatarUrl" alt="label" title="uuid"}}>
+{{view FileDrop.PeerAvatarView}}
 <div class="user-info">
   {{#if label}}<p>{{label}}</p>{{/if}}
   {{#if local_ip}}<p>{{local_ip}}</p>{{/if}}
