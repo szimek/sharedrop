@@ -1,4 +1,7 @@
 FileDrop.ConfirmPopoverComponent = Ember.Component.extend({
+    classNames: ['popover-confirm'],
+
+    // TODO: move 'label' and 'filename' somewhere else (separate view)?
     label: function () {
         var email = this.get('peer.email'),
             addr = this.get('peer.local_ip');
@@ -11,30 +14,37 @@ FileDrop.ConfirmPopoverComponent = Ember.Component.extend({
         return file ? file.name : null;
     }.property('peer.transfer.file'),
 
-    openedDidChange: function () {
-        !!this.get('opened') ? this.show() : this.hide();
-    }.observes('opened'),
+    isShowingDidChange: function () {
+        !!this.get('isShowing') ? this.show() : this.hide();
+    }.observes('isShowing'),
 
     didInsertElement: function () {
         this._super();
 
-        var html = this.$().html();
-
-        this.$().popover({
-            html: true,
-            content: html,
-            placement: 'top'
-        });
-
-        this.$().html("");
+        this.$().hide();
     },
 
+    // Uber hacky way to make Bootstrap 'popover' plugin work with Ember metamorph
     show: function () {
-        this.$().popover('show');
+        // Delay until related properties are computed
+        Ember.run.next(this, function () {
+            var html = this.$().html();
+
+            // Content needs to be visible,
+            // so that popover position is calculated properly.
+            this.$().show();
+            this.$().popover({
+                html: true,
+                content: html,
+                placement: 'top'
+            });
+            this.$().popover('show');
+            this.$().hide();
+        });
     },
 
     hide: function () {
-        this.$().popover('hide');
+        this.$().popover('destroy');
     },
 
     actions: {
