@@ -1,19 +1,6 @@
 FileDrop.ConfirmPopoverComponent = Ember.Component.extend({
     classNames: ['popover-confirm'],
 
-    // TODO: move 'label' and 'filename' somewhere else (separate view)?
-    label: function () {
-        var email = this.get('peer.email'),
-            addr = this.get('peer.local_ip');
-
-        return email || addr;
-    }.property('peer.email', 'peer.local_ip'),
-
-    filename: function () {
-        var file = this.get('peer.transfer.file');
-        return file ? file.name : null;
-    }.property('peer.transfer.file'),
-
     isShowingDidChange: function () {
         !!this.get('isShowing') ? this.show() : this.hide();
     }.observes('isShowing'),
