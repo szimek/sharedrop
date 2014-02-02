@@ -6,15 +6,11 @@ FileDrop.PeerAvatarView = Ember.View.extend(Ember.ViewTargetActionSupport, {
     altBinding: 'controller.model.label',
     titleBinding: 'controller.model.uuid',
 
-    // Delegate click to hidden file field
+    // Delegate click to hidden file field in peer template
     click: function (event) {
-        var user = this.get('controller.controllers.index.user'),
-            peer = this.get('controller.model');
-
-        // Can't send files to disconnected user.
-        if (!peer.get('isConnected')) return;
-
-        this.$().parent().find('input[type=file]').click();
+        if (this.canSendFile()) {
+            this.$().parent().find('input[type=file]').click();
+        }
     },
 
     // Handle drop events
@@ -35,14 +31,31 @@ FileDrop.PeerAvatarView = Ember.View.extend(Ember.ViewTargetActionSupport, {
             files = dt.files,
             file = files[0];
 
-        // Can't send files to disconnected user.
-        if (!peer.get('isConnected')) return;
-
-        this.triggerAction('uploadFile', file);
+        if (this.canSendFile()) {
+            this.triggerAction({
+                action: 'uploadFile',
+                actionContext: {
+                    file: file
+                }
+            });
+        }
     },
 
     cancelEvent: function (event) {
         event.stopPropagation();
         event.preventDefault();
+    },
+
+    canSendFile: function () {
+        var user = this.get('controller.controllers.index.user'),
+            peer = this.get('controller.model');
+
+        // Can't send files to disconnected peer
+        if (!user.get('isConnected') || !peer.get('isConnected')) return false;
+
+        // Can't send files if another file transfer is already in progress
+        if (peer.get('transfer.file') || peer.get('transfer.info')) return false;
+
+        return true;
     }
 });

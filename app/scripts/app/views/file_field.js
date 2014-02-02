@@ -11,6 +11,6 @@ FileDrop.FileField = Ember.TextField.extend({
             files = input.files,
             file = files[0];
 
-        this.sendAction('action', file);
+        this.sendAction('action', { file: file });
     }
 });
