@@ -2,15 +2,34 @@ GEM
   remote: https://rubygems.org/
   specs:
     chunky_png (1.2.9)
-    compass (0.12.2)
+    compass (1.0.0.alpha.17)
       chunky_png (~> 1.2)
-      fssm (>= 0.2.7)
-      sass (~> 3.1)
-    fssm (0.2.10)
-    sass (3.2.14)
+      compass-core (~> 1.0.0.alpha.16)
+      compass-import-once (~> 1.0.1)
+      json
+      listen (~> 1.1.0)
+      sass (~> 3.3.0.rc.1)
+    compass-core (1.0.0.alpha.16)
+      multi_json (~> 1.0)
+      sass (>= 3.3.rc.1)
+    compass-import-once (1.0.2)
+    ffi (1.9.3)
+    json (1.8.1)
+    listen (1.1.6)
+      rb-fsevent (>= 0.9.3)
+      rb-inotify (>= 0.9)
+      rb-kqueue (>= 0.2)
+    multi_json (1.8.4)
+    rb-fsevent (0.9.4)
+    rb-inotify (0.9.3)
+      ffi (>= 0.5.0)
+    rb-kqueue (0.2.0)
+      ffi (>= 0.5.0)
+    sass (3.3.0.rc.2)
+      listen (~> 1.1.0)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
-  compass
+  compass (~> 1.0.0.alpha.17)
