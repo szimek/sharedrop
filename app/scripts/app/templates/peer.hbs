@@ -8,13 +8,13 @@
 
 {{view FileDrop.PeerAvatarView}}
 <div class="user-info">
-  {{#if label}}<div class="user-email">{{label}}</div>{{/if}}
-  {{#if local_ip}}
+  {{#if model.label}}<div class="user-email">{{model.label}}</div>{{/if}}
+  {{#if view.showLocalIP}}
     <div class="user-id">
-      {{#if isConnected}}
+      {{#if model.isConnected}}
         <div class="user-connected"></div>
       {{/if}}
-      {{local_ip}}
+      {{model.local_ip}}
     </div>
   {{/if}}
 </div>
