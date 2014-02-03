@@ -17,9 +17,7 @@ FileDrop.Peer = Ember.Object.extend({
         this._super();
     },
 
-    label: function () {
-        return this.get('email') || this.get('local_ip');
-    }.property('email', 'local_ip'),
+    label: Ember.computed.alias('email'),
 
     isConnected: function () {
         return !!this.get('peer.connection');

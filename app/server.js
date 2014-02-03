@@ -21,13 +21,13 @@ module.exports.server = function (options) {
     options = options || {};
     base = options.base || ['.'];
 
+    app.use(express.logger());
     app.use(express.urlencoded());
     app.use(express.cookieParser());
     app.use(express.session({ secret: secret }));
     app.use(express.compress());
     app.use(express.json());
 
-    // TODO
     base.forEach(function (dir) {
         app.use('/scripts', express.static(dir + '/scripts'));
         app.use('/styles', express.static(dir + '/styles'));
@@ -64,7 +64,7 @@ module.exports.server = function (options) {
             var room = data.room,
                 peer = data.peer;
 
-            console.log('on:join', data);
+            console.log('#join data: ', data);
             client.peer = peer;
 
             var clients = io.sockets.clients(room),
@@ -84,7 +84,7 @@ module.exports.server = function (options) {
                 client.broadcast.to(room).emit('user_removed', client.peer);
             });
 
-            console.log('on:join', peers);
+            console.log('#join peers already in the room: ', peers);
         });
 
         client.on('update', function (data) {
