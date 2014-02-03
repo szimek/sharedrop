@@ -39,6 +39,16 @@ body
   margin-left: -570px
   height: 700px
   z-index: -1
+  +transform-origin(570px, 570px)
+  +animation(grow 1.5s ease-out)
   .circle
     stroke-width: .4
     fill: rgba(0,0,0,0)
+
++keyframes(grow)
+  50%
+    +scale(1.5)
+    opacity: .2
+  51%
+    +scale(.5)
+    opacity: 0

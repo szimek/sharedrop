@@ -19,7 +19,7 @@ $user-size: 64px
       +animation(shadow .8s ease-in)
     .user-info
       position: absolute
-      top: 68px
+      top: $user-size + 4px
       left: 50%
       width: 140px
       margin-left: -70px
@@ -28,6 +28,8 @@ $user-size: 64px
         color: #606060
       .user-email
         font-size: 10px
+        overflow: hidden
+        text-overflow: ellipsis
       .user-label
         font-size: 14px
       .user-id
@@ -86,7 +88,7 @@ $user-size: 64px
   &.you
     .peer
       bottom: 100px
-  &.other
+  &.others
     .peer:not(.disconnected)
       .gravatar
         cursor: pointer
