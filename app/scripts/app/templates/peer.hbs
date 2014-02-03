@@ -8,11 +8,9 @@
 
 {{view FileDrop.PeerAvatarView}}
 <div class="user-info">
-  {{#if label}}<p>{{label}}</p>{{/if}}
-  {{#if local_ip}}<p>{{local_ip}}</p>{{/if}}
-  {{#if isConnected}}
-    <span class="label label-success">connected</span>
-  {{/if}}
+  {{#if model.label}}<p>{{model.label}}</p>{{/if}}
+  {{#if view.showLocalIP}}<p>{{model.local_ip}}</p>{{/if}}
+  {{#if model.isConnected}}<span class="label label-success">connected</span>{{/if}}
 </div>
 
 {{view FileDrop.FileField action="uploadFile"}}
