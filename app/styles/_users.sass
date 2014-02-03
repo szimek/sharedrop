@@ -16,9 +16,7 @@ $user-size: 64px
       height: $user-size
       border-radius: 50%
       +transition(all .2s ease-in-out)
-      +animation(shadow .8s ease)
-      &:hover
-        +scale(1.1)
+      +animation(shadow .8s ease-in)
     .user-info
       position: absolute
       top: 68px
@@ -88,6 +86,13 @@ $user-size: 64px
   &.you
     .peer
       bottom: 100px
+  &.other
+    .peer:not(.disconnected)
+      .gravatar
+        cursor: pointer
+        &:hover
+          +scale(1.1)
+          border-color: #73b806
 
 +keyframes(shadow)
   0%
