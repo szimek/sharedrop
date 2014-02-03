@@ -1,81 +1,160 @@
-/* Sticky footer
-
 html
   height: 100%
-  /* The html and body elements cannot have any padding or margin.
+  // The html and body elements cannot have any padding or margin.
 
 body
   height: 100%
-  /* The html and body elements cannot have any padding or margin.
+  // The html and body elements cannot have any padding or margin.
   > .ember-view
     height: 100%
-    /* The html and body elements cannot have any padding or margin.
+    // The html and body elements cannot have any padding or margin.
 
 .navbar-nav.navbar-right:last-child
   margin-right: 0
 
-/* Wrapper for page content to push down footer
-
 #wrap
   min-height: 100%
   height: auto
-  /* Negative indent footer by its height
-  margin: 0 auto -60px
-  /* Pad bottom by footer height
+  // Negative indent footer by its height
+  margin: 0 auto -50px
   padding: 0
-  > .container
-    padding: 140px 15px 0
-    /* 60px for footer + the rest for tooltip
 
-/* End of sticky footer
+#footer
+  position: fixed
+  bottom: 0
+  width: 100%
+  height: 50px
+  background-color: rgba(#f0f0f0,.8)
 
 .invisible
   height: 0
   width: 0
   opacity: 0
 
-.peer.disconnected .gravatar
-  opacity: .4
-
-.users .peer
-  position: absolute
-  left: 50%
-  bottom: 300px
-  width: 140px
-  margin-left: -70px
-  text-align: center
-  &:nth-of-type(2)
-    left: 25%
-    bottom: 200px
-  &:nth-of-type(3)
-    left: 75%
-    bottom: 200px
-
-.user.you .peer
-  position: absolute
-  bottom: 20px
-  left: 50%
-  width: 140px
-  margin-left: -70px
-  text-align: center
-
-.peer
-  .gravatar
-    border: 5px solid #fff
-    margin-bottom: 5px
-    box-shadow: rgba(0, 0, 0, 0.5) 0 0 10px
-  .user-info p
-    font-size: 12px
-    margin-bottom: 5px
-    word-break: break-all
+$user-size: 64px
+.user
+  .peer
+    position: absolute
+    left: 50%
+    bottom: 300px
+    width: $user-size
+    height: $user-size
+    margin-left: -$user-size / 2
+    text-align: center
+    .gravatar
+      display: inline-block
+      border: 1px solid #c0c0c0
+      box-shadow: rgba(0, 0, 0, 0.2) 0 0 3px
+      width: $user-size
+      height: $user-size
+    .user-info
+      position: absolute
+      top: 68px
+      left: 50%
+      width: 140px
+      margin-left: -70px
+      .user-label, .user-email
+        font-weight: bold
+        color: #606060
+      .user-email
+        font-size: 10px
+      .user-label
+        font-size: 14px
+      .user-id
+        font-size: 10px
+        color: #808080
+      .user-connected
+        display: inline-block
+        background: #73b806
+        width: 6px
+        height: 6px
+        vertical-align: middle
+        border-radius: 50%
+    .popover
+      max-width: 460px
+      min-width: 300px
+    &:nth-of-type(2)
+      margin-left: -186px
+      bottom: 225px
+    &:nth-of-type(3)
+      margin-left: 120px
+      bottom: 225px
+    &:nth-of-type(4)
+      margin-left: -186px
+      bottom: 365px
+    &:nth-of-type(5)
+      margin-left: 120px
+      bottom: 365px
+    &:nth-of-type(6)
+      margin-left: -326px
+      bottom: 180px
+    &:nth-of-type(7)
+      margin-left: 260px
+      bottom: 180px
+    &:nth-of-type(8)
+      margin-left: -366px
+      bottom: 320px
+    &:nth-of-type(9)
+      margin-left: 300px
+      bottom: 320px
+    &:nth-of-type(10)
+      margin-left: -436px
+      bottom: 90px
+    &:nth-of-type(11)
+      margin-left: 370px
+      bottom: 90px
+    &:nth-of-type(12)
+      bottom: 400px
+    &:nth-of-type(13)
+      margin-left: -236px
+      bottom: 90px
+    &:nth-of-type(14)
+      margin-left: 170px
+      bottom: 90px
+    &.disconnected
+      opacity: .4
+  &.you
+    .peer
+      bottom: 100px
 
 .circles
   position: absolute
   bottom: 0
-  left: 0
-  right: 0
-  max-width: 1140px
-  min-width: 600px
-  height: auto
-  margin: auto
+  left: 50%
+  width: 1140px
+  margin-left: -570px
+  height: 700px
   z-index: -1
+
+
+@media (max-width: 768px)
+  .container
+    padding: 86px 0
+  .user
+    .peer
+      position: relative
+      left: auto !important
+      bottom: auto !important
+      height: auto
+      width: 100%
+      padding: 10px 20px
+      border-top: 1px solid #ccc
+      margin: 0 !important
+      text-align: left
+      .user-info
+        display: inline-block
+        position: static
+        margin-left: 20px
+        .user-email
+          font-size: 14px
+        .user-label
+          font-size: 18px
+        .user-id
+          font-size: 12px
+          color: #808080
+      .popover
+        left: 20px !important
+        top: -140px !important
+
+  .circles
+    display: none

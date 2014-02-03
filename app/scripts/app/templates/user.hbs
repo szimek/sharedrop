@@ -1,8 +1,12 @@
 <img class="gravatar img-circle" {{bind-attr src="avatarUrl" alt="label" title="uuid"}}>
 <div class="user-info">
-  {{#if label}}<p>{{label}}</p>{{/if}}
-  {{#if local_ip}}<p>{{local_ip}}</p>{{/if}}
-  {{#if isConnected}}
-    <span class="label label-success">connected</span>
+  {{#if label}}<div class="user-label">{{label}}</div>{{/if}}
+  {{#if local_ip}}
+    <div class="user-id">
+      {{#if isConnected}}
+        <div class="user-connected"></div>
+      {{/if}}
+      {{local_ip}}
+    </div>
   {{/if}}
 </div>
