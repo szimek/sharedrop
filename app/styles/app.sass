@@ -1,3 +1,5 @@
+@import "compass"
+
 html
   height: 100%
   // The html and body elements cannot have any padding or margin.
@@ -129,10 +131,9 @@ $user-size: 64px
     stroke-width: .4
     fill: rgba(0,0,0,0)
 
-
 @media (max-width: 768px)
   .container
-    padding: 86px 0
+    padding: 60px 0
   .user
     .peer
       position: relative
@@ -141,7 +142,7 @@ $user-size: 64px
       height: auto
       width: 100%
       padding: 10px 20px
-      border-top: 1px solid #ccc
+      border-bottom: 1px solid #e0e0e0
       margin: 0 !important
       text-align: left
       .user-info
@@ -158,6 +159,8 @@ $user-size: 64px
       .popover
         left: 20px !important
         top: -140px !important
-
+    &.you
+      .peer
+        border-bottom: none
   .circles
     display: none
