@@ -7,6 +7,7 @@
 {{/confirm-popover}}
 
 {{view FileDrop.PeerAvatarView}}
+
 <div class="user-info">
   {{#if model.email}}<div class="user-email">{{model.email}}</div>{{/if}}
   {{#if model.local_ip}}
@@ -19,4 +20,4 @@
   {{/if}}
 </div>
 
-{{view FileDrop.FileField action="uploadFile"}}
+{{view FileDrop.FileField action="uploadFile" file=transfer.file}}
