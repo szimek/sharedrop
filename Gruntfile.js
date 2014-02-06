@@ -43,6 +43,7 @@ module.exports = function (grunt) {
     compass: {
       dist: {
         options: {
+          fontsDir: 'app/fonts',
           sassDir: 'app/styles',
           cssDir: '.tmp/styles',
           environment: 'production'
@@ -50,6 +51,7 @@ module.exports = function (grunt) {
       },
       dev: {
         options: {
+          fontsDir: 'app/fonts',
           sassDir: 'app/styles',
           cssDir: '.tmp/styles'
         }
