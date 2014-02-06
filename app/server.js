@@ -31,6 +31,7 @@ module.exports.server = function (options) {
     base.forEach(function (dir) {
         app.use('/scripts', express.static(dir + '/scripts'));
         app.use('/styles', express.static(dir + '/styles'));
+        app.use('/fonts', express.static(dir + '/fonts'));
     });
 
     //
