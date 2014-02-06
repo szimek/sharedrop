@@ -1,8 +1,8 @@
-{{#confirm-popover confirm="sendFileTransferInquiry" cancel="cancelFileTransfer" isShowing=transfer.file confirm-button-label="Send" cancel-button-label="Cancel"}}
+{{#confirm-popover confirm="sendFileTransferInquiry" cancel="cancelFileTransfer" isShowing=transfer.file filename=filename confirm-button-label="Send" cancel-button-label="Cancel"}}
   Do you want to send "{{filename}}" to "{{peer.label}}"?
 {{/confirm-popover}}
 
-{{#confirm-popover confirm="acceptFileTransfer" cancel="rejectFileTransfer" isShowing=transfer.info confirm-button-label="Save" cancel-button-label="Decline"}}
+{{#confirm-popover confirm="acceptFileTransfer" cancel="rejectFileTransfer" isShowing=transfer.info filename=filename confirm-button-label="Save" cancel-button-label="Decline"}}
   "{{peer.label}}" wants to send you "{{filename}}".
 {{/confirm-popover}}
 

@@ -1,10 +1,9 @@
 <div class="media">
   <div class="pull-left">
-    <img class="media-object" src="" alt="" />
+    <div {{bind-attr class=":media-object iconClass"}}></div>
   </div>
   <div class="media-body"><p>{{yield}}</p></div>
 </div>
 
 <button type="button" class="btn btn-default btn-sm" {{action "cancel"}}>{{cancel-button-label}}</button>
 <button type="button" class="btn btn-default btn-sm" {{action "confirm"}}>{{confirm-button-label}}</button>
-

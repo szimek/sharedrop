@@ -1,6 +1,17 @@
 FileDrop.ConfirmPopoverComponent = Ember.Component.extend({
     classNames: ['popover-confirm'],
 
+    iconClass: function () {
+        var filename = this.get('filename'),
+            regex, extension;
+
+        if (filename) {
+            regex = /\.([0-9a-z]+)$/i;
+            extension = filename.match(/\.([0-9a-z]+)$/i)[1];
+            if (extension) return 'glyphicon-' + extension;
+        }
+    }.property('filename'),
+
     isShowingDidChange: function () {
         !!this.get('isShowing') ? this.show() : this.hide();
     }.observes('isShowing'),
