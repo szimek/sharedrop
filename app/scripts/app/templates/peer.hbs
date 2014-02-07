@@ -1,9 +1,9 @@
 {{#confirm-popover confirm="sendFileTransferInquiry" cancel="cancelFileTransfer" isShowing=transfer.file filename=filename confirm-button-label="Send" cancel-button-label="Cancel"}}
-  Do you want to send "{{filename}}" to "{{peer.label}}"?
+  Do you want to send <strong>"{{filename}}"</strong><br>to <strong>"{{peer.label}}"</strong>?
 {{/confirm-popover}}
 
 {{#confirm-popover confirm="acceptFileTransfer" cancel="rejectFileTransfer" isShowing=transfer.info filename=filename confirm-button-label="Save" cancel-button-label="Decline"}}
-  "{{peer.label}}" wants to send you "{{filename}}".
+  <strong>"{{peer.label}}"</strong> wants to send you <strong>"{{filename}}"</strong>.
 {{/confirm-popover}}
 
 {{view FileDrop.PeerAvatarView}}

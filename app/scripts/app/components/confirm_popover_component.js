@@ -8,7 +8,7 @@ FileDrop.ConfirmPopoverComponent = Ember.Component.extend({
         if (filename) {
             regex = /\.([0-9a-z]+)$/i;
             extension = filename.match(/\.([0-9a-z]+)$/i)[1];
-            if (extension) return 'glyphicon-' + extension;
+            if (extension) return 'glyphicon-' + extension.toLowerCase();
         }
     }.property('filename'),
 
