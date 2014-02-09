@@ -45,7 +45,7 @@ FileDrop.WebRTC = function (options) {
 };
 
 FileDrop.WebRTC.prototype.connect = function (id) {
-    connection = this.conn.connect(id, {
+    var connection = this.conn.connect(id, {
         label: 'file',
         reliable: true
     });
