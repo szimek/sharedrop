@@ -45,13 +45,17 @@ module.exports = function (grunt) {
         options: {
           sassDir: 'app/styles',
           cssDir: '.tmp/styles',
+          fontsDir: 'dist/fonts',
+          httpFontsDir: 'fonts',
           environment: 'production'
         }
       },
       dev: {
         options: {
           sassDir: 'app/styles',
-          cssDir: '.tmp/styles'
+          cssDir: '.tmp/styles',
+          fontsDir: 'app/fonts',
+          httpFontsDir: 'fonts'
         }
       }
     },
@@ -98,7 +102,8 @@ module.exports = function (grunt) {
           dest: 'dist',
           src: [
             'index.html',
-            'server.js'
+            'server.js',
+            'fonts/**/*.{eot,svg,ttf,woff}'
           ]
         }]
       }
