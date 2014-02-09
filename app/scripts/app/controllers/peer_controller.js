@@ -38,11 +38,17 @@ FileDrop.PeerController = Ember.ObjectController.extend({
         },
 
         acceptFileTransfer: function () {
+            var peer = this.get('model');
+
             this._sendFileTransferResponse(true);
+            peer.set('transfer.info', null);
         },
 
         rejectFileTransfer: function () {
+            var peer = this.get('model');
+
             this._sendFileTransferResponse(false);
+            peer.set('transfer.info', null);
         }
     },
 
