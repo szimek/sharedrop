@@ -2,11 +2,11 @@ FileDrop.ApplicationController = Ember.Controller.extend({
     init: function () {
         this._super();
 
-        var user = FileDrop.User.create({
+        var you = FileDrop.User.create({
             email: localStorage.email || null
         });
 
-        this.set('user', user);
+        this.set('you', you);
         this.handlePersonaAuth();
     },
 
@@ -24,7 +24,7 @@ FileDrop.ApplicationController = Ember.Controller.extend({
         var self = this;
 
         navigator.id.watch({
-            loggedInUser: this.get('user.email'),
+            loggedInUser: this.get('you.email'),
 
             onlogin: function (assertion) {
                 $.ajax({
@@ -35,7 +35,7 @@ FileDrop.ApplicationController = Ember.Controller.extend({
                         console.log('Persona: Signed in as: "' + res.email + '"');
 
                         if (res && res.status === "okay") {
-                            self.set('user.email', res.email);
+                            self.set('you.email', res.email);
                         }
                     },
                     error: function (xhr, status, err) {
@@ -51,7 +51,7 @@ FileDrop.ApplicationController = Ember.Controller.extend({
                     url: '/persona/logout',
                     success: function(res, status, xhr) {
                         console.log('Persona: Signed out');
-                        self.set('user.email', null);
+                        self.set('you.email', null);
                     },
                     error: function(xhr, status, err) {
                         console.log('Persona: Sign out error: ', err);

@@ -1,6 +1,5 @@
 FileDrop.User = FileDrop.Peer.extend({
     room: null,
-    label: 'You',
 
     serialize: function () {
         return {

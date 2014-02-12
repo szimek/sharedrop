@@ -1,11 +1,13 @@
-<div class="user others">
-  {{#each peer in model}}
-    {{render "peer" peer}}
-  {{/each}}
-</div>
-
-{{#if user.uuid}}
-  <div class="user you">
-    {{render "user" user}}
+<div class="container">
+  <div class="user others">
+    {{#each peer in model}}
+      {{render "peer" peer}}
+    {{/each}}
   </div>
-{{/if}}
+
+  {{#if you.uuid}}
+    <div class="user you">
+      {{render "user" you}}
+    </div>
+  {{/if}}
+</div>

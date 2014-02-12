@@ -1,7 +1,7 @@
 FileDrop.IndexController = Ember.ArrayController.extend({
     needs: ['application'],
 
-    user: Ember.computed.alias('controllers.application.user'),
+    you: Ember.computed.alias('controllers.application.you'),
     room: null,
 
     init: function () {
@@ -28,13 +28,13 @@ FileDrop.IndexController = Ember.ArrayController.extend({
     },
 
     _onRoomConnected: function (event, data) {
-        var user = this.get('user');
+        var you = this.get('you');
 
-        user.get('peer').setProperties(data.peer);
+        you.get('peer').setProperties(data.peer);
         delete data.peer;
-        user.setProperties(data);
+        you.setProperties(data);
 
-        // Find and set user's local IP
+        // Find and set your local IP
         this._setUserLocalIP();
     },
 
@@ -57,12 +57,12 @@ FileDrop.IndexController = Ember.ArrayController.extend({
     },
 
     _onRoomUserAdded: function (event, data) {
-        var user = this.get('user'),
+        var you = this.get('you'),
             peerAttrs = data.peer,
             peer;
 
         // Add peer to the list of peers in the room
-        if (user.get('uuid') !== data.uuid) {
+        if (you.get('uuid') !== data.uuid) {
             delete data.peer;
             peer = FileDrop.Peer.create(data);
             peer.get('peer').setProperties(peerAttrs);
@@ -88,15 +88,15 @@ FileDrop.IndexController = Ember.ArrayController.extend({
     },
 
     _onPeerServerConnected: function (event, data) {
-        var user = this.get('user');
+        var you = this.get('you');
 
-        user.set('isConnected', true);
-        user.set('peer.id', data.id);
+        you.set('isConnected', true);
+        you.set('peer.id', data.id);
 
-        // Join room and broadcast user attributes
+        // Join room and broadcast your attributes
         var room = new FileDrop.Room();
-        room.join(user.serialize());
-        user.set('room', room);
+        room.join(you.serialize());
+        you.set('room', room);
         this.set('room', room);
     },
 
@@ -165,7 +165,7 @@ FileDrop.IndexController = Ember.ArrayController.extend({
     // Based on http://net.ipcalf.com/
     // SDP offer is used on Firefox, ICE candidate on Chrome
     _setUserLocalIP: function () {
-        var user = this.get('user');
+        var you = this.get('you');
 
         // RTCPeerConnection is provided by PeerJS library
         var rtc = new window.RTCPeerConnection({iceServers: []});
@@ -180,7 +180,7 @@ FileDrop.IndexController = Ember.ArrayController.extend({
                 var addr = grep(event.candidate.candidate);
                 if (addr) {
                     console.log('Local IP found: ', addr);
-                    user.set('local_ip', addr);
+                    you.set('local_ip', addr);
                 }
             }
         };
@@ -192,7 +192,7 @@ FileDrop.IndexController = Ember.ArrayController.extend({
                 var addr = grep(offer.sdp);
                 if (addr) {
                     console.log('Local IP found: ', addr);
-                    user.set('local_ip', addr);
+                    you.set('local_ip', addr);
                 }
 
             },
@@ -228,22 +228,22 @@ FileDrop.IndexController = Ember.ArrayController.extend({
 
     // Broadcast user's selected changes to other peers
     userEmailDidChange: function () {
-        var email = this.get('user.email'),
+        var email = this.get('you.email'),
             room  = this.get('room');
 
         if (room) {
             console.log('Broadcasting user\'s email: ', email);
             room.update({email: email});
         }
-    }.observes('user.email'),
+    }.observes('you.email'),
 
     userLocalIPDidChange: function () {
-        var addr = this.get('user.local_ip'),
+        var addr = this.get('you.local_ip'),
             room  = this.get('room');
 
         if (room && addr !== undefined) {
             console.log('Broadcasting user\'s local IP: ', addr);
             room.update({local_ip: addr});
         }
-    }.observes('user.local_ip')
+    }.observes('you.local_ip')
 });

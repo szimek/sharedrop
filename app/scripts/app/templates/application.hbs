@@ -12,14 +12,14 @@
 
     <div class="collapse navbar-collapse" id="navbar-collapse">
       <ul class="nav navbar-nav navbar-right">
-        {{#if user.email}}
+        {{#if you.email}}
           <li><a href="javascript:void(0)" {{action 'signOut'}}>Sign out</a></li>
         {{else}}
           <li><a href="javascript:void(0)" {{action 'signIn'}}>Sign in with Persona</a></li>
         {{/if}}
       </ul>
-      {{#if user.email}}
-        <p class="navbar-text navbar-right">Signed in as {{user.email}}</p>
+      {{#if you.email}}
+        <p class="navbar-text navbar-right">Signed in as {{you.email}}</p>
       {{/if}}
     </div>
   </nav>
