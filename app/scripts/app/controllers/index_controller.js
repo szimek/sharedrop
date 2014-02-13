@@ -135,6 +135,10 @@ FileDrop.IndexController = Ember.ArrayController.extend({
 
         if (response) {
             file = peer.get('transfer.file');
+
+            peer.get('peer.connection').on('sending_progress', function (progress) {
+                peer.set('transfer.sendingProgress', progress);
+            });
             _peer.sendFile(connection, file);
         }
 

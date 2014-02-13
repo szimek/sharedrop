@@ -1,10 +1,18 @@
 FileDrop.PeerAvatarView = Ember.View.extend(Ember.ViewTargetActionSupport, {
     tagName: 'img',
     classNames: ['gravatar', 'img-circle'],
-    attributeBindings: ['src', 'alt', 'title'],
-    srcBinding: 'controller.model.avatarUrl',
-    altBinding: 'controller.model.label',
-    titleBinding: 'controller.model.uuid',
+    attributeBindings: [
+        'src',
+        'alt',
+        'title',
+        'data-sending-progress',
+        'data-receiving-progress'
+    ],
+    src: Ember.computed.alias('controller.model.avatarUrl'),
+    alt: Ember.computed.alias('controller.model.label'),
+    title: Ember.computed.alias('controller.model.uuid'),
+    "data-sending-progress": Ember.computed.alias('controller.model.transfer.sendingProgress'),
+    "data-receiving-progress": Ember.computed.alias('controller.model.transfer.receivingProgress'),
 
     // Delegate click to hidden file field in peer template
     click: function (event) {
