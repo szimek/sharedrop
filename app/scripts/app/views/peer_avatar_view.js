@@ -17,7 +17,7 @@ FileDrop.PeerAvatarView = Ember.View.extend(Ember.ViewTargetActionSupport, {
     // Delegate click to hidden file field in peer template
     click: function (event) {
         if (this.canSendFile()) {
-            this.$().parent().find('input[type=file]').click();
+            this.$().closest('.peer').find('input[type=file]').click();
         }
     },
 

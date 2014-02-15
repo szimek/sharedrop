@@ -136,9 +136,12 @@ FileDrop.IndexController = Ember.ArrayController.extend({
         if (response) {
             file = peer.get('transfer.file');
 
-            peer.get('peer.connection').on('sending_progress', function (progress) {
-                peer.set('transfer.sendingProgress', progress);
-            });
+            // TODO: currently sending file finishes almost instantly,
+            // so there's no point in listening for 'sending' progress.
+            // Need to somehow make it more accurate.
+            // peer.get('peer.connection').on('sending_progress', function (progress) {
+            //     peer.set('transfer.sendingProgress', progress);
+            // });
             _peer.sendFile(connection, file);
         }
 
@@ -150,14 +153,20 @@ FileDrop.IndexController = Ember.ArrayController.extend({
         console.log('Peer:\t Received file', data);
 
         var file = data.file,
+            connection = data.connection,
+            peer = this.findBy('peer.id', connection.peer),
             dataView, dataBlob, dataUrl;
 
+        // Stop listening for 'receiving' progress now that we have a file
+        connection.off('receiving_progress');
+        peer.set('transfer.receiving_progress', 0);
+
+        // Save received file
         if (file.data.constructor === ArrayBuffer) {
             dataView = new Uint8Array(file.data);
             dataBlob = new Blob([dataView]);
             dataUrl = window.URL.createObjectURL(dataBlob);
 
-            // Save received file
             var a = document.createElement('a');
             a.setAttribute('download', file.name);
             a.setAttribute('href', dataUrl);

@@ -1,4 +1,4 @@
-$user-size: 64px
+$user-size: 84px
 .user
   .peer
     position: absolute
@@ -8,15 +8,37 @@ $user-size: 64px
     height: $user-size
     margin-left: -$user-size / 2
     text-align: center
-    .gravatar
-      display: inline-block
-      border: 1px solid #c0c0c0
-      box-shadow: rgba(0, 0, 0, 0.2) 0 0 3px
+
+    .avatar
+      position: relative
+      display: -webkit-box
+      -webkit-box-align: center
+      -webkit-box-pack: center
       width: $user-size
       height: $user-size
+
+      svg
+        display: block
+        position: absolute
+        top: 0
+        left: 0
+        z-index: -1
+        fill: #0088cc
+
+    .gravatar
+      display: -webkit-box
+      -webkit-box-align: center
+      -webkit-box-pack: center
+      z-index: 1
+
+      border: 1px solid #c0c0c0
+      box-shadow: rgba(0, 0, 0, 0.2) 0 0 3px
+      width: $user-size - 20
+      height: $user-size - 20
       border-radius: 50%
       +transition(all .2s ease-in-out)
       +animation(shadow .8s ease-in)
+
     .user-info
       position: absolute
       top: $user-size + 4px
@@ -89,9 +111,17 @@ $user-size: 64px
       bottom: 90px
     &.disconnected
       opacity: .4
+
   &.you
     .peer
+      width: $user-size - 20
+      height: $user-size - 20
+      margin-left: -($user-size - 20) / 2
       bottom: 100px
+
+      .user-info
+        top: $user-size - 20 + 4px
+
   &.others
     .peer:not(.disconnected)
       .gravatar
