@@ -7,7 +7,7 @@ FileDrop.IndexController = Ember.ArrayController.extend({
     init: function () {
         // Connect to PeerJS server first,
         // so that we already have peer ID when later joining a room.
-        this.set('_peer', new FileDrop.WebRTC());
+        this.set('webrtc', new FileDrop.WebRTC());
 
         // Handle room events
         $.subscribe('connected.room', this._onRoomConnected.bind(this));
@@ -41,7 +41,7 @@ FileDrop.IndexController = Ember.ArrayController.extend({
     _onRoomUserList: function (event, data) {
         // Add all peers to the list and
         // initiate p2p connection to every one of them.
-        var _peer = this.get('_peer');
+        var webrtc = this.get('webrtc');
 
         data.forEach(function (attrs) {
             var peerAttrs = attrs.peer,
@@ -52,7 +52,7 @@ FileDrop.IndexController = Ember.ArrayController.extend({
             peer.get('peer').setProperties(peerAttrs);
 
             this.pushObject(peer);
-            _peer.connect(peer.get('peer.id'));
+            webrtc.connect(peer.get('peer.id'));
         }.bind(this));
     },
 
@@ -127,7 +127,7 @@ FileDrop.IndexController = Ember.ArrayController.extend({
     _onPeerP2PFileResponse: function (event, data) {
         console.log('Peer:\t Received file response', data);
 
-        var _peer = this.get('_peer'),
+        var webrtc = this.get('webrtc'),
             connection = data.connection,
             peer = this.findBy('peer.id', connection.peer),
             response = data.response,
@@ -135,7 +135,7 @@ FileDrop.IndexController = Ember.ArrayController.extend({
 
         if (response) {
             file = peer.get('transfer.file');
-            _peer.sendFile(connection, file);
+            webrtc.sendFile(connection, file);
         }
 
         // Remove "cached" file for that peer now that we have a response

@@ -1,7 +1,7 @@
 FileDrop.PeerController = Ember.ObjectController.extend({
     needs: 'index',
 
-    _peer: Ember.computed.alias('controllers.index._peer'),
+    webrtc: Ember.computed.alias('controllers.index.webrtc'),
 
     filename: function () {
         var file = this.get('model.transfer.file'),
@@ -22,12 +22,12 @@ FileDrop.PeerController = Ember.ObjectController.extend({
         },
 
         sendFileTransferInquiry: function () {
-            var _peer = this.get('_peer'),
+            var webrtc = this.get('webrtc'),
                 peer = this.get('model'),
                 connection = peer.get('peer.connection'),
                 file = peer.get('transfer.file');
 
-            _peer.sendFileInfo(connection, file);
+            webrtc.sendFileInfo(connection, file);
 
             console.log('Sending a file...', file);
         },
@@ -53,10 +53,10 @@ FileDrop.PeerController = Ember.ObjectController.extend({
     },
 
     _sendFileTransferResponse: function (response) {
-        var _peer = this.get('_peer'),
+        var webrtc = this.get('webrtc'),
             peer = this.get('model'),
             connection = peer.get('peer.connection');
 
-        _peer.sendFileResponse(connection, response);
+        webrtc.sendFileResponse(connection, response);
     }
 });
