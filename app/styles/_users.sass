@@ -8,7 +8,6 @@ $user-size: 74px
     height: $user-size
     margin-left: -$user-size / 2
     text-align: center
-
     .avatar
       position: relative
       width: $user-size
@@ -18,7 +17,7 @@ $user-size: 74px
         top: 0
         bottom: 0
         z-index: -1
-        fill: rgba(#0088cc, .5)
+        fill: rgba(#0088cc,.5)
 
     .gravatar
       position: absolute
@@ -35,7 +34,7 @@ $user-size: 74px
 
     .user-info
       position: absolute
-      top: $user-size + 4px
+      top: $user-size
       left: 50%
       width: 140px
       margin-left: -70px
@@ -53,7 +52,7 @@ $user-size: 74px
         color: #808080
       .user-connected
         display: inline-block
-        background: #73b806
+        background: rgba(#73b806,.5)
         width: 6px
         height: 6px
         vertical-align: middle
@@ -113,7 +112,7 @@ $user-size: 74px
       margin-left: -$user-size / 2
       bottom: 90px
       .user-info
-        top: $user-size - 10 + 4px
+        top: $user-size
 
   &.others
     .peer:not(.disconnected)
@@ -122,7 +121,7 @@ $user-size: 74px
         &:hover
           +scale(1.1)
           .gravatar
-            border-color: rgba(#0088cc, .8)
+            border-color: rgba(#0088cc,.8)
 
 +keyframes(shadow)
   0%
