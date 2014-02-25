@@ -1,4 +1,4 @@
-$user-size: 84px
+$user-size: 74px
 .user
   .peer
     position: absolute
@@ -11,33 +11,27 @@ $user-size: 84px
 
     .avatar
       position: relative
-      display: -webkit-box
-      -webkit-box-align: center
-      -webkit-box-pack: center
       width: $user-size
       height: $user-size
-
+      +transition(all .2s ease-in-out)
       svg
-        display: block
-        position: absolute
         top: 0
-        left: 0
+        bottom: 0
         z-index: -1
-        fill: #0088cc
+        fill: rgba(#0088cc, .5)
 
     .gravatar
-      display: -webkit-box
-      -webkit-box-align: center
-      -webkit-box-pack: center
+      position: absolute
+      top: 5px
+      left: 5px
       z-index: 1
-
       border: 1px solid #c0c0c0
       box-shadow: rgba(0, 0, 0, 0.2) 0 0 3px
-      width: $user-size - 20
-      height: $user-size - 20
+      width: $user-size - 10
+      height: $user-size - 10
       border-radius: 50%
-      +transition(all .2s ease-in-out)
       +animation(shadow .8s ease-in)
+      +transition(all .2s ease-in-out)
 
     .user-info
       position: absolute
@@ -114,21 +108,21 @@ $user-size: 84px
 
   &.you
     .peer
-      width: $user-size - 20
-      height: $user-size - 20
-      margin-left: -($user-size - 20) / 2
-      bottom: 100px
-
+      width: $user-size
+      height: $user-size
+      margin-left: -$user-size / 2
+      bottom: 90px
       .user-info
-        top: $user-size - 20 + 4px
+        top: $user-size - 10 + 4px
 
   &.others
     .peer:not(.disconnected)
-      .gravatar
+      .avatar
         cursor: pointer
         &:hover
           +scale(1.1)
-          border-color: #73b806
+          .gravatar
+            border-color: rgba(#0088cc, .8)
 
 +keyframes(shadow)
   0%
