@@ -44,31 +44,30 @@ FileDrop.IndexController = Ember.ArrayController.extend({
         var webrtc = this.get('webrtc');
 
         data.forEach(function (attrs) {
-            var peerAttrs = attrs.peer,
-                peer;
-
-            delete attrs.peer;
-            peer = FileDrop.Peer.create(attrs);
-            peer.get('peer').setProperties(peerAttrs);
-
-            this.pushObject(peer);
+            var peer = this._addPeer(attrs);
             webrtc.connect(peer.get('peer.id'));
         }.bind(this));
     },
 
     _onRoomUserAdded: function (event, data) {
-        var you = this.get('you'),
-            peerAttrs = data.peer,
-            peer;
+        var you = this.get('you');
 
         // Add peer to the list of peers in the room
         if (you.get('uuid') !== data.uuid) {
-            delete data.peer;
-            peer = FileDrop.Peer.create(data);
-            peer.get('peer').setProperties(peerAttrs);
-
-            this.pushObject(peer);
+            this._addPeer(data);
         }
+    },
+
+    _addPeer: function (attrs) {
+        var peerAttrs = attrs.peer,
+            peer;
+
+        delete attrs.peer;
+        peer = FileDrop.Peer.create(attrs);
+        peer.get('peer').setProperties(peerAttrs);
+
+        this.pushObject(peer);
+        return peer;
     },
 
     _onRoomUserChanged: function (event, data) {
