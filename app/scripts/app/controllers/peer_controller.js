@@ -15,21 +15,25 @@ FileDrop.PeerController = Ember.ObjectController.extend({
     actions: {
         // TODO: rename to something more meaningful (e.g. askIfWantToSendFile)
         uploadFile: function (data) {
-            var peer = this.get('model');
+            var peer = this.get('model'),
+                webrtc = this.get('webrtc'),
+                file = data.file,
+                info = webrtc.getFileInfo(file);
 
             // Make file available when the response from the recipient comes in
-            peer.set('transfer.file', data.file);
+            peer.set('transfer.file', file);
         },
 
         sendFileTransferInquiry: function () {
             var webrtc = this.get('webrtc'),
                 peer = this.get('model'),
                 connection = peer.get('peer.connection'),
-                file = peer.get('transfer.file');
+                file = peer.get('transfer.file'),
+                info = webrtc.getFileInfo(file);
 
-            webrtc.sendFileInfo(connection, file);
+            webrtc.sendFileInfo(connection, info);
 
-            console.log('Sending a file...', file);
+            console.log('Sending a file...', info);
         },
 
         cancelFileTransfer: function () {

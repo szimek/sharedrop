@@ -161,7 +161,7 @@ Unpacker.prototype.unpack = function(){
       size = this.unpack_uint32();
       return this.unpack_map(size);
   }
-}
+};
 
 Unpacker.prototype.unpack_uint8 = function(){
   var byte = this.dataView[this.index] & 0xff;
@@ -175,7 +175,7 @@ Unpacker.prototype.unpack_uint16 = function(){
     ((bytes[0] & 0xff) * 256) + (bytes[1] & 0xff);
   this.index += 2;
   return uint16;
-}
+};
 
 Unpacker.prototype.unpack_uint32 = function(){
   var bytes = this.read(4);
@@ -186,7 +186,7 @@ Unpacker.prototype.unpack_uint32 = function(){
        bytes[3];
   this.index += 4;
   return uint32;
-}
+};
 
 Unpacker.prototype.unpack_uint64 = function(){
   var bytes = this.read(8);
@@ -201,7 +201,7 @@ Unpacker.prototype.unpack_uint64 = function(){
        bytes[7];
   this.index += 8;
   return uint64;
-}
+};
 
 
 Unpacker.prototype.unpack_int8 = function(){
@@ -212,19 +212,19 @@ Unpacker.prototype.unpack_int8 = function(){
 Unpacker.prototype.unpack_int16 = function(){
   var uint16 = this.unpack_uint16();
   return (uint16 < 0x8000 ) ? uint16 : uint16 - (1 << 16);
-}
+};
 
 Unpacker.prototype.unpack_int32 = function(){
   var uint32 = this.unpack_uint32();
   return (uint32 < Math.pow(2, 31) ) ? uint32 :
     uint32 - Math.pow(2, 32);
-}
+};
 
 Unpacker.prototype.unpack_int64 = function(){
   var uint64 = this.unpack_uint64();
   return (uint64 < Math.pow(2, 63) ) ? uint64 :
     uint64 - Math.pow(2, 64);
-}
+};
 
 Unpacker.prototype.unpack_raw = function(size){
   if ( this.length < this.index + size){
@@ -237,7 +237,7 @@ Unpacker.prototype.unpack_raw = function(size){
     //buf = util.bufferToString(buf);
 
   return buf;
-}
+};
 
 Unpacker.prototype.unpack_string = function(size){
   var bytes = this.read(size);
@@ -596,12 +596,12 @@ EventEmitter.prototype.addListener = function(type, listener, scope, once) {
   if ('function' !== typeof listener) {
     throw new Error('addListener only takes instances of Function');
   }
-  
+
   // To avoid recursion in the case that type == "newListeners"! Before
   // adding it to the listeners, first emit "newListeners".
   this.emit('newListener', type, typeof listener.listener === 'function' ?
             listener.listener : listener);
-            
+
   if (!this._events[type]) {
     // Optimize the case of one listener. Don't need the extra array object.
     this._events[type] = listener;
@@ -1114,7 +1114,7 @@ var util = {
         err = true;
       }
     }
-    err ? console.error.apply(console, copy) : console.log.apply(console, copy);  
+    err ? console.error.apply(console, copy) : console.log.apply(console, copy);
   },
   //
 
@@ -1469,6 +1469,8 @@ function Peer(id, options) {
 };
 
 util.inherits(Peer, EventEmitter);
+
+Peer.CHUNK_MTU = 16000;
 
 /** Get a unique ID from the server via XHR. */
 Peer.prototype._retrieveId = function(cb) {
@@ -2414,7 +2416,7 @@ util.inherits(Socket, EventEmitter);
 
 
 /** Check in with ID or get one from server. */
-Socket.prototype.start = function(id) {  
+Socket.prototype.start = function(id) {
   this.id = id;
 
   var token = util.randomToken();

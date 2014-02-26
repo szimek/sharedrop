@@ -97,14 +97,17 @@ FileDrop.WebRTC.prototype._onConnection = function (connection) {
     });
 };
 
-FileDrop.WebRTC.prototype.sendFileInfo = function (connection, file) {
-    var info = {
+FileDrop.WebRTC.prototype.getFileInfo = function (file) {
+    return {
         lastModifiedDate: file.lastModifiedDate,
         name: file.name,
         size: file.size,
-        type: file.type
+        type: file.type,
+        chunksTotal: Math.ceil(file.size / Peer.CHUNK_MTU)
     };
+};
 
+FileDrop.WebRTC.prototype.sendFileInfo = function (connection, info) {
     connection.send({
         type: 'info',
         payload: info
