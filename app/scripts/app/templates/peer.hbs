@@ -6,7 +6,10 @@
   <strong>"{{peer.label}}"</strong> wants to send you <strong>"{{filename}}"</strong>.
 {{/confirm-popover}}
 
-{{view FileDrop.PeerAvatarView}}
+<div class="avatar">
+  {{view FileDrop.ProgressBarView}}
+  {{view FileDrop.PeerAvatarView}}
+</div>
 
 <div class="user-info">
   {{#if model.email}}<div class="user-email">{{model.email}}</div>{{/if}}
