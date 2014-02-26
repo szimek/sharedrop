@@ -8,7 +8,7 @@ FileDrop.Room.prototype.join = function (user) {
     var self = this;
 
     // Get room name
-    xhr = $.getJSON('/room')
+    $.getJSON('/room')
 
     // Join room and listen for changes
     .then(function (data) {
