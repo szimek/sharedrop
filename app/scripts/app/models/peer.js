@@ -11,7 +11,10 @@ FileDrop.Peer = Ember.Object.extend({
         }));
 
         this.set('transfer', Ember.Object.create({
-            file: null
+            file: null,
+            info: null,
+            sendingProgress: 0,
+            receivingProgress: 0
         }));
 
         this._super();

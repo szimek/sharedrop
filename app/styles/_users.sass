@@ -1,4 +1,4 @@
-$user-size: 64px
+$user-size: 74px
 .user
   .peer
     position: absolute
@@ -8,18 +8,33 @@ $user-size: 64px
     height: $user-size
     margin-left: -$user-size / 2
     text-align: center
-    .gravatar
-      display: inline-block
-      border: 1px solid #c0c0c0
-      box-shadow: rgba(0, 0, 0, 0.2) 0 0 3px
+    .avatar
+      position: relative
       width: $user-size
       height: $user-size
-      border-radius: 50%
       +transition(all .2s ease-in-out)
+      svg
+        top: 0
+        bottom: 0
+        z-index: -1
+        fill: rgba(#0088cc,.5)
+
+    .gravatar
+      position: absolute
+      top: 5px
+      left: 5px
+      z-index: 1
+      border: 1px solid #c0c0c0
+      box-shadow: rgba(0, 0, 0, 0.2) 0 0 3px
+      width: $user-size - 10
+      height: $user-size - 10
+      border-radius: 50%
       +animation(shadow .8s ease-in)
+      +transition(all .2s ease-in-out)
+
     .user-info
       position: absolute
-      top: $user-size + 4px
+      top: $user-size
       left: 50%
       width: 140px
       margin-left: -70px
@@ -37,7 +52,7 @@ $user-size: 64px
         color: #808080
       .user-connected
         display: inline-block
-        background: #73b806
+        background: rgba(#73b806,.5)
         width: 6px
         height: 6px
         vertical-align: middle
@@ -45,6 +60,7 @@ $user-size: 64px
     .popover
       min-width: 320px
       max-width: 460px
+      z-index: 200
       [class*=glyphicon-]
         font-size: 26px
       p
@@ -89,16 +105,24 @@ $user-size: 64px
       bottom: 90px
     &.disconnected
       opacity: .4
+
   &.you
     .peer
-      bottom: 100px
+      width: $user-size
+      height: $user-size
+      margin-left: -$user-size / 2
+      bottom: 90px
+      .user-info
+        top: $user-size
+
   &.others
     .peer:not(.disconnected)
-      .gravatar
+      .avatar
         cursor: pointer
         &:hover
           +scale(1.1)
-          border-color: #73b806
+          .gravatar
+            border-color: rgba(#0088cc,.8)
 
 +keyframes(shadow)
   0%
