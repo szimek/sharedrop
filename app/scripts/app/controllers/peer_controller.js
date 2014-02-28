@@ -45,7 +45,6 @@ FileDrop.PeerController = Ember.ObjectController.extend({
             var peer = this.get('model');
 
             this._sendFileTransferResponse(true);
-            peer.set('transfer.info', null);
 
             peer.get('peer.connection').on('receiving_progress', function (progress) {
                 peer.set('transfer.receivingProgress', progress);

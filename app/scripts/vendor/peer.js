@@ -1512,51 +1512,41 @@ DataConnection.prototype._configureDataChannel = function() {
 DataConnection.prototype._handleDataMessage = function(e) {
   var self = this;
   var data = e.data;
-  var datatype = data.constructor;
-  if (this.serialization === 'binary' || this.serialization === 'binary-utf8') {
-    if (datatype === Blob) {
-      // Datatype should never be blob
-      util.blobToArrayBuffer(data, function(ab) {
-        data = util.unpack(ab);
-        self.emit('data', data);
-      });
-      return;
-    } else if (datatype === ArrayBuffer) {
-      data = util.unpack(data);
-    } else if (datatype === String) {
-      // String fallback for binary data for browsers that don't support binary yet
-      var ab = util.binaryStringToArrayBuffer(data);
-      data = util.unpack(ab);
-    }
-  } else if (this.serialization === 'json') {
+
+  if (data.byteLength !== undefined) {
+    // ArrayBuffer
+  } else {
+    // String (JSON)
     data = JSON.parse(data);
   }
 
+  this.emit('data', data);
+
   // Check if we've chunked--if so, piece things back together.
   // We're guaranteed that this isn't 0.
-  if (data.__peerData) {
-    var id = data.__peerData;
-    var chunkInfo = this._chunkedData[id] || {data: [], count: 0, total: data.total};
+  // if (data.__peerData) {
+  //   var id = data.__peerData;
+  //   var chunkInfo = this._chunkedData[id] || {data: [], count: 0, total: data.total};
 
-    this.emit('receiving_progress', chunkInfo.count / (chunkInfo.total - 1));
+  //   this.emit('receiving_progress', chunkInfo.count / (chunkInfo.total - 1));
 
-    chunkInfo.data[data.n] = data.data;
-    chunkInfo.count += 1;
+  //   chunkInfo.data[data.n] = data.data;
+  //   chunkInfo.count += 1;
 
-    if (chunkInfo.total === chunkInfo.count) {
-      // We've received all the chunks--time to construct the complete data.
-      data = new Blob(chunkInfo.data);
-      this._handleDataMessage({data: data});
+  //   if (chunkInfo.total === chunkInfo.count) {
+  //     // We've received all the chunks--time to construct the complete data.
+  //     data = new Blob(chunkInfo.data);
+  //     this._handleDataMessage({data: data});
 
-      // We can also just delete the chunks now.
-      delete this._chunkedData[id];
-    }
+  //     // We can also just delete the chunks now.
+  //     delete this._chunkedData[id];
+  //   }
 
-    this._chunkedData[id] = chunkInfo;
-    return;
-  }
+  //   this._chunkedData[id] = chunkInfo;
+  //   return;
+  // }
 
-  this.emit('data', data);
+  // this.emit('data', data);
 }
 
 /**
@@ -1574,55 +1564,20 @@ DataConnection.prototype.close = function() {
 }
 
 /** Allows user to send data. */
-DataConnection.prototype.send = function(data, chunked) {
+DataConnection.prototype.send = function(data) {
   if (!this.open) {
     this.emit('error', new Error('Connection is not open. You should listen for the `open` event before sending messages.'));
     return;
   }
 
-  var self = this;
-  if (this.serialization === 'json') {
-    this._bufferedSend(JSON.stringify(data));
-  } else if (this.serialization === 'binary' || this.serialization === 'binary-utf8') {
-    var blob = util.pack(data);
-
-    // For Chrome-Firefox interoperability, we need to make Firefox "chunk"
-    // the data it sends out.
-    var needsChunking = util.chunkedBrowsers[this._peerBrowser] || util.chunkedBrowsers[util.browser];
-    if (needsChunking && !chunked && blob.size > util.chunkedMTU) {
-      this._sendChunks(blob);
-      return;
-    }
-
-    // DataChannel currently only supports strings.
-    if (!util.supports.sctp) {
-      util.blobToBinaryString(blob, function(str) {
-        self._bufferedSend(str);
-      });
-    } else if (!util.supports.binaryBlob) {
-      // We only do this if we really need to (e.g. blobs are not supported),
-      // because this conversion is costly.
-      util.blobToArrayBuffer(blob, function(ab) {
-        self._bufferedSend(ab);
-      });
-    } else {
-      this._bufferedSend(blob);
-    }
-  } else {
-    this._bufferedSend(data);
-  }
-}
-
-DataConnection.prototype.sendFile = function(file, chunked) {
-  if (!this.open) {
-    this.emit('error', new Error('Connection is not open. You should listen for the `open` event before sending messages.'));
-    return;
+  // Lame type check
+  if (data.byteLength === undefined) {
+    // JSON string
+    data = JSON.stringify(data);
   }
 
-  // Read file using File API in chunks and send chunks
-
+  this._bufferedSend(data);
 }
-
 
 DataConnection.prototype._bufferedSend = function(msg) {
   if (this._buffering || !this._trySend(msg)) {

@@ -150,27 +150,24 @@ FileDrop.IndexController = Ember.ArrayController.extend({
     _onPeerP2PFileTransfer: function (event, data) {
         console.log('Peer:\t Received file', data);
 
-        var file = data.file,
-            connection = data.connection,
+        var connection = data.connection,
             peer = this.findBy('peer.id', connection.peer),
-            dataView, dataBlob, dataUrl;
+            blob = data.blob,
+            info = peer.get('transfer.info'),
+            dataUrl;
 
         // Stop listening for 'receiving' progress now that we have a file
-        connection.off('receiving_progress');
+        peer.get('peer.connection').removeAllListeners('receiving_progress');
         peer.set('transfer.receiving_progress', 0);
+        peer.set('transfer.info', null);
 
         // Save received file
-        if (file.data.constructor === ArrayBuffer) {
-            dataView = new Uint8Array(file.data);
-            dataBlob = new Blob([dataView]);
-            dataUrl = window.URL.createObjectURL(dataBlob);
-
-            var a = document.createElement('a');
-            a.setAttribute('download', file.name);
-            a.setAttribute('href', dataUrl);
-            document.body.appendChild(a);
-            a.click();
-        }
+        dataUrl = window.URL.createObjectURL(blob);
+        var a = document.createElement('a');
+        a.setAttribute('download', info.name);
+        a.setAttribute('href', dataUrl);
+        document.body.appendChild(a);
+        a.click();
     },
 
     // Based on http://net.ipcalf.com/
