@@ -1593,15 +1593,6 @@ DataConnection.prototype._tryBuffer = function() {
   }
 }
 
-DataConnection.prototype._sendChunks = function(blob) {
-  var blobs = util.chunk(blob);
-  for (var i = 0, ii = blobs.length; i < ii; i += 1) {
-    this.emit('sending_progress', i / (ii - 1));
-    var blob = blobs[i];
-    this.send(blob, true);
-  }
-}
-
 DataConnection.prototype.handleMessage = function(message) {
   var payload = message.payload;
 
