@@ -49,6 +49,8 @@ FileDrop.WebRTC = function (options) {
     };
 };
 
+FileDrop.WebRTC.CHUNKS_PER_ACK = 32;
+
 FileDrop.WebRTC.prototype.connect = function (id) {
     var connection = this.conn.connect(id, {
         label: 'file',
@@ -91,6 +93,7 @@ FileDrop.WebRTC.prototype._onConnection = function (connection) {
 FileDrop.WebRTC.prototype._onBinaryData = function (data, connection) {
     var incoming = this.files.incoming[connection.peer],
         info = incoming.info,
+        chunksPerAck = FileDrop.WebRTC.CHUNKS_PER_ACK,
         cache = incoming.cache,
         receivedChunkNum, nextChunkNum, blob;
 
@@ -100,16 +103,20 @@ FileDrop.WebRTC.prototype._onBinaryData = function (data, connection) {
     nextChunkNum = receivedChunkNum + 1;
 
     connection.emit('receiving_progress', receivedChunkNum / (info.chunksTotal - 1));
+    console.log('Got chunk no ' + (receivedChunkNum + 1) + ' out of ' + info.chunksTotal);
 
-    if (nextChunkNum < info.chunksTotal) {
-        this._requestFileChunk(connection, receivedChunkNum + 1);
-    } else {
+    if (receivedChunkNum === info.chunksTotal - 1) {
+        // If all chunks were transmitted, create a blob
         blob = new Blob(cache, {type : info.type});
 
         $.publish('file.p2p.peer', {
             blob: blob,
             connection: connection
         });
+    } else if (receivedChunkNum > 0 && (receivedChunkNum + 1) % chunksPerAck === 0) {
+        // If all chunks in a block were transmitted, request a new block
+        console.log('Requesting block starting at: ' + (receivedChunkNum + 1));
+        this._requestFileBlock(connection, receivedChunkNum + 1);
     }
 };
 
@@ -148,10 +155,12 @@ FileDrop.WebRTC.prototype._onJSONData = function (data, connection) {
         console.log('Peer:\t File response: ', data);
         break;
 
-    case 'chunk_request':
+    case 'block_request':
         var file = this.files.outgoing[connection.peer].file;
 
-        this._sendChunk(connection, file, data.payload);
+        console.log('Peer:\t Block request: ', data.payload);
+
+        this._sendBlock(connection, file, data.payload);
         break;
     default:
         console.log('Peer:\t Unknown message: ', data);
@@ -191,9 +200,9 @@ FileDrop.WebRTC.prototype.sendFileResponse = function (connection, response) {
     connection.send(JSON.stringify(message));
 };
 
-FileDrop.WebRTC.prototype._requestFileChunk = function (connection, chunkNum) {
+FileDrop.WebRTC.prototype._requestFileBlock = function (connection, chunkNum) {
     var message = {
-        type: 'chunk_request',
+        type: 'block_request',
         payload: chunkNum
     };
     connection.send(JSON.stringify(message));
@@ -206,8 +215,24 @@ FileDrop.WebRTC.prototype.sendFile = function (connection, file) {
         info: this.getFileInfo(file)
     };
 
-    // Send the first chunk. Next ones will be requested by recipient.
-    this._sendChunk(connection, file, 0);
+    // Send the first block. Next ones will be requested by recipient.
+    this._sendBlock(connection, file, 0);
+};
+
+// FIXME: Figure out why 64th chunk is sent twice
+FileDrop.WebRTC.prototype._sendBlock = function (connection, file, beginChunkNum) {
+    var info = this.files.outgoing[connection.peer].info,
+        chunksPerAck = FileDrop.WebRTC.CHUNKS_PER_ACK,
+        remainingChunks = info.chunksTotal - beginChunkNum,
+        chunksToSend = Math.min(remainingChunks, chunksPerAck),
+        endChunkNum = beginChunkNum + chunksToSend - 1,
+        chunkNum;
+
+    console.log('Send block: start: ' + beginChunkNum + ' end: ' + endChunkNum);
+
+    for (chunkNum = beginChunkNum; chunkNum <  endChunkNum + 1; chunkNum++) {
+        this._sendChunk(connection, file, chunkNum);
+    }
 };
 
 // TODO: check for finish condition (if end is file.size => last chunk)
@@ -227,6 +252,7 @@ FileDrop.WebRTC.prototype._sendChunk = function (connection, file, chunkNum) {
             connection.send(event.target.result);
 
             connection.emit('sending_progress', chunkNum / (info.chunksTotal - 1));
+            console.log('Sent chunk no ' + (chunkNum + 1) + ' out of ' + info.chunksTotal);
         }
     };
     reader.readAsArrayBuffer(blob);
