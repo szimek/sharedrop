@@ -135,11 +135,15 @@ FileDrop.IndexController = Ember.ArrayController.extend({
         if (response) {
             file = peer.get('transfer.file');
 
-            // TODO: currently sending file finishes almost instantly,
-            // so there's no point in listening for 'sending' progress.
-            // peer.get('peer.connection').on('sending_progress', function (progress) {
-            //     peer.set('transfer.sendingProgress', progress);
-            // });
+            connection.on('sending_progress', function (progress) {
+                peer.set('transfer.sendingProgress', progress);
+
+                // TODO: send a separate event when file transfer is finished/canceled
+                // and stop listening there
+                if (progress === 1) {
+                    connection.removeAllListeners('sending_progress');
+                }
+            });
             webrtc.sendFile(connection, file);
         }
 

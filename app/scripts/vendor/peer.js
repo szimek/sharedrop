@@ -1521,32 +1521,6 @@ DataConnection.prototype._handleDataMessage = function(e) {
   }
 
   this.emit('data', data);
-
-  // Check if we've chunked--if so, piece things back together.
-  // We're guaranteed that this isn't 0.
-  // if (data.__peerData) {
-  //   var id = data.__peerData;
-  //   var chunkInfo = this._chunkedData[id] || {data: [], count: 0, total: data.total};
-
-  //   this.emit('receiving_progress', chunkInfo.count / (chunkInfo.total - 1));
-
-  //   chunkInfo.data[data.n] = data.data;
-  //   chunkInfo.count += 1;
-
-  //   if (chunkInfo.total === chunkInfo.count) {
-  //     // We've received all the chunks--time to construct the complete data.
-  //     data = new Blob(chunkInfo.data);
-  //     this._handleDataMessage({data: data});
-
-  //     // We can also just delete the chunks now.
-  //     delete this._chunkedData[id];
-  //   }
-
-  //   this._chunkedData[id] = chunkInfo;
-  //   return;
-  // }
-
-  // this.emit('data', data);
 }
 
 /**

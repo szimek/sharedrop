@@ -99,7 +99,7 @@ FileDrop.WebRTC.prototype._onBinaryData = function (data, connection) {
     receivedChunkNum = cache.length - 1;
     nextChunkNum = receivedChunkNum + 1;
 
-    console.log('Peer:\t Got chunk no. ' + (receivedChunkNum + 1) + ' out of ' + info.chunksTotal);
+    connection.emit('receiving_progress', receivedChunkNum / (info.chunksTotal - 1));
 
     if (nextChunkNum < info.chunksTotal) {
         this._requestFileChunk(connection, receivedChunkNum + 1);
@@ -212,7 +212,7 @@ FileDrop.WebRTC.prototype.sendFile = function (connection, file) {
 
 // TODO: check for finish condition (if end is file.size => last chunk)
 FileDrop.WebRTC.prototype._sendChunk = function (connection, file, chunkNum) {
-    var info = this.getFileInfo(file),
+    var info = this.files.outgoing[connection.peer].info,
         chunkSize = Peer.CHUNK_MTU,
         begin, end, blob;
 
@@ -226,7 +226,7 @@ FileDrop.WebRTC.prototype._sendChunk = function (connection, file, chunkNum) {
         if (reader.readyState == FileReader.DONE) {
             connection.send(event.target.result);
 
-            console.log('Peer:\t Sent chunk no. ' + (chunkNum + 1) + ' out of ' + info.chunksTotal);
+            connection.emit('sending_progress', chunkNum / (info.chunksTotal - 1));
         }
     };
     reader.readAsArrayBuffer(blob);
