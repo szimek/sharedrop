@@ -5,6 +5,7 @@ module.exports.server = function (options) {
     // Room server
     var http = require('http'),
         util = require('util'),
+        path = require('path'),
         express = require('express'),
         uuid = require('node-uuid'),
         crypto = require('crypto'),
@@ -42,7 +43,8 @@ module.exports.server = function (options) {
     persona(app, { audience: 'http://' + host + ':' + webPort });
 
     app.get('/', function (req, res) {
-        res.sendfile(__dirname + '/index.html');
+        var root = path.join(__dirname, '..', base[0]);
+        res.sendfile(root + '/index.html');
     });
 
     app.get('/room', function (req, res) {

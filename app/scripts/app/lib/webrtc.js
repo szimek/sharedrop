@@ -1,5 +1,8 @@
-// TODO: provide TURN server config
+window.requestFileSystem = window.requestFileSystem || window.webkitRequestFileSystem;
+window.URL = window.URL || window.webkitURL;
 
+// TODO: provide TURN server config
+// once it's possible to create rooms with custom names.
 FileDrop.WebRTC = function (options) {
     this.conn = new Peer({ // PeerJS client library
         host: 'file-drop-peer-server.herokuapp.com',

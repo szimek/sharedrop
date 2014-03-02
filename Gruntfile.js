@@ -75,11 +75,24 @@ module.exports = function (grunt) {
       }
     },
 
+    preprocess: {
+      dev: {
+        src : 'app/index.html',
+        dest : '.tmp/index.html',
+        options: { context: { dist: false } }
+      },
+      dist: {
+        src : 'app/index.html',
+        dest : '.tmp/index.html',
+        options: { context: { dist: true } }
+      }
+    },
+
     // Reads HTML for usemin blocks to enable smart builds that automatically
     // concat, minify and revision files. Creates configurations in memory so
     // additional tasks can operate on them
     useminPrepare: {
-      html: 'app/index.html',
+      html: '.tmp/index.html',
       options: {
         dest: 'dist'
       }
@@ -101,9 +114,15 @@ module.exports = function (grunt) {
           cwd: 'app',
           dest: 'dist',
           src: [
-            'index.html',
             'server.js',
             'fonts/**/*.{eot,svg,ttf,woff}'
+          ]
+        }, {
+          expand: true,
+          cwd: '.tmp',
+          dest: 'dist',
+          src: [
+            'index.html'
           ]
         }]
       }
@@ -158,6 +177,7 @@ module.exports = function (grunt) {
     grunt.task.run([
       'clean:dev',
       'env:dev',
+      'preprocess:dev',
       'concurrent:dev',
       'server:dev',
       'watch'
@@ -166,6 +186,7 @@ module.exports = function (grunt) {
 
   grunt.registerTask('build', [
     'clean:dist',
+    'preprocess:dist',
     'useminPrepare',
     'concurrent:dist',
     'concat',

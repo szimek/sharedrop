@@ -14,7 +14,6 @@
     "express-persona": "~0.1.1",
     "node-uuid": "~1.4.1",
     "deep-extend": "~0.2.6",
-
     "grunt": "~0.4.2",
     "grunt-cli": "~0.1.9",
     "load-grunt-tasks": "~0.2.1",
@@ -29,7 +28,8 @@
     "grunt-usemin": "~2.0.2",
     "grunt-concurrent": "~0.4.3",
     "grunt-contrib-compass": "~0.7.1",
-    "grunt-env": "~0.4.1"
+    "grunt-env": "~0.4.1",
+    "grunt-preprocess": "^4.0.0"
   },
   "engines": {
     "node": "~0.10.0"

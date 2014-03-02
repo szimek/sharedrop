@@ -28,19 +28,25 @@
 </head>
 
 <body>
-  <!-- build:js(app) /scripts/vendor.js -->
-  <script src="/scripts/vendor/peer.js"></script>
-  <script src="/scripts/vendor/socket.io/socket.io.js"></script>
-
+  <!-- @if dist=false -->
   <script src="/scripts/vendor/jquery-2.0.3.js"></script>
-  <script src="/scripts/vendor/ba-tiny-pubsub.js"></script>
-
   <script src="/scripts/vendor/handlebars-1.2.1.js"></script>
   <script src="/scripts/vendor/ember-1.4.0.js"></script>
-  <!-- endbuild -->
+  <!-- @endif -->
+  <!-- @if dist=true -->
+  <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/handlebars.js/1.2.1/handlebars.runtime.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/ember.js/1.4.0/ember.min.js"></script>
+  <!-- @endif -->
 
   <script src="https://login.persona.org/include.js"></script>
   <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+
+  <!-- build:js(app) /scripts/vendor.js -->
+  <script src="/scripts/vendor/peer.js"></script>
+  <script src="/scripts/vendor/socket.io/socket.io.js"></script>
+  <script src="/scripts/vendor/ba-tiny-pubsub.js"></script>
+  <!-- endbuild -->
 
   <!-- build:js({.tmp,app}) /scripts/app.js -->
   <script src="/scripts/app.js"></script>
