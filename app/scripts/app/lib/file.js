@@ -68,17 +68,35 @@ FileDrop.File.prototype.append = function (data) {
 };
 
 FileDrop.File.prototype.save = function () {
+    var self = this;
+
     console.log('File: Saving file: ', this.fileEntry);
 
     var a = document.createElement('a');
     a.download = this.name;
-    a.href = this.fileEntry.toURL(); // TODO: Add Firefox version as well
-    document.body.appendChild(a);
-    a.click();
 
-    // TODO: figure out how to remove file once it's completely saved
-    // Remove file entry from filesystem
-    // this.remove().then(this._reset);
+    if (this._isWebKit()) {
+        a.href = this.fileEntry.toURL();
+        finish(a);
+    } else {
+        this.fileEntry.file(function (file) {
+            a.href = window.URL.createObjectURL(file);
+            finish(a);
+        });
+    }
+
+    function finish(a) {
+        document.body.appendChild(a);
+        a.addEventListener('click', function () {
+            // Remove file entry from filesystem.
+            setTimeout(function () {
+                self.remove().then(self._reset);
+            }, 1); // Hack, but otherwise browser doesn't save the file at all.
+
+            a.parentNode.removeChild(a);
+        });
+        a.click();
+    }
 };
 
 FileDrop.File.prototype.errorHandler = function (error) {
@@ -132,5 +150,9 @@ FileDrop.File.prototype._reset = function () {
     this.filesystem = null;
     this.fileEntry = null;
     this.seek = 0;
+};
+
+FileDrop.File.prototype._isWebKit = function () {
+    return !!window.webkitRequestFileSystem;
 };
 
