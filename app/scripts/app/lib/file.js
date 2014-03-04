@@ -76,7 +76,9 @@ FileDrop.File.prototype.save = function () {
     document.body.appendChild(a);
     a.click();
 
-    this._reset();
+    // TODO: figure out how to remove file once it's completely saved
+    // Remove file entry from filesystem
+    // this.remove().then(this._reset);
 };
 
 FileDrop.File.prototype.errorHandler = function (error) {
@@ -104,6 +106,25 @@ FileDrop.File.prototype.errorHandler = function (error) {
     }
 
     console.error('File error: ' + msg);
+};
+
+FileDrop.File.prototype.remove = function () {
+    var self = this;
+
+    return new Promise(function (resolve, reject) {
+        self.filesystem.root.getFile(self.name, {create: false}, function (fileEntry) {
+            fileEntry.remove(function () {
+                console.debug('File: Removed file: ' + self.name);
+                resolve(fileEntry);
+            }, function (error) {
+                this.errorHandler(error);
+                reject(error);
+            });
+        }, function (error) {
+           this.errorHandler(error);
+           reject(error);
+        });
+    });
 };
 
 FileDrop.File.prototype._reset = function () {
