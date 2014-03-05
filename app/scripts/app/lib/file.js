@@ -19,10 +19,35 @@ FileDrop.File = function (options) {
                 resolve(self);
             },
             function (error) {
-                this.errorHandler(error);
+                self.errorHandler(error);
                 reject(error);
             }
         );
+    });
+};
+
+FileDrop.File.removeAll = function () {
+    return new Promise(function (resolve, reject) {
+        var filer = new Filer();
+
+        filer.init({persistent: false}, function () {
+            filer.ls('/', function (entries) {
+                function rm(entry) {
+                    if (entry) {
+                        filer.rm(entry, function () {
+                            rm(entries.pop());
+                        });
+                    } else {
+                        resolve();
+                    }
+                }
+
+                rm(entries.pop());
+            });
+        }, function (error) {
+            console.log(error);
+            reject(error);
+        });
     });
 };
 
@@ -50,18 +75,18 @@ FileDrop.File.prototype.append = function (data) {
                 };
 
                 writer.onerror = function (error) {
-                    this.errorHandler(error);
+                    self.errorHandler(error);
                     reject(error);
                 };
 
                 writer.seek(self.seek);
                 writer.write(blob);
             }, function (error) {
-                this.errorHandler(error);
+                self.errorHandler(error);
                 reject(error);
             });
         }, function (error) {
-            this.errorHandler(error);
+            self.errorHandler(error);
             reject(error);
         });
     });
@@ -135,11 +160,11 @@ FileDrop.File.prototype.remove = function () {
                 console.debug('File: Removed file: ' + self.name);
                 resolve(fileEntry);
             }, function (error) {
-                this.errorHandler(error);
+                self.errorHandler(error);
                 reject(error);
             });
         }, function (error) {
-           this.errorHandler(error);
+           self.errorHandler(error);
            reject(error);
         });
     });
