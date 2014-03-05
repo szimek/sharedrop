@@ -1,6 +1,3 @@
-window.requestFileSystem = window.requestFileSystem || window.webkitRequestFileSystem;
-window.URL = window.URL || window.webkitURL;
-
 // TODO: provide TURN server config
 // once it's possible to create rooms with custom names.
 FileDrop.WebRTC = function (options) {
@@ -35,10 +32,9 @@ FileDrop.WebRTC = function (options) {
     // Listen for incoming connections
     this.conn.on('connection', this._onConnection.bind(this));
 
-    this.conn.on('close', function (error) {
+    this.conn.on('close', function () {
         console.log('Peer:\t Connected to server closed.');
     });
-
 
     this.conn.on('error', function (error) {
         console.log('Peer:\t Error while connecting to server: ', error);
@@ -52,7 +48,7 @@ FileDrop.WebRTC = function (options) {
     };
 };
 
-FileDrop.WebRTC.CHUNKS_PER_ACK = 32;
+FileDrop.WebRTC.CHUNKS_PER_ACK = 64;
 
 FileDrop.WebRTC.prototype.connect = function (id) {
     var connection = this.conn.connect(id, {
@@ -94,32 +90,38 @@ FileDrop.WebRTC.prototype._onConnection = function (connection) {
 };
 
 FileDrop.WebRTC.prototype._onBinaryData = function (data, connection) {
-    var incoming = this.files.incoming[connection.peer],
+    var self = this,
+        incoming = this.files.incoming[connection.peer],
+        block = incoming.block,
         info = incoming.info,
+        receivedChunkNum = incoming.receivedChunkNum,
         chunksPerAck = FileDrop.WebRTC.CHUNKS_PER_ACK,
-        cache = incoming.cache,
-        receivedChunkNum, nextChunkNum, blob;
-
-    cache.push(data);
-
-    receivedChunkNum = cache.length - 1;
-    nextChunkNum = receivedChunkNum + 1;
+        nextChunkNum, lastChunkInFile, lastChunkInBlock;
 
     connection.emit('receiving_progress', receivedChunkNum / (info.chunksTotal - 1));
-    console.log('Got chunk no ' + (receivedChunkNum + 1) + ' out of ' + info.chunksTotal);
+    // console.log('Got chunk no ' + (receivedChunkNum + 1) + ' out of ' + info.chunksTotal);
 
-    if (receivedChunkNum === info.chunksTotal - 1) {
-        // If all chunks were transmitted, create a blob
-        blob = new Blob(cache, {type : info.type});
+    block.push(data);
 
-        $.publish('file.p2p.peer', {
-            blob: blob,
-            connection: connection
+    nextChunkNum = incoming.receivedChunkNum = receivedChunkNum + 1;
+    lastChunkInFile = receivedChunkNum === info.chunksTotal - 1;
+    lastChunkInBlock = receivedChunkNum > 0 && ((receivedChunkNum + 1) % chunksPerAck) === 0;
+
+    if (lastChunkInFile || lastChunkInBlock) {
+        this.file.append(block).then(function () {
+            if (lastChunkInFile) {
+                self.file.save();
+
+                $.publish('file.p2p.peer', {
+                    blob: self.file,
+                    connection: connection
+                });
+            } else {
+                // console.log('Requesting block starting at: ' + (nextChunkNum));
+                incoming.block = [];
+                self._requestFileBlock(connection, nextChunkNum);
+            }
         });
-    } else if (receivedChunkNum > 0 && (receivedChunkNum + 1) % chunksPerAck === 0) {
-        // If all chunks in a block were transmitted, request a new block
-        console.log('Requesting block starting at: ' + (receivedChunkNum + 1));
-        this._requestFileBlock(connection, receivedChunkNum + 1);
     }
 };
 
@@ -161,7 +163,7 @@ FileDrop.WebRTC.prototype._onJSONData = function (data, connection) {
     case 'block_request':
         var file = this.files.outgoing[connection.peer].file;
 
-        console.log('Peer:\t Block request: ', data.payload);
+        // console.log('Peer:\t Block request: ', data.payload);
 
         this._sendBlock(connection, file, data.payload);
         break;
@@ -190,25 +192,31 @@ FileDrop.WebRTC.prototype.sendFileInfo = function (connection, info) {
 };
 
 FileDrop.WebRTC.prototype.sendFileResponse = function (connection, response) {
-    var message = {
-        type: 'response',
-        payload: response
-    };
+    var self = this,
+        message = {
+            type: 'response',
+            payload: response
+        };
 
-    // If recipient rejected the file, delete stored file info
-    if (!response) {
+    if (response) {
+        // If recipient accepted the file, request required space to store the file on HTML5 filesystem
+        var incoming = this.files.incoming[connection.peer],
+            info = incoming.info;
+
+        new FileDrop.File({name: info.name, size: info.size, type: info.type})
+        .then(function (file) {
+            self.file = file;
+
+            incoming.block = [];
+            incoming.receivedChunkNum = 0;
+
+            connection.send(JSON.stringify(message));
+        });
+    } else {
+        // Otherwise, delete stored file info
         delete this.files.incoming[connection.peer];
+        connection.send(JSON.stringify(message));
     }
-
-    connection.send(JSON.stringify(message));
-};
-
-FileDrop.WebRTC.prototype._requestFileBlock = function (connection, chunkNum) {
-    var message = {
-        type: 'block_request',
-        payload: chunkNum
-    };
-    connection.send(JSON.stringify(message));
 };
 
 FileDrop.WebRTC.prototype.sendFile = function (connection, file) {
@@ -222,6 +230,14 @@ FileDrop.WebRTC.prototype.sendFile = function (connection, file) {
     this._sendBlock(connection, file, 0);
 };
 
+FileDrop.WebRTC.prototype._requestFileBlock = function (connection, chunkNum) {
+    var message = {
+        type: 'block_request',
+        payload: chunkNum
+    };
+    connection.send(JSON.stringify(message));
+};
+
 // FIXME: Figure out why 64th chunk is sent twice
 FileDrop.WebRTC.prototype._sendBlock = function (connection, file, beginChunkNum) {
     var info = this.files.outgoing[connection.peer].info,
@@ -231,7 +247,7 @@ FileDrop.WebRTC.prototype._sendBlock = function (connection, file, beginChunkNum
         endChunkNum = beginChunkNum + chunksToSend - 1,
         chunkNum;
 
-    console.log('Send block: start: ' + beginChunkNum + ' end: ' + endChunkNum);
+    // console.log('Send block: start: ' + beginChunkNum + ' end: ' + endChunkNum);
 
     for (chunkNum = beginChunkNum; chunkNum <  endChunkNum + 1; chunkNum++) {
         this._sendChunk(connection, file, chunkNum);
@@ -255,7 +271,7 @@ FileDrop.WebRTC.prototype._sendChunk = function (connection, file, chunkNum) {
             connection.send(event.target.result);
 
             connection.emit('sending_progress', chunkNum / (info.chunksTotal - 1));
-            console.log('Sent chunk no ' + (chunkNum + 1) + ' out of ' + info.chunksTotal);
+            // console.log('Sent chunk no ' + (chunkNum + 1) + ' out of ' + info.chunksTotal);
         }
     };
     reader.readAsArrayBuffer(blob);

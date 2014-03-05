@@ -155,23 +155,12 @@ FileDrop.IndexController = Ember.ArrayController.extend({
         console.log('Peer:\t Received file', data);
 
         var connection = data.connection,
-            peer = this.findBy('peer.id', connection.peer),
-            blob = data.blob,
-            info = peer.get('transfer.info'),
-            dataUrl;
+            peer = this.findBy('peer.id', connection.peer);
 
         // Stop listening for 'receiving' progress now that we have a file
         peer.get('peer.connection').removeAllListeners('receiving_progress');
         peer.set('transfer.receiving_progress', 0);
         peer.set('transfer.info', null);
-
-        // Save received file
-        dataUrl = window.URL.createObjectURL(blob);
-        var a = document.createElement('a');
-        a.setAttribute('download', info.name);
-        a.setAttribute('href', dataUrl);
-        document.body.appendChild(a);
-        a.click();
     },
 
     // Based on http://net.ipcalf.com/
