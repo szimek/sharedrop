@@ -32,7 +32,7 @@ FileDrop.Peer = Ember.Object.extend({
         var email = this.get('email'),
             path;
 
-        path = email ? this.MD5(email.trim().toLowerCase()) + '.jpg?s=128' : '?d=mm';
+        path = email ? this.MD5(email.trim().toLowerCase()) + '.jpg?s=128' : '?d=mm&s=128';
         return 'http://www.gravatar.com/avatar/' + path;
     }.property('email'),
 
