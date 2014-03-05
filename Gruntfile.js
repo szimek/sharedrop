@@ -41,23 +41,23 @@ module.exports = function (grunt) {
     },
 
     compass: {
-      dist: {
-        options: {
-          sassDir: 'app/styles',
-          cssDir: '.tmp/styles',
-          fontsDir: 'dist/fonts',
-          httpFontsDir: 'fonts',
-          imagesDir: 'dist/images',
-          environment: 'production'
-        }
-      },
       dev: {
         options: {
           sassDir: 'app/styles',
           cssDir: '.tmp/styles',
           fontsDir: 'app/fonts',
           httpFontsDir: 'fonts',
-          imagesDir: 'app/images'
+          httpImagesPath: '../images'
+        }
+      },
+      dist: {
+        options: {
+          sassDir: 'app/styles',
+          cssDir: '.tmp/styles',
+          fontsDir: 'dist/fonts',
+          httpFontsDir: 'fonts',
+          httpImagesPath: '../images',
+          environment: 'production'
         }
       }
     },

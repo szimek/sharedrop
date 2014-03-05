@@ -30,9 +30,9 @@ module.exports.server = function (options) {
     app.use(express.json());
 
     base.forEach(function (dir) {
-        app.use('/scripts', express.static(dir + '/scripts'));
-        app.use('/styles', express.static(dir + '/styles'));
-        app.use('/fonts', express.static(dir + '/fonts'));
+        ['scripts', 'styles', 'images', 'fonts'].forEach(function (subdir) {
+            app.use('/' + subdir, express.static(dir + '/' + subdir));
+        });
     });
 
     //
