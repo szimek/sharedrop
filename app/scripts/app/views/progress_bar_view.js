@@ -3,9 +3,9 @@ FileDrop.ProgressBarView = Ember.View.extend({
     templateName: 'progress-bar',
 
     attributeBindings: ['width', 'height', 'viewport'],
-    width: "74",
-    height: "74",
-    viewport: "0 0 74 74",
+    width: "76",
+    height: "76",
+    viewport: "0 0 76 76",
 
     didInsertElement: function () {
         this.set('path', this.$().find('path'));
@@ -28,9 +28,9 @@ FileDrop.ProgressBarView = Ember.View.extend({
             α = progress * 360,
             r = ( α * π / 180 ),
             mid = ( α > 180 ) ? 1 : 0,
-            x = Math.sin( r ) * 37,
-            y = Math.cos( r ) * - 37,
-            anim = 'M 0 0 v -37 A 37 37 1 '
+            x = Math.sin( r ) * 38,
+            y = Math.cos( r ) * - 38,
+            anim = 'M 0 0 v -38 A 38 38 1 '
                  + mid + ' 1 '
                  +  x  + ' '
                  +  y  + ' z';
