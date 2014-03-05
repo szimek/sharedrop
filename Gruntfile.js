@@ -47,6 +47,7 @@ module.exports = function (grunt) {
           cssDir: '.tmp/styles',
           fontsDir: 'dist/fonts',
           httpFontsDir: 'fonts',
+          imagesDir: 'dist/images',
           environment: 'production'
         }
       },
@@ -55,7 +56,8 @@ module.exports = function (grunt) {
           sassDir: 'app/styles',
           cssDir: '.tmp/styles',
           fontsDir: 'app/fonts',
-          httpFontsDir: 'fonts'
+          httpFontsDir: 'fonts',
+          imagesDir: 'app/images'
         }
       }
     },
@@ -115,7 +117,8 @@ module.exports = function (grunt) {
           dest: 'dist',
           src: [
             'server.js',
-            'fonts/**/*.{eot,svg,ttf,woff}'
+            'fonts/**/*.{eot,svg,ttf,woff}',
+            'images/**/*.{svg}'
           ]
         }, {
           expand: true,

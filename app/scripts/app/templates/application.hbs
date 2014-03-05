@@ -13,9 +13,13 @@
     <div class="collapse navbar-collapse" id="navbar-collapse">
       <ul class="nav navbar-nav navbar-right">
         {{#if you.email}}
-          <li><a href="javascript:void(0)" {{action 'signOut'}}>Sign out</a></li>
+          <li><a href="javascript:void(0)" class="sign" {{action 'signOut'}}>Sign out</a></li>
         {{else}}
-          <li><a href="javascript:void(0)" {{action 'signIn'}}>Sign in with Persona</a></li>
+          <li>
+            <a href="javascript:void(0)" class="sign" {{action 'signIn'}}>
+              Sign in with Persona
+            </a>
+          </li>
         {{/if}}
       </ul>
       {{#if you.email}}
