@@ -1,4 +1,4 @@
-FileDrop.Peer = Ember.Object.extend({
+FileDrop.App.Peer = Ember.Object.extend({
     uuid: null,
     email: null,
     public_ip: null,

@@ -1,4 +1,4 @@
-FileDrop.User = FileDrop.Peer.extend({
+FileDrop.App.User = FileDrop.App.Peer.extend({
     room: null,
 
     serialize: function () {

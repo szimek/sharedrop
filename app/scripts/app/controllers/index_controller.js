@@ -1,4 +1,4 @@
-FileDrop.IndexController = Ember.ArrayController.extend({
+FileDrop.App.IndexController = Ember.ArrayController.extend({
     needs: ['application'],
 
     you: Ember.computed.alias('controllers.application.you'),
@@ -63,7 +63,7 @@ FileDrop.IndexController = Ember.ArrayController.extend({
             peer;
 
         delete attrs.peer;
-        peer = FileDrop.Peer.create(attrs);
+        peer = FileDrop.App.Peer.create(attrs);
         peer.get('peer').setProperties(peerAttrs);
 
         this.pushObject(peer);
