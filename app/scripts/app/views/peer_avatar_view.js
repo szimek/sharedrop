@@ -1,4 +1,4 @@
-FileDrop.PeerAvatarView = Ember.View.extend(Ember.ViewTargetActionSupport, {
+FileDrop.App.PeerAvatarView = Ember.View.extend(Ember.ViewTargetActionSupport, {
     tagName: 'img',
     classNames: ['gravatar', 'img-circle'],
     attributeBindings: [

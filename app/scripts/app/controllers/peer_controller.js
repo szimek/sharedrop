@@ -1,4 +1,4 @@
-FileDrop.PeerController = Ember.ObjectController.extend({
+FileDrop.App.PeerController = Ember.ObjectController.extend({
     needs: 'index',
 
     webrtc: Ember.computed.alias('controllers.index.webrtc'),
@@ -16,9 +16,7 @@ FileDrop.PeerController = Ember.ObjectController.extend({
         // TODO: rename to something more meaningful (e.g. askIfWantToSendFile)
         uploadFile: function (data) {
             var peer = this.get('model'),
-                webrtc = this.get('webrtc'),
-                file = data.file,
-                info = webrtc.getFileInfo(file);
+                file = data.file;
 
             // Make file available when the response from the recipient comes in
             peer.set('transfer.file', file);

@@ -1,8 +1,8 @@
-FileDrop.ApplicationController = Ember.Controller.extend({
+FileDrop.App.ApplicationController = Ember.Controller.extend({
     init: function () {
         this._super();
 
-        var you = FileDrop.User.create({
+        var you = FileDrop.App.User.create({
             email: localStorage.email || null
         });
 

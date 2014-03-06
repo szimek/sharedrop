@@ -7,8 +7,8 @@
 {{/confirm-popover}}
 
 <div class="avatar">
-  {{view FileDrop.ProgressBarView}}
-  {{view FileDrop.PeerAvatarView}}
+  {{view FileDrop.App.ProgressBarView}}
+  {{view FileDrop.App.PeerAvatarView}}
 </div>
 
 <div class="user-info">
@@ -23,4 +23,4 @@
   {{/if}}
 </div>
 
-{{view FileDrop.FileField action="uploadFile" file=transfer.file}}
+{{view FileDrop.App.FileField action="uploadFile" file=transfer.file}}
