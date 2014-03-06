@@ -116,7 +116,7 @@ FileDrop.File.prototype.save = function () {
             // Remove file entry from filesystem.
             setTimeout(function () {
                 self.remove().then(self._reset);
-            }, 1); // Hack, but otherwise browser doesn't save the file at all.
+            }, 100); // Hack, but otherwise browser doesn't save the file at all.
 
             a.parentNode.removeChild(a);
         });
