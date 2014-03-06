@@ -1,6 +1,20 @@
 FileDrop.App.User = FileDrop.App.Peer.extend({
     room: null,
 
+    label: function () {
+        var email = this.get('email'),
+            local_ip = this.get('local_ip'),
+            label;
+
+        if (email) {
+            label = email + ' (' + local_ip + ')';
+        } else {
+            label = local_ip;
+        }
+
+        return label;
+    }.property('email', 'local_ip'),
+
     serialize: function () {
         return {
             uuid: this.get('uuid'),
