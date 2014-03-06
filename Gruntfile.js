@@ -123,7 +123,7 @@ module.exports = function (grunt) {
           src: [
             'server.js',
             'fonts/**/*.{eot,svg,ttf,woff}',
-            'images/**/*.{svg}'
+            'images/**/*.{png,jpg,jpeg,gif,webp,svg}'
           ]
         }, {
           expand: true,
