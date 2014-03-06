@@ -7,30 +7,54 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      {{link-to "FileDrop<sub>alpha</sub> - P2P file transfer" "index" class="navbar-brand"}}
+
+      <h1 class="logo">
+        <span class="logo-title">ShareDrop</span>
+        <span class="logo-subtitle">P2P file transfer</span>
+        <img src="/images/sharedrop.svg">
+      </h1>
+
     </div>
 
     <div class="collapse navbar-collapse" id="navbar-collapse">
       <ul class="nav navbar-nav navbar-right">
         {{#if you.email}}
-          <li><a href="javascript:void(0)" class="sign" {{action 'signOut'}}>Sign out</a></li>
+          <li>
+            <span class="navbar-text signed-in">{{you.email}}</span>
+          </li>
+          <li>
+            <a href="javascript:void(0)" class="sign-out" {{action 'signOut'}}>
+              <img src="/images/persona.svg">
+              Sign out
+            </a>
+          </li>
         {{else}}
           <li>
-            <a href="javascript:void(0)" class="sign" {{action 'signIn'}}>
-              Sign in with Persona
+            <a href="javascript:void(0)" class="sign-in" {{action 'signIn'}}>
+              <img src="/images/persona.svg">
+              Sign in
             </a>
           </li>
         {{/if}}
       </ul>
-      {{#if you.email}}
-        <p class="navbar-text navbar-right">Signed in as {{you.email}}</p>
-      {{/if}}
     </div>
   </nav>
 
   {{outlet}}
 
-  <div id="footer"></div>
+  <div class="footer">
+    <div class="cowbell-labs">
+      Made by
+      <a href="https://cowbell-labs.com/" target="_blank">
+        <span>Cowbell Labs</span>
+        <img src="/images/cowbell-labs.svg">
+      </a>
+    </div>
+    <p class="about">ShairDrop lets you share files with others nearby.</p>
+    <a href="https://github.com/cowbell" class="github" target="_blank">
+      <img src="/images/github.svg">
+    </a>
+  </div>
 
   <svg class="circles" viewBox="-0.5 -0.5 1140 700">
     <circle class="circle" cx="570" cy="570" r="30"  stroke="rgba(160,160,160, 1)" />
