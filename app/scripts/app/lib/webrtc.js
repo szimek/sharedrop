@@ -112,7 +112,7 @@ FileDrop.WebRTC.prototype._onBinaryData = function (data, connection) {
             if (lastChunkInFile) {
                 self.file.save();
 
-                $.publish('file.p2p.peer', {
+                $.publish('file_received.p2p.peer', {
                     blob: self.file,
                     connection: connection
                 });
@@ -247,7 +247,7 @@ FileDrop.WebRTC.prototype._sendBlock = function (connection, file, beginChunkNum
         endChunkNum = beginChunkNum + chunksToSend - 1,
         chunkNum;
 
-    // console.log('Send block: start: ' + beginChunkNum + ' end: ' + endChunkNum);
+    console.log('Send block: start: ' + beginChunkNum + ' end: ' + endChunkNum);
 
     for (chunkNum = beginChunkNum; chunkNum <  endChunkNum + 1; chunkNum++) {
         this._sendChunk(connection, file, chunkNum);
@@ -272,6 +272,10 @@ FileDrop.WebRTC.prototype._sendChunk = function (connection, file, chunkNum) {
 
             connection.emit('sending_progress', chunkNum / (info.chunksTotal - 1));
             // console.log('Sent chunk no ' + (chunkNum + 1) + ' out of ' + info.chunksTotal);
+
+            if (chunkNum === info.chunksTotal - 1) {
+                $.publish('file_sent.p2p.peer', {connection: connection});
+            }
         }
     };
     reader.readAsArrayBuffer(blob);

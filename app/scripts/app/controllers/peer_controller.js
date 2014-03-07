@@ -20,6 +20,7 @@ FileDrop.App.PeerController = Ember.ObjectController.extend({
 
             // Make file available when the response from the recipient comes in
             peer.set('transfer.file', file);
+            peer.set('internalState', 'awaiting_file_info');
         },
 
         sendFileTransferInquiry: function () {
@@ -30,13 +31,15 @@ FileDrop.App.PeerController = Ember.ObjectController.extend({
                 info = webrtc.getFileInfo(file);
 
             webrtc.sendFileInfo(connection, info);
+            peer.set('internalState', 'awaiting_response');
 
-            console.log('Sending a file...', info);
+            console.log('Sending a file info...', info);
         },
 
         cancelFileTransfer: function () {
             var peer = this.get('model');
             peer.set('transfer.file', null);
+            peer.set('internalState', 'idle');
         },
 
         acceptFileTransfer: function () {
@@ -47,6 +50,7 @@ FileDrop.App.PeerController = Ember.ObjectController.extend({
             peer.get('peer.connection').on('receiving_progress', function (progress) {
                 peer.set('transfer.receivingProgress', progress);
             });
+            peer.set('internalState', 'sending_file_data');
         },
 
         rejectFileTransfer: function () {
@@ -54,6 +58,7 @@ FileDrop.App.PeerController = Ember.ObjectController.extend({
 
             this._sendFileTransferResponse(false);
             peer.set('transfer.info', null);
+            peer.set('internalState', 'idle');
         }
     },
 

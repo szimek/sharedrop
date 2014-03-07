@@ -22,7 +22,8 @@ FileDrop.App.IndexController = Ember.ArrayController.extend({
         $.subscribe('disconnected.p2p.peer', this._onPeerP2PDisconnected.bind(this));
         $.subscribe('info.p2p.peer', this._onPeerP2PFileInfo.bind(this));
         $.subscribe('response.p2p.peer', this._onPeerP2PFileResponse.bind(this));
-        $.subscribe('file.p2p.peer', this._onPeerP2PFileTransfer.bind(this));
+        $.subscribe('file_received.p2p.peer', this._onPeerP2PFileReceived.bind(this));
+        $.subscribe('file_sent.p2p.peer', this._onPeerP2PFileSent.bind(this));
 
         this._super();
     },
@@ -121,6 +122,7 @@ FileDrop.App.IndexController = Ember.ArrayController.extend({
             info = data.info;
 
         peer.set('transfer.info', info);
+        peer.set('internalState', 'received_file_info');
     },
 
     _onPeerP2PFileResponse: function (event, data) {
@@ -137,30 +139,36 @@ FileDrop.App.IndexController = Ember.ArrayController.extend({
 
             connection.on('sending_progress', function (progress) {
                 peer.set('transfer.sendingProgress', progress);
-
-                // TODO: send a separate event when file transfer is finished/canceled
-                // and stop listening there
-                if (progress === 1) {
-                    connection.removeAllListeners('sending_progress');
-                }
             });
             webrtc.sendFile(connection, file);
+            peer.set('internalState', 'receiving_file_data');
+        } else {
+            peer.set('internalState', 'declined_file_transfer');
         }
-
-        // Remove "cached" file for that peer now that we have a response
-        peer.set('transfer.file', null);
     },
 
-    _onPeerP2PFileTransfer: function (event, data) {
+    _onPeerP2PFileReceived: function (event, data) {
         console.log('Peer:\t Received file', data);
 
         var connection = data.connection,
             peer = this.findBy('peer.id', connection.peer);
 
-        // Stop listening for 'receiving' progress now that we have a file
-        peer.get('peer.connection').removeAllListeners('receiving_progress');
+        connection.removeAllListeners('receiving_progress');
         peer.set('transfer.receiving_progress', 0);
         peer.set('transfer.info', null);
+        peer.set('internalState', 'idle');
+    },
+
+    _onPeerP2PFileSent: function (event, data) {
+        console.log('Peer:\t Sent file', data);
+
+        var connection = data.connection,
+            peer = this.findBy('peer.id', connection.peer);
+
+        connection.removeAllListeners('sending_progress');
+        peer.set('transfer.sending_progress', 0);
+        peer.set('transfer.file', null);
+        peer.set('internalState', 'idle');
     },
 
     // Based on http://net.ipcalf.com/

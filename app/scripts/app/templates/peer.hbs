@@ -1,8 +1,18 @@
-{{#confirm-popover confirm="sendFileTransferInquiry" cancel="cancelFileTransfer" isShowing=transfer.file filename=filename confirm-button-label="Send" cancel-button-label="Cancel"}}
+<!-- Sender related popups -->
+{{#confirm-popover confirm="sendFileTransferInquiry" cancel="cancelFileTransfer" isShowing=view.isAwaitingFileInfo filename=filename confirm-button-label="Send" cancel-button-label="Cancel"}}
   Do you want to send <strong>"{{filename}}"</strong><br>to <strong>"{{peer.label}}"</strong>?
 {{/confirm-popover}}
 
-{{#confirm-popover confirm="acceptFileTransfer" cancel="rejectFileTransfer" isShowing=transfer.info filename=filename confirm-button-label="Save" cancel-button-label="Decline"}}
+{{#confirm-popover  cancel="cancelFileTransfer" isShowing=view.isAwaitingResponse filename=filename cancel-button-label="Cancel"}}
+  Waiting for <strong>"{{peer.label}}"</strong> to accept&hellip;
+{{/confirm-popover}}
+
+{{#confirm-popover confirm="cancelFileTransfer" isShowing=view.hasDeclinedFileTransfer filename=filename confirm-button-label="Ok"}}
+  <strong>"{{peer.label}}"</strong> has declined your request.
+{{/confirm-popover}}
+
+<!-- Recipient related popups -->
+{{#confirm-popover confirm="acceptFileTransfer" cancel="rejectFileTransfer" isShowing=view.hasReceivedFileInfo filename=filename confirm-button-label="Save" cancel-button-label="Decline"}}
   <strong>"{{peer.label}}"</strong> wants to send you <strong>"{{filename}}"</strong>.
 {{/confirm-popover}}
 
