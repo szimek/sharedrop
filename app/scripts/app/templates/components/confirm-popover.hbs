@@ -5,12 +5,14 @@
   <div class="media-body">
     <p>{{yield}}</p>
 
-    {{#if cancel-button-label}}
-      <button type="button" class="btn btn-default btn-xs" {{action "cancel"}}>{{cancel-button-label}}</button>
-    {{/if}}
+    <div class="pull-right">
+      {{#if cancel-button-label}}
+        <button type="button" class="btn btn-default btn-xs" {{action "cancel"}}>{{cancel-button-label}}</button>
+      {{/if}}
 
-    {{#if confirm-button-label}}
-      <button type="button" class="btn btn-default btn-xs" {{action "confirm"}}>{{confirm-button-label}}</button>
-    {{/if}}
+      {{#if confirm-button-label}}
+        <button type="button" class="btn btn-default btn-xs" {{action "confirm"}}>{{confirm-button-label}}</button>
+      {{/if}}
+    </div>
   </div>
 </div>
