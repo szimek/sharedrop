@@ -22,6 +22,7 @@ FileDrop.App.IndexController = Ember.ArrayController.extend({
         $.subscribe('disconnected.p2p.peer', this._onPeerP2PDisconnected.bind(this));
         $.subscribe('info.p2p.peer', this._onPeerP2PFileInfo.bind(this));
         $.subscribe('response.p2p.peer', this._onPeerP2PFileResponse.bind(this));
+        $.subscribe('file_canceled.p2p.peer', this._onPeerP2PFileCanceled.bind(this));
         $.subscribe('file_received.p2p.peer', this._onPeerP2PFileReceived.bind(this));
         $.subscribe('file_sent.p2p.peer', this._onPeerP2PFileSent.bind(this));
 
@@ -145,6 +146,16 @@ FileDrop.App.IndexController = Ember.ArrayController.extend({
         } else {
             peer.set('internalState', 'declined_file_transfer');
         }
+    },
+
+    _onPeerP2PFileCanceled: function (event, data) {
+        var connection = data.connection,
+            peer = this.findBy('peer.id', connection.peer);
+
+        connection.removeAllListeners('receiving_progress');
+        peer.set('transfer.receiving_progress', 0);
+        peer.set('transfer.info', null);
+        peer.set('internalState', 'idle');
     },
 
     _onPeerP2PFileReceived: function (event, data) {

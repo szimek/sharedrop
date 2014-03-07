@@ -144,6 +144,14 @@ FileDrop.WebRTC.prototype._onJSONData = function (data, connection) {
         console.log('Peer:\t File info: ', data);
         break;
 
+    case 'cancel':
+        $.publish('file_canceled.p2p.peer', {
+            connection: connection
+        });
+
+        console.log('Peer:\t Sender canceled file transfer');
+        break;
+
     case 'response':
         var response = data.payload;
 
@@ -186,6 +194,14 @@ FileDrop.WebRTC.prototype.sendFileInfo = function (connection, info) {
     var message = {
         type: 'info',
         payload: info
+    };
+
+    connection.send(JSON.stringify(message));
+};
+
+FileDrop.WebRTC.prototype.sendCancelRequest = function (connection) {
+    var message = {
+        type: 'cancel'
     };
 
     connection.send(JSON.stringify(message));

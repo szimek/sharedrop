@@ -37,9 +37,16 @@ FileDrop.App.PeerController = Ember.ObjectController.extend({
         },
 
         cancelFileTransfer: function () {
-            var peer = this.get('model');
-            peer.set('transfer.file', null);
-            peer.set('internalState', 'idle');
+            this._cancelFileTransfer();
+        },
+
+        abortFileTransfer: function () {
+            this._cancelFileTransfer();
+
+            var webrtc = this.get('webrtc'),
+                connection = this.get('model.peer.connection');
+
+            webrtc.sendCancelRequest(connection);
         },
 
         acceptFileTransfer: function () {
@@ -60,6 +67,13 @@ FileDrop.App.PeerController = Ember.ObjectController.extend({
             peer.set('transfer.info', null);
             peer.set('internalState', 'idle');
         }
+    },
+
+    _cancelFileTransfer: function () {
+        var peer = this.get('model');
+
+        peer.set('transfer.file', null);
+        peer.set('internalState', 'idle');
     },
 
     _sendFileTransferResponse: function (response) {
