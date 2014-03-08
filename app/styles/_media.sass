@@ -6,20 +6,20 @@
       position: relative
       left: auto !important
       bottom: auto !important
-      height: 84px
+      height: auto
       width: 100%
       padding: 10px 20px
       border-bottom: 1px solid #e0e0e0
       margin: 0 !important
       text-align: left
-      .gravatar
-        position: absolute
-        left: 20px
-        top: 10px
+      .avatar
+        z-index: 2
       .user-info
-        display: block
-        position: static
-        padding-left: 154px
+        z-index: 1
+        position: absolute
+        top: 20px
+        left: 0
+        padding-left: 180px
         width: 100%
         .user-email
           font-size: 14px
@@ -30,7 +30,7 @@
           color: #808080
       .popover
         left: 20px !important
-        top: -140px !important
+        top: -10px !important
     &.you
       .peer
         border-bottom: none

@@ -1,6 +1,6 @@
 <!-- Sender related popups -->
 {{#confirm-popover confirm="sendFileTransferInquiry" cancel="cancelFileTransfer" isShowing=view.isAwaitingFileInfo filename=filename confirm-button-label="Send" cancel-button-label="Cancel"}}
-  Do you want to send <strong>"{{filename}}"</strong><br>to <strong>"{{peer.label}}"</strong>?
+  Do you want to send <strong>"{{filename}}"</strong> to <strong>"{{peer.label}}"</strong>?
 {{/confirm-popover}}
 
 {{#confirm-popover  cancel="abortFileTransfer" isShowing=view.isAwaitingResponse filename=filename cancel-button-label="Cancel"}}
