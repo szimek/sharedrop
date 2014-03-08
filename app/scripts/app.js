@@ -1,21 +1,70 @@
 window.FileDrop.App = Ember.Application.create();
 
-// Test for browser support
 FileDrop.App.deferReadiness();
-if (!(('webkitRTCPeerConnection' in window) && util.supports.sctp)) {
-    alert("Your browser is not supported");
-} else {
-    FileDrop.App.advanceReadiness();
-}
 
-// Try to clear HTML5 filesystem on page load
-// If it fails, it might mean that incognito mode is used
-FileDrop.App.deferReadiness();
-FileDrop.File.removeAll()
-.then(function () {
-    console.log("Cleared HTML5 filesystem");
-    FileDrop.App.advanceReadiness();
-})
-.catch(function (error) {
-    alert("This app doesn't work in incognito mode");
+// Check if everything we need is available
+(function () {
+    checkWebRTCSupport()
+    .then(clearFileSystem)
+    .catch(function (error) {
+        FileDrop.App.error = error;
+    })
+    .then(function () {
+        FileDrop.App.advanceReadiness();
+    });
+
+    function checkWebRTCSupport() {
+        return new Promise(function (resolve, reject) {
+            if (('webkitRTCPeerConnection' in window) && util.supports.sctp) {
+                resolve();
+            } else {
+                reject('browser_unsupported');
+            }
+        });
+    }
+
+    function clearFileSystem() {
+        return new Promise(function (resolve, reject) {
+            FileDrop.File.removeAll()
+            .then(function () {
+                resolve();
+            })
+            .catch(function () {
+                reject('filesystem_unavailable');
+            });
+        });
+    }
+})();
+
+FileDrop.App.Router.map(function () {
+  this.route('error');
+});
+
+FileDrop.App.IndexRoute = Ember.Route.extend({
+    beforeModel: function() {
+        if (FileDrop.App.error) {
+            this.transitionTo('error');
+        }
+    },
+
+    renderTemplate: function () {
+        this.render();
+
+        this.render('about_you', {
+            into: 'application',
+            outlet: 'about_you'
+        });
+    }
+});
+
+FileDrop.App.ErrorRoute = Ember.Route.extend({
+    beforeModel: function() {
+        if (!FileDrop.App.error) {
+            this.transitionTo('index');
+        }
+    },
+
+    renderTemplate: function () {
+        this.render('errors/' + FileDrop.App.error);
+    }
 });
