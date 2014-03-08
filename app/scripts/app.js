@@ -36,14 +36,10 @@ FileDrop.App.deferReadiness();
     }
 })();
 
-FileDrop.App.Router.map(function () {
-  this.route('error');
-});
-
 FileDrop.App.IndexRoute = Ember.Route.extend({
     beforeModel: function() {
         if (FileDrop.App.error) {
-            this.transitionTo('error');
+            throw new Error(FileDrop.App.error);
         }
     },
 
@@ -58,13 +54,10 @@ FileDrop.App.IndexRoute = Ember.Route.extend({
 });
 
 FileDrop.App.ErrorRoute = Ember.Route.extend({
-    beforeModel: function() {
-        if (!FileDrop.App.error) {
-            this.transitionTo('index');
-        }
-    },
+    renderTemplate: function(controller, error) {
+        var name = 'errors/' + error.message,
+            template = Ember.TEMPLATES[name];
 
-    renderTemplate: function () {
-        this.render('errors/' + FileDrop.App.error);
+        if (template) this.render(name);
     }
 });
