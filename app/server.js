@@ -4,7 +4,6 @@
 module.exports.server = function (options) {
     // Room server
     var http = require('http'),
-        util = require('util'),
         path = require('path'),
         express = require('express'),
         uuid = require('node-uuid'),

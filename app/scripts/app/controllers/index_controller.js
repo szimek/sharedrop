@@ -5,10 +5,6 @@ FileDrop.App.IndexController = Ember.ArrayController.extend({
     room: null,
 
     init: function () {
-        // Connect to PeerJS server first,
-        // so that we already have peer ID when later joining a room.
-        this.set('webrtc', new FileDrop.WebRTC());
-
         // Handle room events
         $.subscribe('connected.room', this._onRoomConnected.bind(this));
         $.subscribe('user_list.room', this._onRoomUserList.bind(this));
@@ -18,13 +14,18 @@ FileDrop.App.IndexController = Ember.ArrayController.extend({
 
         // Handle peer events
         $.subscribe('connected.server.peer', this._onPeerServerConnected.bind(this));
-        $.subscribe('connected.p2p.peer', this._onPeerP2PConnected.bind(this));
+        $.subscribe('incoming_connection.p2p.peer', this._onPeerP2PIncomingConnection.bind(this));
+        $.subscribe('outgoing_connection.p2p.peer', this._onPeerP2POutgoingConnection.bind(this));
         $.subscribe('disconnected.p2p.peer', this._onPeerP2PDisconnected.bind(this));
         $.subscribe('info.p2p.peer', this._onPeerP2PFileInfo.bind(this));
         $.subscribe('response.p2p.peer', this._onPeerP2PFileResponse.bind(this));
         $.subscribe('file_canceled.p2p.peer', this._onPeerP2PFileCanceled.bind(this));
         $.subscribe('file_received.p2p.peer', this._onPeerP2PFileReceived.bind(this));
         $.subscribe('file_sent.p2p.peer', this._onPeerP2PFileSent.bind(this));
+
+        // Connect to PeerJS server first,
+        // so that we already have peer ID when later joining a room.
+        this.set('webrtc', new FileDrop.WebRTC());
 
         this._super();
     },
@@ -41,20 +42,12 @@ FileDrop.App.IndexController = Ember.ArrayController.extend({
     },
 
     _onRoomUserList: function (event, data) {
-        // Add all peers to the list and
-        // initiate p2p connection to every one of them.
-        var webrtc = this.get('webrtc');
-
-        data.forEach(function (attrs) {
-            var peer = this._addPeer(attrs);
-            webrtc.connect(peer.get('peer.id'));
-        }.bind(this));
+        data.forEach(this._addPeer.bind(this));
     },
 
     _onRoomUserAdded: function (event, data) {
         var you = this.get('you');
 
-        // Add peer to the list of peers in the room
         if (you.get('uuid') !== data.uuid) {
             this._addPeer(data);
         }
@@ -69,7 +62,6 @@ FileDrop.App.IndexController = Ember.ArrayController.extend({
         peer.get('peer').setProperties(peerAttrs);
 
         this.pushObject(peer);
-        return peer;
     },
 
     _onRoomUserChanged: function (event, data) {
@@ -91,28 +83,43 @@ FileDrop.App.IndexController = Ember.ArrayController.extend({
     _onPeerServerConnected: function (event, data) {
         var you = this.get('you');
 
-        you.set('isConnected', true);
+        // you.set('isConnected', true);
         you.set('peer.id', data.id);
 
         // Join room and broadcast your attributes
         var room = new FileDrop.Room();
         room.join(you.serialize());
-        you.set('room', room);
         this.set('room', room);
     },
 
-    _onPeerP2PConnected: function (event, data) {
+    _onPeerP2PIncomingConnection: function (event, data) {
         var connection = data.connection,
             peer = this.findBy('peer.id', connection.peer);
 
         peer.set('peer.connection', connection);
     },
 
+    _onPeerP2POutgoingConnection: function (event, data) {
+        var webrtc = this.get('webrtc'),
+            connection = data.connection,
+            peer = this.findBy('peer.id', connection.peer),
+            file = peer.get('transfer.file'),
+            info = webrtc.getFileInfo(file);
+
+        peer.set('peer.connection', connection);
+        peer.set('internalState', 'awaiting_response');
+
+        webrtc.sendFileInfo(connection, info);
+        console.log('Sending a file info...', info);
+    },
+
     _onPeerP2PDisconnected: function (event, data) {
         var connection = data.connection,
             peer = this.findBy('peer.id', connection.peer);
 
-        if (peer) peer.set('peer.connection', null);
+        if (peer) {
+            peer.set('peer.connection', null);
+        }
     },
 
     _onPeerP2PFileInfo: function (event, data) {
@@ -152,7 +159,7 @@ FileDrop.App.IndexController = Ember.ArrayController.extend({
         var connection = data.connection,
             peer = this.findBy('peer.id', connection.peer);
 
-        connection.removeAllListeners('receiving_progress');
+        connection.close();
         peer.set('transfer.receiving_progress', 0);
         peer.set('transfer.info', null);
         peer.set('internalState', 'idle');
@@ -164,7 +171,7 @@ FileDrop.App.IndexController = Ember.ArrayController.extend({
         var connection = data.connection,
             peer = this.findBy('peer.id', connection.peer);
 
-        connection.removeAllListeners('receiving_progress');
+        connection.close();
         peer.set('transfer.receiving_progress', 0);
         peer.set('transfer.info', null);
         peer.set('internalState', 'idle');
@@ -176,7 +183,6 @@ FileDrop.App.IndexController = Ember.ArrayController.extend({
         var connection = data.connection,
             peer = this.findBy('peer.id', connection.peer);
 
-        connection.removeAllListeners('sending_progress');
         peer.set('transfer.sending_progress', 0);
         peer.set('transfer.file', null);
         peer.set('internalState', 'idle');
@@ -246,7 +252,7 @@ FileDrop.App.IndexController = Ember.ArrayController.extend({
         }
     },
 
-    // Broadcast user's selected changes to other peers
+    // Broadcast some of user's property changes to other peers
     userEmailDidChange: function () {
         var email = this.get('you.email'),
             room  = this.get('room');

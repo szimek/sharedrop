@@ -33,9 +33,7 @@ FileDrop.App.PeerAvatarView = Ember.View.extend(Ember.ViewTargetActionSupport, {
     drop: function (event) {
         this.cancelEvent(event);
 
-        var you = this.get('controller.controllers.index.you'),
-            peer = this.get('controller.model'),
-            dt = event.originalEvent.dataTransfer,
+        var dt = event.originalEvent.dataTransfer,
             files = dt.files,
             file = files[0];
 
@@ -55,11 +53,7 @@ FileDrop.App.PeerAvatarView = Ember.View.extend(Ember.ViewTargetActionSupport, {
     },
 
     canSendFile: function () {
-        var you = this.get('controller.controllers.index.you'),
-            peer = this.get('controller.model');
-
-        // Can't send files to disconnected peer
-        if (!you.get('isConnected') || !peer.get('isConnected')) return false;
+        var peer = this.get('controller.model');
 
         // Can't send files if another file transfer is already in progress
         if (peer.get('transfer.file') || peer.get('transfer.info')) return false;

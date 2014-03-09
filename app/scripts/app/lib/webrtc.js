@@ -30,7 +30,10 @@ FileDrop.WebRTC = function (options) {
     });
 
     // Listen for incoming connections
-    this.conn.on('connection', this._onConnection.bind(this));
+    this.conn.on('connection', function (connection) {
+        $.publish('incoming_connection.p2p.peer', {connection: connection});
+        this._onConnection(connection);
+    }.bind(this));
 
     this.conn.on('close', function () {
         console.log('Peer:\t Connected to server closed.');
@@ -58,6 +61,7 @@ FileDrop.WebRTC.prototype.connect = function (id) {
     });
 
     connection.on('open', function () {
+        $.publish('outgoing_connection.p2p.peer', {connection: connection});
         this._onConnection(connection);
     }.bind(this));
 
@@ -69,7 +73,6 @@ FileDrop.WebRTC.prototype.connect = function (id) {
 FileDrop.WebRTC.prototype._onConnection = function (connection) {
     var self = this;
 
-    $.publish('connected.p2p.peer', {connection: connection});
     console.log('Peer:\t P2P connection opened: ', connection);
 
     connection.on('data', function (data) {
