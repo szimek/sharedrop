@@ -1,0 +1,39 @@
+.header
+  .navbar
+    background: rgba(white,.7)
+    box-shadow: none
+    border: none
+    z-index: 100
+    .logo
+      position: relative
+      height: 38px
+      width: 160px
+      margin: 15px 0 0 15px
+      .logo-title
+        display: none
+      .logo-subtitle
+        position: absolute
+        bottom: 0
+        left: 44px
+        font-size: 10px
+        color: #000
+        font-weight: bold
+      img
+        vertical-align: top
+
+    .navbar-right
+      margin-right: 0 !important
+
+    .sign-in, .sign-out
+      color: #000 !important
+      transition: opacity .2s linear
+      &:hover
+        opacity: .6
+
+
+  .navbar-nav.navbar-right
+    margin-right: 0
+    line-height: 28px
+    li
+      a
+        line-height: 28px

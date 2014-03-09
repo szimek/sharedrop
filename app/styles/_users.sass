@@ -1,4 +1,6 @@
 $user-size: 76px
+$blue: #0088cc
+
 .user
   .peer
     position: absolute
@@ -17,7 +19,7 @@ $user-size: 76px
         top: 0
         bottom: 0
         z-index: -1
-        fill: rgba(#0088cc,.5)
+        fill: rgba($blue,.5)
 
     .gravatar
       position: absolute
@@ -25,7 +27,7 @@ $user-size: 76px
       left: 5px
       z-index: 1
       border: 1px solid #c0c0c0
-      box-shadow: rgba(0, 0, 0, 0.2) 0 0 3px
+      box-shadow: rgba(black, 0.2) 0 0 3px
       width: $user-size - 10
       height: $user-size - 10
       border-radius: 50%
@@ -52,7 +54,7 @@ $user-size: 76px
         color: #808080
       .user-connected
         display: inline-block
-        background: rgba(#73b806,.5)
+        background: rgba($blue,.5)
         width: 6px
         height: 6px
         vertical-align: middle
@@ -118,7 +120,7 @@ $user-size: 76px
         &:hover
           +scale(1.1)
           .gravatar
-            border-color: rgba(#0088cc,.8)
+            border-color: rgba($blue,.8)
 
 +keyframes(shadow)
   0%
