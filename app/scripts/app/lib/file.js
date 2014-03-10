@@ -1,7 +1,7 @@
 window.requestFileSystem = window.requestFileSystem || window.webkitRequestFileSystem;
 window.URL = window.URL || window.webkitURL;
 
-FileDrop.File = function (options) {
+ShareDrop.File = function (options) {
     var self = this;
 
     this.name = options.name;
@@ -26,7 +26,7 @@ FileDrop.File = function (options) {
     });
 };
 
-FileDrop.File.removeAll = function () {
+ShareDrop.File.removeAll = function () {
     return new Promise(function (resolve, reject) {
         var filer = new Filer();
 
@@ -51,7 +51,7 @@ FileDrop.File.removeAll = function () {
     });
 };
 
-FileDrop.File.prototype.append = function (data) {
+ShareDrop.File.prototype.append = function (data) {
     var self = this,
         options = {
             create: this.create
@@ -92,7 +92,7 @@ FileDrop.File.prototype.append = function (data) {
     });
 };
 
-FileDrop.File.prototype.save = function () {
+ShareDrop.File.prototype.save = function () {
     var self = this;
 
     console.log('File: Saving file: ', this.fileEntry);
@@ -124,7 +124,7 @@ FileDrop.File.prototype.save = function () {
     }
 };
 
-FileDrop.File.prototype.errorHandler = function (error) {
+ShareDrop.File.prototype.errorHandler = function (error) {
     var msg;
 
     switch (error.code) {
@@ -151,7 +151,7 @@ FileDrop.File.prototype.errorHandler = function (error) {
     console.error('File error: ' + msg);
 };
 
-FileDrop.File.prototype.remove = function () {
+ShareDrop.File.prototype.remove = function () {
     var self = this;
 
     return new Promise(function (resolve, reject) {
@@ -170,14 +170,14 @@ FileDrop.File.prototype.remove = function () {
     });
 };
 
-FileDrop.File.prototype._reset = function () {
+ShareDrop.File.prototype._reset = function () {
     this.create = true;
     this.filesystem = null;
     this.fileEntry = null;
     this.seek = 0;
 };
 
-FileDrop.File.prototype._isWebKit = function () {
+ShareDrop.File.prototype._isWebKit = function () {
     return !!window.webkitRequestFileSystem;
 };
 

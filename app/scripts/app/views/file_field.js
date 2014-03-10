@@ -1,4 +1,4 @@
-FileDrop.App.FileField = Ember.TextField.extend({
+ShareDrop.App.FileField = Ember.TextField.extend({
     type: 'file',
     classNames: ['invisible'],
 

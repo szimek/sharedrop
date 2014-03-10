@@ -13,7 +13,6 @@ module.exports.server = function (options) {
         socketIo = require('socket.io'),
         app = express(),
         host = process.env.HOST,
-        port = process.env.PORT,
         webPort = process.env.WEB_PORT, // 80 or 443
         secret = process.env.SECRET,
         server, io, base;

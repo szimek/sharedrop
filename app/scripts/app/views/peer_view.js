@@ -1,4 +1,4 @@
-FileDrop.App.PeerView = Ember.View.extend({
+ShareDrop.App.PeerView = Ember.View.extend({
     peer: Ember.computed.alias('controller.model'),
     isConnected: Ember.computed.alias('peer.isConnected'),
     classNames: ['peer'],

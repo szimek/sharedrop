@@ -1,4 +1,4 @@
-FileDrop.App.PeerController = Ember.ObjectController.extend({
+ShareDrop.App.PeerController = Ember.ObjectController.extend({
     needs: 'index',
 
     webrtc: Ember.computed.alias('controllers.index.webrtc'),

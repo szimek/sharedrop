@@ -1,4 +1,4 @@
-FileDrop.App.ProgressBarView = Ember.View.extend({
+ShareDrop.App.ProgressBarView = Ember.View.extend({
     tagName: 'svg',
     templateName: 'progress-bar',
 

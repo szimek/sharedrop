@@ -1,4 +1,4 @@
-FileDrop
+ShareDrop
 ========
 
 It uses PeerJS server at http://file-drop-peer-server.herokuapp.com.

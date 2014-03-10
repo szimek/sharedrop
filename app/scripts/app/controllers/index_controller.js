@@ -1,4 +1,4 @@
-FileDrop.App.IndexController = Ember.ArrayController.extend({
+ShareDrop.App.IndexController = Ember.ArrayController.extend({
     needs: ['application'],
 
     you: Ember.computed.alias('controllers.application.you'),
@@ -25,7 +25,7 @@ FileDrop.App.IndexController = Ember.ArrayController.extend({
 
         // Connect to PeerJS server first,
         // so that we already have peer ID when later joining a room.
-        this.set('webrtc', new FileDrop.WebRTC());
+        this.set('webrtc', new ShareDrop.WebRTC());
 
         this._super();
     },
@@ -58,7 +58,7 @@ FileDrop.App.IndexController = Ember.ArrayController.extend({
             peer;
 
         delete attrs.peer;
-        peer = FileDrop.App.Peer.create(attrs);
+        peer = ShareDrop.App.Peer.create(attrs);
         peer.get('peer').setProperties(peerAttrs);
 
         this.pushObject(peer);
@@ -87,7 +87,7 @@ FileDrop.App.IndexController = Ember.ArrayController.extend({
         you.set('peer.id', data.id);
 
         // Join room and broadcast your attributes
-        var room = new FileDrop.Room();
+        var room = new ShareDrop.Room();
         room.join(you.serialize());
         this.set('room', room);
     },

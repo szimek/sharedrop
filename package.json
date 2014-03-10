@@ -1,5 +1,5 @@
 {
-  "name": "filedrop",
+  "name": "ShareDrop",
   "version": "0.0.1",
   "description": "P2P file sharing",
   "main": "index.js",

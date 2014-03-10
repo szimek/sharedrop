@@ -1,16 +1,16 @@
-window.FileDrop.App = Ember.Application.create();
+window.ShareDrop.App = Ember.Application.create();
 
-FileDrop.App.deferReadiness();
+ShareDrop.App.deferReadiness();
 
 // Check if everything we need is available
 (function () {
     checkWebRTCSupport()
     .then(clearFileSystem)
     .catch(function (error) {
-        FileDrop.App.error = error;
+        ShareDrop.App.error = error;
     })
     .then(function () {
-        FileDrop.App.advanceReadiness();
+        ShareDrop.App.advanceReadiness();
     });
 
     function checkWebRTCSupport() {
@@ -25,7 +25,7 @@ FileDrop.App.deferReadiness();
 
     function clearFileSystem() {
         return new Promise(function (resolve, reject) {
-            FileDrop.File.removeAll()
+            ShareDrop.File.removeAll()
             .then(function () {
                 resolve();
             })
@@ -36,10 +36,10 @@ FileDrop.App.deferReadiness();
     }
 })();
 
-FileDrop.App.IndexRoute = Ember.Route.extend({
+ShareDrop.App.IndexRoute = Ember.Route.extend({
     beforeModel: function() {
-        if (FileDrop.App.error) {
-            throw new Error(FileDrop.App.error);
+        if (ShareDrop.App.error) {
+            throw new Error(ShareDrop.App.error);
         }
     },
 
@@ -53,7 +53,7 @@ FileDrop.App.IndexRoute = Ember.Route.extend({
     }
 });
 
-FileDrop.App.ErrorRoute = Ember.Route.extend({
+ShareDrop.App.ErrorRoute = Ember.Route.extend({
     renderTemplate: function(controller, error) {
         var name = 'errors/' + error.message,
             template = Ember.TEMPLATES[name];

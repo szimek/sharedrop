@@ -1,10 +1,10 @@
-FileDrop.Room = function () {
+ShareDrop.Room = function () {
     var url = window.location.protocol + '//' + window.location.hostname;
     this._socket = new io.connect(url);
     this.name = null;
 };
 
-FileDrop.Room.prototype.join = function (user) {
+ShareDrop.Room.prototype.join = function (user) {
     var self = this;
 
     // Get room name
@@ -70,7 +70,7 @@ FileDrop.Room.prototype.join = function (user) {
     return this;
 };
 
-FileDrop.Room.prototype.update = function (attrs) {
+ShareDrop.Room.prototype.update = function (attrs) {
     this._socket.emit('update', {
         room: this.name,
         peer: attrs

@@ -1,5 +1,5 @@
 module.exports = function (grunt) {
-    grunt.registerMultiTask('server', 'Start FileDrop server', function (target) {
+    grunt.registerMultiTask('server', 'Start ShareDrop server', function (target) {
         var done = this.async(),
             options, keepalive, server;
 
@@ -15,7 +15,7 @@ module.exports = function (grunt) {
 
         server.listen(process.env.PORT)
         .on('listening', function () {
-            grunt.log.writeln('Started FileDrop web server...');
+            grunt.log.writeln('Started ShareDrop web server...');
 
             if (!keepalive) {
                 done();

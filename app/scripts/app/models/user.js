@@ -1,4 +1,4 @@
-FileDrop.App.User = FileDrop.App.Peer.extend({
+ShareDrop.App.User = ShareDrop.App.Peer.extend({
     label: function () {
         var email = this.get('email'),
             local_ip = this.get('local_ip'),
