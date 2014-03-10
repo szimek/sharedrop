@@ -95,8 +95,9 @@ ShareDrop.WebRTC.prototype._onConnection = function (connection) {
 ShareDrop.WebRTC.prototype._onBinaryData = function (data, connection) {
     var self = this,
         incoming = this.files.incoming[connection.peer],
-        block = incoming.block,
         info = incoming.info,
+        file = incoming.file,
+        block = incoming.block,
         receivedChunkNum = incoming.receivedChunkNum,
         chunksPerAck = ShareDrop.WebRTC.CHUNKS_PER_ACK,
         nextChunkNum, lastChunkInFile, lastChunkInBlock;
@@ -111,12 +112,12 @@ ShareDrop.WebRTC.prototype._onBinaryData = function (data, connection) {
     lastChunkInBlock = receivedChunkNum > 0 && ((receivedChunkNum + 1) % chunksPerAck) === 0;
 
     if (lastChunkInFile || lastChunkInBlock) {
-        this.file.append(block).then(function () {
+        file.append(block).then(function () {
             if (lastChunkInFile) {
-                self.file.save();
+                file.save();
 
                 $.publish('file_received.p2p.peer', {
-                    blob: self.file,
+                    blob: file,
                     connection: connection
                 });
             } else {
@@ -141,7 +142,9 @@ ShareDrop.WebRTC.prototype._onJSONData = function (data, connection) {
         // Store incoming file info for later
         this.files.incoming[connection.peer] = {
             info: info,
-            cache: []
+            file: null,
+            block: [],
+            receivedChunkNum: 0
         };
 
         console.log('Peer:\t File info: ', data);
@@ -211,8 +214,7 @@ ShareDrop.WebRTC.prototype.sendCancelRequest = function (connection) {
 };
 
 ShareDrop.WebRTC.prototype.sendFileResponse = function (connection, response) {
-    var self = this,
-        message = {
+    var message = {
             type: 'response',
             payload: response
         };
@@ -224,11 +226,7 @@ ShareDrop.WebRTC.prototype.sendFileResponse = function (connection, response) {
 
         new ShareDrop.File({name: info.name, size: info.size, type: info.type})
         .then(function (file) {
-            self.file = file;
-
-            incoming.block = [];
-            incoming.receivedChunkNum = 0;
-
+            incoming.file = file;
             connection.send(JSON.stringify(message));
         });
     } else {
@@ -279,7 +277,7 @@ ShareDrop.WebRTC.prototype._sendChunk = function (connection, file, chunkNum) {
         chunkSize = Peer.CHUNK_MTU,
         begin, end, blob;
 
-    var reader = new FileReader;
+    var reader = new FileReader();
     begin = chunkNum * chunkSize;
     end = Math.min(begin + chunkSize, info.size);
 
