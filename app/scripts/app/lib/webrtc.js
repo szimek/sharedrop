@@ -264,7 +264,7 @@ ShareDrop.WebRTC.prototype._sendBlock = function (connection, file, beginChunkNu
         endChunkNum = beginChunkNum + chunksToSend - 1,
         chunkNum;
 
-    console.log('Send block: start: ' + beginChunkNum + ' end: ' + endChunkNum);
+    // console.log('Send block: start: ' + beginChunkNum + ' end: ' + endChunkNum);
 
     for (chunkNum = beginChunkNum; chunkNum <  endChunkNum + 1; chunkNum++) {
         this._sendChunk(connection, file, chunkNum);
