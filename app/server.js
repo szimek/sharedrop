@@ -11,6 +11,8 @@ module.exports.server = function (options) {
         extend = require('deep-extend'),
         persona = require('express-persona'),
         socketIo = require('socket.io'),
+        FirebaseTokenGenerator = require("firebase-token-generator"),
+        firebaseTokenGenerator = new FirebaseTokenGenerator(process.env.FIREBASE_SECRET),
         app = express(),
         host = process.env.HOST,
         webPort = process.env.WEB_PORT, // 80 or 443
@@ -50,6 +52,12 @@ module.exports.server = function (options) {
             name = crypto.createHmac('md5', secret).update(ip).digest('hex');
 
         res.json({ name: name, uuid: uuid.v1(), public_ip: ip });
+    });
+
+    app.get('/auth', function (req, res) {
+        var token = firebaseTokenGenerator.createToken({}, {expires: 32503680000}); // 01.01.3000 00:00
+
+        res.json({ token: token });
     });
 
     //
