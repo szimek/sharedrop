@@ -1,6 +1,5 @@
-ShareDrop.Room = function () {
-    var url = window.location.protocol + '//' + window.location.hostname;
-    this._socket = new io.connect(url);
+ShareDrop.Room = function (firebaseRef) {
+    this._ref = firebaseRef;
     this.name = null;
 };
 
@@ -12,67 +11,53 @@ ShareDrop.Room.prototype.join = function (user) {
 
     // Join room and listen for changes
     .then(function (data) {
-        var socket = self._socket;
-
-        self.name = data.name,
-
         $.extend(user, {
             uuid: data.uuid,
             public_ip: data.public_ip
         });
 
-        socket.emit('join', {
-            room: self.name,
-            peer: user
-        });
-        console.log('Room:\t Connecting to: ', self.name);
+        self.name = data.name;
 
-        socket.on('user_list', function (data) {
-            console.log('Room:\t Connected to: ', self.name);
+        // Setup Firebase refs
+        self._roomRef = self._ref.child(self.name);
+        self._usersRef = self._roomRef.child('users');
+        self._userRef = self._usersRef.push();
+
+        // Remove yourself from the room when disconnected
+        self._userRef.onDisconnect().remove();
+
+        // Join the room
+        self._userRef.set(user, function (error) {
             $.publish('connected.room', user);
-
-            console.log('Room:\t user_list: ', data);
-            $.publish('user_list.room', [data]);
         });
 
-        socket.on('user_added', function (user) {
+        self._usersRef.on('child_added', function (snapshot) {
+            var user = snapshot.val();
+
             console.log('Room:\t user_added: ', user);
             $.publish('user_added.room', user);
         });
 
-        socket.on('user_changed', function (user) {
-            console.log('Room:\t user_changed: ', user);
-            $.publish('user_changed.room', user);
-        });
+        self._usersRef.on('child_removed', function (snapshot) {
+            var user = snapshot.val();
 
-        socket.on('user_removed', function (user) {
             console.log('Room:\t user_removed: ', user);
             $.publish('user_removed.room', user);
         });
 
-        socket.on('disconnect', function () {
-            console.log('Room:\t disconnect');
+        self._usersRef.on('child_changed', function (snapshot) {
+            var user = snapshot.val();
+
+            console.log('Room:\t user_changed: ', user);
+            $.publish('user_changed.room', user);
         });
 
-        socket.on('error', function () {
-            console.log('Room:\t error');
-        });
-
-        socket.on('reconnecting', function () {
-            console.log('Room:\t reconnecting');
-        });
-
-        socket.on('reconnect', function () {
-            console.log('Room:\t reconnect');
-        });
+        console.log('Room:\t Connecting to: ', self.name);
     });
 
     return this;
 };
 
 ShareDrop.Room.prototype.update = function (attrs) {
-    this._socket.emit('update', {
-        room: this.name,
-        peer: attrs
-    });
+    this._userRef.update(attrs);
 };

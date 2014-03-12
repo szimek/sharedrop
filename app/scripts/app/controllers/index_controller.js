@@ -7,7 +7,6 @@ ShareDrop.App.IndexController = Ember.ArrayController.extend({
     init: function () {
         // Handle room events
         $.subscribe('connected.room', this._onRoomConnected.bind(this));
-        $.subscribe('user_list.room', this._onRoomUserList.bind(this));
         $.subscribe('user_added.room', this._onRoomUserAdded.bind(this));
         $.subscribe('user_changed.room', this._onRoomUserChanged.bind(this));
         $.subscribe('user_removed.room', this._onRoomUserRemoved.bind(this));
@@ -39,10 +38,6 @@ ShareDrop.App.IndexController = Ember.ArrayController.extend({
 
         // Find and set your local IP
         this._setUserLocalIP();
-    },
-
-    _onRoomUserList: function (event, data) {
-        data.forEach(this._addPeer.bind(this));
     },
 
     _onRoomUserAdded: function (event, data) {
@@ -87,7 +82,7 @@ ShareDrop.App.IndexController = Ember.ArrayController.extend({
         you.set('peer.id', data.id);
 
         // Join room and broadcast your attributes
-        var room = new ShareDrop.Room();
+        var room = new ShareDrop.Room(ShareDrop.App.ref);
         room.join(you.serialize());
         this.set('room', room);
     },
