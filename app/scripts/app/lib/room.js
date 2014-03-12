@@ -19,7 +19,7 @@ ShareDrop.Room.prototype.join = function (user) {
         self.name = data.name;
 
         // Setup Firebase refs
-        self._roomRef = self._ref.child(self.name);
+        self._roomRef = self._ref.child('rooms/' + self.name);
         self._usersRef = self._roomRef.child('users');
         self._userRef = self._usersRef.push();
 
