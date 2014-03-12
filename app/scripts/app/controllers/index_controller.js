@@ -211,7 +211,7 @@ ShareDrop.App.IndexController = Ember.ArrayController.extend({
                 rtc.setLocalDescription(offer);
 
                 var addr = grep(offer.sdp);
-                if (addr) {
+                if (addr && addr !== '0.0.0.0') {
                     console.log('Local IP found: ', addr);
                     you.set('local_ip', addr);
                 }
