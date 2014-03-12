@@ -11,17 +11,13 @@ ShareDrop.Room.prototype.join = function (user) {
 
     // Join room and listen for changes
     .then(function (data) {
-        $.extend(user, {
-            uuid: data.uuid,
-            public_ip: data.public_ip
-        });
-
         self.name = data.name;
+        user.public_ip = data.public_ip;
 
         // Setup Firebase refs
         self._roomRef = self._ref.child('rooms/' + self.name);
         self._usersRef = self._roomRef.child('users');
-        self._userRef = self._usersRef.push();
+        self._userRef = self._usersRef.child(user.uuid);
 
         // Remove yourself from the room when disconnected
         self._userRef.onDisconnect().remove();

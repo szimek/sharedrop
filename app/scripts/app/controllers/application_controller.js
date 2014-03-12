@@ -3,6 +3,7 @@ ShareDrop.App.ApplicationController = Ember.Controller.extend({
         this._super();
 
         var you = ShareDrop.App.User.create({
+            uuid: ShareDrop.App.userId,
             email: localStorage.email || null
         });
 

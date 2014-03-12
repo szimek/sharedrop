@@ -9,11 +9,9 @@
   "author": "Szymon Nowak",
   "license": "MIT",
   "dependencies": {
-    "socket.io": "~0.9.16",
     "express": "~3.4.7",
     "express-persona": "~0.1.1",
     "node-uuid": "~1.4.1",
-    "deep-extend": "~0.2.6",
     "grunt": "~0.4.2",
     "grunt-cli": "~0.1.9",
     "load-grunt-tasks": "~0.2.1",

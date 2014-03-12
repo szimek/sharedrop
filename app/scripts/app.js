@@ -44,11 +44,11 @@ ShareDrop.App.deferReadiness();
         return new Promise(function (resolve, reject) {
             var xhr = Ember.$.getJSON('/auth');
             xhr.then(function (data) {
-                var token = data.token,
-                    ref = new Firebase(ShareDrop.App.config.FIREBASE_URL);
-                    ShareDrop.App.ref = ref;
+                var ref = new Firebase(ShareDrop.App.config.FIREBASE_URL);
+                ShareDrop.App.ref = ref;
+                ShareDrop.App.userId = data.id;
 
-                ref.auth(token, function (error) {
+                ref.auth(data.token, function (error) {
                     if (error) {
                         reject(error);
                     } else {
