@@ -1,33 +1,19 @@
 // TODO: provide TURN server config
 // once it's possible to create rooms with custom names.
-ShareDrop.WebRTC = function (options) {
-    this.conn = new Peer({ // PeerJS client library
-        host: 'file-drop-peer-server.herokuapp.com',
-        port: 80,
+ShareDrop.WebRTC = function (id, options) {
+    var defaults = {
         config: {'iceServers': [
             { url: 'stun:stun.l.google.com:19302' }
         ]},
         debug: 3
-    });
+    };
+
+    this.conn = new Peer(id, $.extend(defaults, options));
 
     this.files = {
         outgoing: {},
         incoming: {}
     };
-
-    // When connected to PeerJS server
-    this.conn.on('open', function (id) {
-        var self = this;
-
-        $.publish('connected.server.peer', {id: id});
-        console.log('Peer:\t Connected to server with ID: ', id);
-
-        // TODO: cancel on error/disconnect
-        // Ping WebSocket server to prevent timeout on Heroku
-        window.setInterval(function () {
-            self.socket.send({type: 'ping'});
-        }, 5000);
-    });
 
     // Listen for incoming connections
     this.conn.on('connection', function (connection) {

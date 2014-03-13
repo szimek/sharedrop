@@ -12,7 +12,6 @@ ShareDrop.App.IndexController = Ember.ArrayController.extend({
         $.subscribe('user_removed.room', this._onRoomUserRemoved.bind(this));
 
         // Handle peer events
-        $.subscribe('connected.server.peer', this._onPeerServerConnected.bind(this));
         $.subscribe('incoming_connection.p2p.peer', this._onPeerP2PIncomingConnection.bind(this));
         $.subscribe('outgoing_connection.p2p.peer', this._onPeerP2POutgoingConnection.bind(this));
         $.subscribe('disconnected.p2p.peer', this._onPeerP2PDisconnected.bind(this));
@@ -22,15 +21,17 @@ ShareDrop.App.IndexController = Ember.ArrayController.extend({
         $.subscribe('file_received.p2p.peer', this._onPeerP2PFileReceived.bind(this));
         $.subscribe('file_sent.p2p.peer', this._onPeerP2PFileSent.bind(this));
 
-        // Connect to PeerJS server first,
-        // so that we already have peer ID when later joining a room.
-        this.set('webrtc', new ShareDrop.WebRTC());
+        // Join the room
+        var room = new ShareDrop.Room(ShareDrop.App.ref);
+        room.join(this.get('you').serialize());
+        this.set('room', room);
 
         this._super();
     },
 
     _onRoomConnected: function (event, data) {
-        var you = this.get('you');
+        var you = this.get('you'),
+            room = this.get('room');
 
         you.get('peer').setProperties(data.peer);
         delete data.peer;
@@ -38,6 +39,12 @@ ShareDrop.App.IndexController = Ember.ArrayController.extend({
 
         // Find and set your local IP
         this._setUserLocalIP();
+
+        // Initialize WebRTC
+        this.set('webrtc', new ShareDrop.WebRTC(you.get('uuid'), {
+            room: room.name,
+            firebaseRef: ShareDrop.App.ref
+        }));
     },
 
     _onRoomUserAdded: function (event, data) {
@@ -73,18 +80,6 @@ ShareDrop.App.IndexController = Ember.ArrayController.extend({
     _onRoomUserRemoved: function (event, data) {
         var peer = this.findBy('uuid', data.uuid);
         this.removeObject(peer);
-    },
-
-    _onPeerServerConnected: function (event, data) {
-        var you = this.get('you');
-
-        // you.set('isConnected', true);
-        you.set('peer.id', data.id);
-
-        // Join room and broadcast your attributes
-        var room = new ShareDrop.Room(ShareDrop.App.ref);
-        room.join(you.serialize());
-        this.set('room', room);
     },
 
     _onPeerP2PIncomingConnection: function (event, data) {
