@@ -1,6 +1,11 @@
+*
+  +box-sizing(border-box)
+  &::before, &::after
+    +box-sizing(border-box)
+
 html
   height: 100%
-  // The html and body elements cannot have any padding or margin.
+  font-family: "Helvetica Neue"
 
 body
   height: 100%
@@ -9,12 +14,8 @@ body
     height: 100%
     // The html and body elements cannot have any padding or margin.
 
-.wrap
-  min-height: 100%
-  height: auto
-  // Negative indent footer by its height
-  margin: 0 auto -50px
-  padding: 0
+a
+  text-decoration: none
 
 .invisible
   height: 0
