@@ -1,9 +1,13 @@
-.header
+.l-header
   .navbar
-    background: rgba(white,.7)
-    box-shadow: none
-    border: none
+    position: fixed
     z-index: 100
+    top: 0
+    left: 0
+    width: 100%
+    height: 60px
+    background: rgba(white,.7)
+    color: #000
     .logo
       position: relative
       height: 38px
@@ -16,24 +20,26 @@
         bottom: 0
         left: 44px
         font-size: 10px
-        color: #000
         font-weight: bold
       img
         vertical-align: top
 
-    .navbar-right
-      margin-right: 0 !important
+    .nav
+      position: absolute
+      top: 15px
+      right: 15px
+      > li
+        float: left
+        margin-left: 15px
+        font-size: 1.4rem
+        line-height: 3rem
+        a
+          display: inline-block
+          img
+            vertical-align: middle
 
-    .sign-in, .sign-out
-      color: #000 !important
+    .sign
+      color: #000
       transition: opacity .2s linear
       &:hover
         opacity: .6
-
-
-  .navbar-nav.navbar-right
-    margin-right: 0
-    line-height: 28px
-    li
-      a
-        line-height: 28px

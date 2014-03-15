@@ -1,0 +1,28 @@
+.popover
+  position: absolute !important
+  background: white
+  border: 1px solid #c0c0c0
+  padding: 15px
+  border-radius: 5px
+  min-width: 320px
+  max-width: 460px
+  z-index: 200
+  box-shadow: rgba(black,.3) 0 1px 3px
+  &::after
+    content: ""
+    position: absolute
+    bottom: -6px
+    left: 50%
+    margin-left: -5px
+    width: 10px
+    height: 10px
+    background: white
+    +rotate(45deg)
+    border-right: 1px solid #c0c0c0
+    border-bottom: 1px solid #c0c0c0
+  [class*=glyphicon-]
+    font-size: 26px
+  p
+    font-size: 12px
+  button
+    margin-left: 10px
