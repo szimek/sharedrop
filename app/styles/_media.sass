@@ -1,14 +1,14 @@
 @media (max-width: 768px)
-  .container
+  .l-content
     padding: 60px 0 115px
   .user
     .peer
       position: relative
       left: auto !important
       bottom: auto !important
-      height: auto
+      height: 106px
       width: 100%
-      padding: 10px 15px
+      padding: 15px
       border-bottom: 1px solid #eee
       margin: 0 !important
       text-align: left
@@ -29,9 +29,44 @@
           font-size: 12px
           color: #808080
       .popover
-        left: auto !important
-        right: 15px
-        top: -10px !important
+        left: 100px !important
+        right: 0
+        top: 0 !important
+        bottom: 0
+        border: none
+        max-width: 100%
+        box-shadow: none
+        background: #f0f0f0
+        border-radius: 0
+        padding: 15px
+        &::after
+          display: none
+        .popover-content
+          padding-right: 140px
+        .popover-buttons
+          position: absolute
+          top: -15px
+          right: -155px
+          width: 140px
+          height: 106px
+          text-align: right
+          button
+            +button_reset
+            height: 106px
+            line-height: 106px
+            width: 50%
+            font-size: 14px
+            margin-left: -3px
+            color: #fff
+            &.cancel
+              background: #b0b0b0
+              &:active
+                background: #a0a0a0
+            &.confirm
+              background: rgba($blue,.8)
+              &:active
+                background: $blue
+
     &.you
       .peer
         border-bottom: none

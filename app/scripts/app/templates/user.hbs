@@ -1,8 +1,8 @@
 <div class="avatar">
-  <img class="gravatar img-circle" {{bind-attr src="avatarUrl" alt="label" title="uuid"}}>
+  <img class="gravatar" {{bind-attr src="avatarUrl" alt="label" title="uuid"}}>
 </div>
 <div class="user-info">
-  You
+  <div class="user-label">You</div>
   {{#if model.local_ip}}
     <div class="user-id">
       {{#if model.isConnected}}

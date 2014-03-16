@@ -1,18 +1,17 @@
-<div class="media">
-  <div class="pull-left">
-    <div {{bind-attr class=":media-object iconClass"}}></div>
+<div class="popover-body">
+  <div class="popover-icon">
+    <i {{bind-attr class="iconClass"}}></i>
   </div>
-  <div class="media-body">
-    <p>{{yield}}</p>
 
-    <div class="pull-right">
-      {{#if cancel-button-label}}
-        <button type="button" class="button" {{action "cancel"}}>{{cancel-button-label}}</button>
-      {{/if}}
+  <p>{{yield}}</p>
 
-      {{#if confirm-button-label}}
-        <button type="button" class="button" {{action "confirm"}}>{{confirm-button-label}}</button>
-      {{/if}}
-    </div>
+  <div class="popover-buttons">
+    {{#if cancel-button-label}}
+      <button type="button" class="button cancel" {{action "cancel"}}>{{cancel-button-label}}</button>
+    {{/if}}
+
+    {{#if confirm-button-label}}
+      <button type="button" class="button confirm" {{action "confirm"}}>{{confirm-button-label}}</button>
+    {{/if}}
   </div>
 </div>

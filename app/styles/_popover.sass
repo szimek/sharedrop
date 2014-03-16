@@ -2,12 +2,13 @@
   position: absolute !important
   background: white
   border: 1px solid #c0c0c0
-  padding: 15px
+  padding: 10px
   border-radius: 5px
   min-width: 320px
   max-width: 460px
-  z-index: 200
+  z-index: 100
   box-shadow: rgba(black,.3) 0 1px 3px
+  text-align: left
   &::after
     content: ""
     position: absolute
@@ -17,12 +18,21 @@
     width: 10px
     height: 10px
     background: white
-    +rotate(45deg)
     border-right: 1px solid #c0c0c0
     border-bottom: 1px solid #c0c0c0
-  [class*=glyphicon-]
-    font-size: 26px
-  p
-    font-size: 12px
-  button
-    margin-left: 10px
+    +rotate(45deg)
+  .popover-body
+    position: relative
+    padding-left: 60px
+    > p
+      font-size: 12px
+      line-height: 1.4em
+      margin-bottom: 1em
+  .popover-icon
+    position: absolute
+    left: 0
+    top: 0
+    font-size: 50px
+
+  .popover-buttons
+    text-align: right
