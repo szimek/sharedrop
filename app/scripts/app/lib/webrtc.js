@@ -28,13 +28,6 @@ ShareDrop.WebRTC = function (id, options) {
     this.conn.on('error', function (error) {
         console.log('Peer:\t Error while connecting to server: ', error);
     });
-
-    // Make sure PeerJS connection is cleaned up
-    window.onunload = window.onbeforeunload = function () {
-        if (!!this.conn && !this.conn.destroyed) {
-            this.conn.destroy();
-        }
-    };
 };
 
 ShareDrop.WebRTC.CHUNKS_PER_ACK = 64;

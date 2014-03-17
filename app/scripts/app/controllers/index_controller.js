@@ -7,6 +7,7 @@ ShareDrop.App.IndexController = Ember.ArrayController.extend({
     init: function () {
         // Handle room events
         $.subscribe('connected.room', this._onRoomConnected.bind(this));
+        $.subscribe('disconnected.room', this._onRoomDisconnected.bind(this));
         $.subscribe('user_added.room', this._onRoomUserAdded.bind(this));
         $.subscribe('user_changed.room', this._onRoomUserChanged.bind(this));
         $.subscribe('user_removed.room', this._onRoomUserRemoved.bind(this));
@@ -45,6 +46,11 @@ ShareDrop.App.IndexController = Ember.ArrayController.extend({
             room: room.name,
             firebaseRef: ShareDrop.App.ref
         }));
+    },
+
+    _onRoomDisconnected: function () {
+        this.clear();
+        this.set('webrtc', null);
     },
 
     _onRoomUserAdded: function (event, data) {
@@ -257,7 +263,7 @@ ShareDrop.App.IndexController = Ember.ArrayController.extend({
         var addr = this.get('you.local_ip'),
             room  = this.get('room');
 
-        if (room && addr !== undefined) {
+        if (room && addr) {
             console.log('Broadcasting user\'s local IP: ', addr);
             room.update({local_ip: addr});
         }

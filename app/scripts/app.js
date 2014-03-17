@@ -49,11 +49,7 @@ ShareDrop.App.deferReadiness();
                 ShareDrop.App.userId = data.id;
 
                 ref.auth(data.token, function (error) {
-                    if (error) {
-                        reject(error);
-                    } else {
-                        resolve();
-                    }
+                    error ? reject(error) : resolve();
                 });
             });
         });
