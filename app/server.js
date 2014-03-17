@@ -24,7 +24,15 @@ module.exports.server = function (options) {
     app.use(express.logger());
     app.use(express.urlencoded());
     app.use(express.cookieParser());
-    app.use(express.session({ secret: secret }));
+    app.use(express.cookieSession({
+        cookie: {
+            // secure: true,
+            httpOnly: true,
+            maxAge: 30 * 24 * 60 * 60 * 1000 // 30 days
+        },
+        secret: secret,
+        proxy: true
+    }));
     app.use(express.compress());
     app.use(express.json());
 
