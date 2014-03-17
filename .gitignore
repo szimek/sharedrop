@@ -4,3 +4,5 @@
 .env
 .tmp
 dist
+
+newrelic_agent.log

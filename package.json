@@ -1,8 +1,12 @@
 {
   "name": "ShareDrop",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "P2P file sharing",
-  "main": "index.js",
+  "repository" : {
+    "type" : "git",
+    "url" : "https://github.com/cowbell/sharedrop.git"
+  },
+  "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -12,6 +16,9 @@
     "express": "~3.4.7",
     "express-persona": "~0.1.1",
     "node-uuid": "~1.4.1",
+    "firebase-token-generator": "^0.1.4",
+    "newrelic": "^1.4.0",
+
     "grunt": "~0.4.2",
     "grunt-cli": "~0.1.9",
     "load-grunt-tasks": "~0.2.1",
@@ -27,8 +34,7 @@
     "grunt-concurrent": "~0.4.3",
     "grunt-contrib-compass": "~0.7.1",
     "grunt-env": "~0.4.1",
-    "grunt-preprocess": "^4.0.0",
-    "firebase-token-generator": "^0.1.4"
+    "grunt-preprocess": "^4.0.0"
   },
   "engines": {
     "node": "~0.10.0"
