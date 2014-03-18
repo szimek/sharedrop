@@ -46,6 +46,9 @@ module.exports = function (grunt) {
     },
 
     compass: {
+      options: {
+        bundleExec: true
+      },
       dev: {
         options: {
           sassDir: 'app/styles',
