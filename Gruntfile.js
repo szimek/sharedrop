@@ -98,6 +98,17 @@ module.exports = function (grunt) {
       }
     },
 
+    rev: {
+      files: {
+        src: [
+          'dist/scripts/**/*.js',
+          'dist/styles/**/*.css',
+          'dist/fonts/**/*.{eot,svg,ttf,woff}',
+          'dist/images/**/*.{png,jpg,jpeg,gif,webp,svg}',
+        ]
+      }
+    },
+
     // Reads HTML for usemin blocks to enable smart builds that automatically
     // concat, minify and revision files. Creates configurations in memory so
     // additional tasks can operate on them
@@ -110,10 +121,11 @@ module.exports = function (grunt) {
 
     // Performs rewrites based on the useminPrepare configuration
     usemin: {
-      html: 'dist/index.html',
       options: {
-        dirs: ['dist']
-      }
+        assetsDirs: ['dist', 'dist/images']
+      },
+      html: 'dist/index.html',
+      css: 'dist/styles/*.css'
     },
 
     // Copies remaining files to places other tasks can use
@@ -204,6 +216,7 @@ module.exports = function (grunt) {
     'copy:dist',
     'cssmin',
     'uglify',
+    'rev',
     'usemin'
   ]);
 
