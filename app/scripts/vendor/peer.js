@@ -1,580 +1,5 @@
 /*! peerjs.js build:0.3.7, development. Copyright(c) 2013 Michelle Bu <michelle@michellebu.com> */
 (function(exports){
-var binaryFeatures = {};
-binaryFeatures.useBlobBuilder = (function(){
-  try {
-    new Blob([]);
-    return false;
-  } catch (e) {
-    return true;
-  }
-})();
-
-binaryFeatures.useArrayBufferView = !binaryFeatures.useBlobBuilder && (function(){
-  try {
-    return (new Blob([new Uint8Array([])])).size === 0;
-  } catch (e) {
-    return true;
-  }
-})();
-
-exports.binaryFeatures = binaryFeatures;
-exports.BlobBuilder = window.WebKitBlobBuilder || window.MozBlobBuilder || window.MSBlobBuilder || window.BlobBuilder;
-
-function BufferBuilder(){
-  this._pieces = [];
-  this._parts = [];
-}
-
-BufferBuilder.prototype.append = function(data) {
-  if(typeof data === 'number') {
-    this._pieces.push(data);
-  } else {
-    this.flush();
-    this._parts.push(data);
-  }
-};
-
-BufferBuilder.prototype.flush = function() {
-  if (this._pieces.length > 0) {
-    var buf = new Uint8Array(this._pieces);
-    if(!binaryFeatures.useArrayBufferView) {
-      buf = buf.buffer;
-    }
-    this._parts.push(buf);
-    this._pieces = [];
-  }
-};
-
-BufferBuilder.prototype.getBuffer = function() {
-  this.flush();
-  if(binaryFeatures.useBlobBuilder) {
-    var builder = new BlobBuilder();
-    for(var i = 0, ii = this._parts.length; i < ii; i++) {
-      builder.append(this._parts[i]);
-    }
-    return builder.getBlob();
-  } else {
-    return new Blob(this._parts);
-  }
-};
-exports.BinaryPack = {
-  unpack: function(data){
-    var unpacker = new Unpacker(data);
-    return unpacker.unpack();
-  },
-  pack: function(data){
-    var packer = new Packer();
-    packer.pack(data);
-    var buffer = packer.getBuffer();
-    return buffer;
-  }
-};
-
-function Unpacker (data){
-  // Data is ArrayBuffer
-  this.index = 0;
-  this.dataBuffer = data;
-  this.dataView = new Uint8Array(this.dataBuffer);
-  this.length = this.dataBuffer.byteLength;
-}
-
-
-Unpacker.prototype.unpack = function(){
-  var type = this.unpack_uint8();
-  if (type < 0x80){
-    var positive_fixnum = type;
-    return positive_fixnum;
-  } else if ((type ^ 0xe0) < 0x20){
-    var negative_fixnum = (type ^ 0xe0) - 0x20;
-    return negative_fixnum;
-  }
-  var size;
-  if ((size = type ^ 0xa0) <= 0x0f){
-    return this.unpack_raw(size);
-  } else if ((size = type ^ 0xb0) <= 0x0f){
-    return this.unpack_string(size);
-  } else if ((size = type ^ 0x90) <= 0x0f){
-    return this.unpack_array(size);
-  } else if ((size = type ^ 0x80) <= 0x0f){
-    return this.unpack_map(size);
-  }
-  switch(type){
-    case 0xc0:
-      return null;
-    case 0xc1:
-      return undefined;
-    case 0xc2:
-      return false;
-    case 0xc3:
-      return true;
-    case 0xca:
-      return this.unpack_float();
-    case 0xcb:
-      return this.unpack_double();
-    case 0xcc:
-      return this.unpack_uint8();
-    case 0xcd:
-      return this.unpack_uint16();
-    case 0xce:
-      return this.unpack_uint32();
-    case 0xcf:
-      return this.unpack_uint64();
-    case 0xd0:
-      return this.unpack_int8();
-    case 0xd1:
-      return this.unpack_int16();
-    case 0xd2:
-      return this.unpack_int32();
-    case 0xd3:
-      return this.unpack_int64();
-    case 0xd4:
-      return undefined;
-    case 0xd5:
-      return undefined;
-    case 0xd6:
-      return undefined;
-    case 0xd7:
-      return undefined;
-    case 0xd8:
-      size = this.unpack_uint16();
-      return this.unpack_string(size);
-    case 0xd9:
-      size = this.unpack_uint32();
-      return this.unpack_string(size);
-    case 0xda:
-      size = this.unpack_uint16();
-      return this.unpack_raw(size);
-    case 0xdb:
-      size = this.unpack_uint32();
-      return this.unpack_raw(size);
-    case 0xdc:
-      size = this.unpack_uint16();
-      return this.unpack_array(size);
-    case 0xdd:
-      size = this.unpack_uint32();
-      return this.unpack_array(size);
-    case 0xde:
-      size = this.unpack_uint16();
-      return this.unpack_map(size);
-    case 0xdf:
-      size = this.unpack_uint32();
-      return this.unpack_map(size);
-  }
-};
-
-Unpacker.prototype.unpack_uint8 = function(){
-  var byte = this.dataView[this.index] & 0xff;
-  this.index++;
-  return byte;
-};
-
-Unpacker.prototype.unpack_uint16 = function(){
-  var bytes = this.read(2);
-  var uint16 =
-    ((bytes[0] & 0xff) * 256) + (bytes[1] & 0xff);
-  this.index += 2;
-  return uint16;
-};
-
-Unpacker.prototype.unpack_uint32 = function(){
-  var bytes = this.read(4);
-  var uint32 =
-     ((bytes[0]  * 256 +
-       bytes[1]) * 256 +
-       bytes[2]) * 256 +
-       bytes[3];
-  this.index += 4;
-  return uint32;
-};
-
-Unpacker.prototype.unpack_uint64 = function(){
-  var bytes = this.read(8);
-  var uint64 =
-   ((((((bytes[0]  * 256 +
-       bytes[1]) * 256 +
-       bytes[2]) * 256 +
-       bytes[3]) * 256 +
-       bytes[4]) * 256 +
-       bytes[5]) * 256 +
-       bytes[6]) * 256 +
-       bytes[7];
-  this.index += 8;
-  return uint64;
-};
-
-
-Unpacker.prototype.unpack_int8 = function(){
-  var uint8 = this.unpack_uint8();
-  return (uint8 < 0x80 ) ? uint8 : uint8 - (1 << 8);
-};
-
-Unpacker.prototype.unpack_int16 = function(){
-  var uint16 = this.unpack_uint16();
-  return (uint16 < 0x8000 ) ? uint16 : uint16 - (1 << 16);
-};
-
-Unpacker.prototype.unpack_int32 = function(){
-  var uint32 = this.unpack_uint32();
-  return (uint32 < Math.pow(2, 31) ) ? uint32 :
-    uint32 - Math.pow(2, 32);
-};
-
-Unpacker.prototype.unpack_int64 = function(){
-  var uint64 = this.unpack_uint64();
-  return (uint64 < Math.pow(2, 63) ) ? uint64 :
-    uint64 - Math.pow(2, 64);
-};
-
-Unpacker.prototype.unpack_raw = function(size){
-  if ( this.length < this.index + size){
-    throw new Error('BinaryPackFailure: index is out of range'
-      + ' ' + this.index + ' ' + size + ' ' + this.length);
-  }
-  var buf = this.dataBuffer.slice(this.index, this.index + size);
-  this.index += size;
-
-    //buf = util.bufferToString(buf);
-
-  return buf;
-};
-
-Unpacker.prototype.unpack_string = function(size){
-  var bytes = this.read(size);
-  var i = 0, str = '', c, code;
-  while(i < size){
-    c = bytes[i];
-    if ( c < 128){
-      str += String.fromCharCode(c);
-      i++;
-    } else if ((c ^ 0xc0) < 32){
-      code = ((c ^ 0xc0) << 6) | (bytes[i+1] & 63);
-      str += String.fromCharCode(code);
-      i += 2;
-    } else {
-      code = ((c & 15) << 12) | ((bytes[i+1] & 63) << 6) |
-        (bytes[i+2] & 63);
-      str += String.fromCharCode(code);
-      i += 3;
-    }
-  }
-  this.index += size;
-  return str;
-}
-
-Unpacker.prototype.unpack_array = function(size){
-  var objects = new Array(size);
-  for(var i = 0; i < size ; i++){
-    objects[i] = this.unpack();
-  }
-  return objects;
-}
-
-Unpacker.prototype.unpack_map = function(size){
-  var map = {};
-  for(var i = 0; i < size ; i++){
-    var key  = this.unpack();
-    var value = this.unpack();
-    map[key] = value;
-  }
-  return map;
-}
-
-Unpacker.prototype.unpack_float = function(){
-  var uint32 = this.unpack_uint32();
-  var sign = uint32 >> 31;
-  var exp  = ((uint32 >> 23) & 0xff) - 127;
-  var fraction = ( uint32 & 0x7fffff ) | 0x800000;
-  return (sign == 0 ? 1 : -1) *
-    fraction * Math.pow(2, exp - 23);
-}
-
-Unpacker.prototype.unpack_double = function(){
-  var h32 = this.unpack_uint32();
-  var l32 = this.unpack_uint32();
-  var sign = h32 >> 31;
-  var exp  = ((h32 >> 20) & 0x7ff) - 1023;
-  var hfrac = ( h32 & 0xfffff ) | 0x100000;
-  var frac = hfrac * Math.pow(2, exp - 20) +
-    l32   * Math.pow(2, exp - 52);
-  return (sign == 0 ? 1 : -1) * frac;
-}
-
-Unpacker.prototype.read = function(length){
-  var j = this.index;
-  if (j + length <= this.length) {
-    return this.dataView.subarray(j, j + length);
-  } else {
-    throw new Error('BinaryPackFailure: read index out of range');
-  }
-}
-
-function Packer(){
-  this.bufferBuilder = new BufferBuilder();
-}
-
-Packer.prototype.getBuffer = function(){
-  return this.bufferBuilder.getBuffer();
-}
-
-Packer.prototype.pack = function(value){
-  var type = typeof(value);
-  if (type == 'string'){
-    this.pack_string(value);
-  } else if (type == 'number'){
-    if (Math.floor(value) === value){
-      this.pack_integer(value);
-    } else{
-      this.pack_double(value);
-    }
-  } else if (type == 'boolean'){
-    if (value === true){
-      this.bufferBuilder.append(0xc3);
-    } else if (value === false){
-      this.bufferBuilder.append(0xc2);
-    }
-  } else if (type == 'undefined'){
-    this.bufferBuilder.append(0xc0);
-  } else if (type == 'object'){
-    if (value === null){
-      this.bufferBuilder.append(0xc0);
-    } else {
-      var constructor = value.constructor;
-      if (constructor == Array){
-        this.pack_array(value);
-      } else if (constructor == Blob || constructor == File) {
-        this.pack_bin(value);
-      } else if (constructor == ArrayBuffer) {
-        if(binaryFeatures.useArrayBufferView) {
-          this.pack_bin(new Uint8Array(value));
-        } else {
-          this.pack_bin(value);
-        }
-      } else if ('BYTES_PER_ELEMENT' in value){
-        if(binaryFeatures.useArrayBufferView) {
-          this.pack_bin(new Uint8Array(value.buffer));
-        } else {
-          this.pack_bin(value.buffer);
-        }
-      } else if (constructor == Object){
-        this.pack_object(value);
-      } else if (constructor == Date){
-        this.pack_string(value.toString());
-      } else if (typeof value.toBinaryPack == 'function'){
-        this.bufferBuilder.append(value.toBinaryPack());
-      } else {
-        throw new Error('Type "' + constructor.toString() + '" not yet supported');
-      }
-    }
-  } else {
-    throw new Error('Type "' + type + '" not yet supported');
-  }
-  this.bufferBuilder.flush();
-}
-
-
-Packer.prototype.pack_bin = function(blob){
-  var length = blob.length || blob.byteLength || blob.size;
-  if (length <= 0x0f){
-    this.pack_uint8(0xa0 + length);
-  } else if (length <= 0xffff){
-    this.bufferBuilder.append(0xda) ;
-    this.pack_uint16(length);
-  } else if (length <= 0xffffffff){
-    this.bufferBuilder.append(0xdb);
-    this.pack_uint32(length);
-  } else{
-    throw new Error('Invalid length');
-    return;
-  }
-  this.bufferBuilder.append(blob);
-}
-
-Packer.prototype.pack_string = function(str){
-  var length = utf8Length(str);
-
-  if (length <= 0x0f){
-    this.pack_uint8(0xb0 + length);
-  } else if (length <= 0xffff){
-    this.bufferBuilder.append(0xd8) ;
-    this.pack_uint16(length);
-  } else if (length <= 0xffffffff){
-    this.bufferBuilder.append(0xd9);
-    this.pack_uint32(length);
-  } else{
-    throw new Error('Invalid length');
-    return;
-  }
-  this.bufferBuilder.append(str);
-}
-
-Packer.prototype.pack_array = function(ary){
-  var length = ary.length;
-  if (length <= 0x0f){
-    this.pack_uint8(0x90 + length);
-  } else if (length <= 0xffff){
-    this.bufferBuilder.append(0xdc)
-    this.pack_uint16(length);
-  } else if (length <= 0xffffffff){
-    this.bufferBuilder.append(0xdd);
-    this.pack_uint32(length);
-  } else{
-    throw new Error('Invalid length');
-  }
-  for(var i = 0; i < length ; i++){
-    this.pack(ary[i]);
-  }
-}
-
-Packer.prototype.pack_integer = function(num){
-  if ( -0x20 <= num && num <= 0x7f){
-    this.bufferBuilder.append(num & 0xff);
-  } else if (0x00 <= num && num <= 0xff){
-    this.bufferBuilder.append(0xcc);
-    this.pack_uint8(num);
-  } else if (-0x80 <= num && num <= 0x7f){
-    this.bufferBuilder.append(0xd0);
-    this.pack_int8(num);
-  } else if ( 0x0000 <= num && num <= 0xffff){
-    this.bufferBuilder.append(0xcd);
-    this.pack_uint16(num);
-  } else if (-0x8000 <= num && num <= 0x7fff){
-    this.bufferBuilder.append(0xd1);
-    this.pack_int16(num);
-  } else if ( 0x00000000 <= num && num <= 0xffffffff){
-    this.bufferBuilder.append(0xce);
-    this.pack_uint32(num);
-  } else if (-0x80000000 <= num && num <= 0x7fffffff){
-    this.bufferBuilder.append(0xd2);
-    this.pack_int32(num);
-  } else if (-0x8000000000000000 <= num && num <= 0x7FFFFFFFFFFFFFFF){
-    this.bufferBuilder.append(0xd3);
-    this.pack_int64(num);
-  } else if (0x0000000000000000 <= num && num <= 0xFFFFFFFFFFFFFFFF){
-    this.bufferBuilder.append(0xcf);
-    this.pack_uint64(num);
-  } else{
-    throw new Error('Invalid integer');
-  }
-}
-
-Packer.prototype.pack_double = function(num){
-  var sign = 0;
-  if (num < 0){
-    sign = 1;
-    num = -num;
-  }
-  var exp  = Math.floor(Math.log(num) / Math.LN2);
-  var frac0 = num / Math.pow(2, exp) - 1;
-  var frac1 = Math.floor(frac0 * Math.pow(2, 52));
-  var b32   = Math.pow(2, 32);
-  var h32 = (sign << 31) | ((exp+1023) << 20) |
-      (frac1 / b32) & 0x0fffff;
-  var l32 = frac1 % b32;
-  this.bufferBuilder.append(0xcb);
-  this.pack_int32(h32);
-  this.pack_int32(l32);
-}
-
-Packer.prototype.pack_object = function(obj){
-  var keys = Object.keys(obj);
-  var length = keys.length;
-  if (length <= 0x0f){
-    this.pack_uint8(0x80 + length);
-  } else if (length <= 0xffff){
-    this.bufferBuilder.append(0xde);
-    this.pack_uint16(length);
-  } else if (length <= 0xffffffff){
-    this.bufferBuilder.append(0xdf);
-    this.pack_uint32(length);
-  } else{
-    throw new Error('Invalid length');
-  }
-  for(var prop in obj){
-    if (obj.hasOwnProperty(prop)){
-      this.pack(prop);
-      this.pack(obj[prop]);
-    }
-  }
-}
-
-Packer.prototype.pack_uint8 = function(num){
-  this.bufferBuilder.append(num);
-}
-
-Packer.prototype.pack_uint16 = function(num){
-  this.bufferBuilder.append(num >> 8);
-  this.bufferBuilder.append(num & 0xff);
-}
-
-Packer.prototype.pack_uint32 = function(num){
-  var n = num & 0xffffffff;
-  this.bufferBuilder.append((n & 0xff000000) >>> 24);
-  this.bufferBuilder.append((n & 0x00ff0000) >>> 16);
-  this.bufferBuilder.append((n & 0x0000ff00) >>>  8);
-  this.bufferBuilder.append((n & 0x000000ff));
-}
-
-Packer.prototype.pack_uint64 = function(num){
-  var high = num / Math.pow(2, 32);
-  var low  = num % Math.pow(2, 32);
-  this.bufferBuilder.append((high & 0xff000000) >>> 24);
-  this.bufferBuilder.append((high & 0x00ff0000) >>> 16);
-  this.bufferBuilder.append((high & 0x0000ff00) >>>  8);
-  this.bufferBuilder.append((high & 0x000000ff));
-  this.bufferBuilder.append((low  & 0xff000000) >>> 24);
-  this.bufferBuilder.append((low  & 0x00ff0000) >>> 16);
-  this.bufferBuilder.append((low  & 0x0000ff00) >>>  8);
-  this.bufferBuilder.append((low  & 0x000000ff));
-}
-
-Packer.prototype.pack_int8 = function(num){
-  this.bufferBuilder.append(num & 0xff);
-}
-
-Packer.prototype.pack_int16 = function(num){
-  this.bufferBuilder.append((num & 0xff00) >> 8);
-  this.bufferBuilder.append(num & 0xff);
-}
-
-Packer.prototype.pack_int32 = function(num){
-  this.bufferBuilder.append((num >>> 24) & 0xff);
-  this.bufferBuilder.append((num & 0x00ff0000) >>> 16);
-  this.bufferBuilder.append((num & 0x0000ff00) >>> 8);
-  this.bufferBuilder.append((num & 0x000000ff));
-}
-
-Packer.prototype.pack_int64 = function(num){
-  var high = Math.floor(num / Math.pow(2, 32));
-  var low  = num % Math.pow(2, 32);
-  this.bufferBuilder.append((high & 0xff000000) >>> 24);
-  this.bufferBuilder.append((high & 0x00ff0000) >>> 16);
-  this.bufferBuilder.append((high & 0x0000ff00) >>>  8);
-  this.bufferBuilder.append((high & 0x000000ff));
-  this.bufferBuilder.append((low  & 0xff000000) >>> 24);
-  this.bufferBuilder.append((low  & 0x00ff0000) >>> 16);
-  this.bufferBuilder.append((low  & 0x0000ff00) >>>  8);
-  this.bufferBuilder.append((low  & 0x000000ff));
-}
-
-function _utf8Replace(m){
-  var code = m.charCodeAt(0);
-
-  if(code <= 0x7ff) return '00';
-  if(code <= 0xffff) return '000';
-  if(code <= 0x1fffff) return '0000';
-  if(code <= 0x3ffffff) return '00000';
-  return '000000';
-}
-
-function utf8Length(str){
-  if (str.length > 600) {
-    // Blob method faster for large strings
-    return (new Blob([str])).size;
-  } else {
-    return str.replace(/[^\u0000-\u007F]/g, _utf8Replace).length;
-  }
-}
 /**
  * Light EventEmitter. Ported from Node.js/events.js
  * Eric Zhang
@@ -592,7 +17,7 @@ function EventEmitter() {
 var isArray = Array.isArray;
 
 
-EventEmitter.prototype.addListener = function(type, listener, scope, once) {
+EventEmitter.prototype.addListener = function(type, listener) {
   if ('function' !== typeof listener) {
     throw new Error('addListener only takes instances of Function');
   }
@@ -619,7 +44,7 @@ EventEmitter.prototype.addListener = function(type, listener, scope, once) {
 
 EventEmitter.prototype.on = EventEmitter.prototype.addListener;
 
-EventEmitter.prototype.once = function(type, listener, scope) {
+EventEmitter.prototype.once = function(type, listener) {
   if ('function' !== typeof listener) {
     throw new Error('.once only takes instances of Function');
   }
@@ -628,7 +53,7 @@ EventEmitter.prototype.once = function(type, listener, scope) {
   function g() {
     self.removeListener(type, g);
     listener.apply(this, arguments);
-  };
+  }
 
   g.listener = listener;
   self.on(type, g);
@@ -636,7 +61,7 @@ EventEmitter.prototype.once = function(type, listener, scope) {
   return this;
 };
 
-EventEmitter.prototype.removeListener = function(type, listener, scope) {
+EventEmitter.prototype.removeListener = function(type, listener) {
   if ('function' !== typeof listener) {
     throw new Error('removeListener only takes instances of Function');
   }
@@ -659,7 +84,7 @@ EventEmitter.prototype.removeListener = function(type, listener, scope) {
 
     if (position < 0) return this;
     list.splice(position, 1);
-    if (list.length == 0)
+    if (list.length === 0)
       delete this._events[type];
   } else if (list === listener ||
              (list.listener && list.listener === listener))
@@ -672,7 +97,6 @@ EventEmitter.prototype.removeListener = function(type, listener, scope) {
 
 
 EventEmitter.prototype.off = EventEmitter.prototype.removeListener;
-
 
 EventEmitter.prototype.removeAllListeners = function(type) {
   if (arguments.length === 0) {
@@ -694,8 +118,11 @@ EventEmitter.prototype.listeners = function(type) {
 };
 
 EventEmitter.prototype.emit = function(type) {
-  var type = arguments[0];
+  type = arguments[0];
+
   var handler = this._events[type];
+  var l, args, i;
+
   if (!handler) return false;
 
   if (typeof handler == 'function') {
@@ -712,20 +139,20 @@ EventEmitter.prototype.emit = function(type) {
         break;
       // slower
       default:
-        var l = arguments.length;
-        var args = new Array(l - 1);
-        for (var i = 1; i < l; i++) args[i - 1] = arguments[i];
+        l = arguments.length;
+        args = new Array(l - 1);
+        for (i = 1; i < l; i++) args[i - 1] = arguments[i];
         handler.apply(this, args);
     }
     return true;
 
   } else if (isArray(handler)) {
-    var l = arguments.length;
-    var args = new Array(l - 1);
-    for (var i = 1; i < l; i++) args[i - 1] = arguments[i];
+    l = arguments.length;
+    args = new Array(l - 1);
+    for (i = 1; i < l; i++) args[i - 1] = arguments[i];
 
     var listeners = handler.slice();
-    for (var i = 0, l = listeners.length; i < l; i++) {
+    for (i = 0, l = listeners.length; i < l; i++) {
       listeners[i].apply(this, args);
     }
     return true;
@@ -738,17 +165,9 @@ exports.RTCSessionDescription = window.mozRTCSessionDescription || window.RTCSes
 exports.RTCPeerConnection = window.mozRTCPeerConnection || window.webkitRTCPeerConnection || window.RTCPeerConnection;
 exports.RTCIceCandidate = window.mozRTCIceCandidate || window.RTCIceCandidate;
 var defaultConfig = {'iceServers': [{ 'url': 'stun:stun.l.google.com:19302' }]};
-var dataCount = 1;
 
 var util = {
   noop: function() {},
-
-  CLOUD_HOST: '0.peerjs.com',
-  CLOUD_PORT: 9000,
-
-  // Browsers that need chunking:
-  chunkedBrowsers: {'Chrome': 1},
-  chunkedMTU: 16300, // The original 60000 bytes setting does not work when sending data from Firefox to Chrome, which is "cut off" after 16384 bytes and delivered individually.
 
   // Logging logic
   logLevel: 0,
@@ -884,7 +303,8 @@ var util = {
           util.supports.onnegotiationneeded = true;
         }
       };
-      var negotiationDC = negotiationPC.createDataChannel('_PEERJSNEGOTIATIONTEST');
+
+      negotiationPC.createDataChannel('_PEERJSNEGOTIATIONTEST');
 
       setTimeout(function() {
         negotiationPC.close();
@@ -913,12 +333,6 @@ var util = {
     return !id || /^[A-Za-z0-9]+(?:[ _-][A-Za-z0-9]+)*$/.exec(id);
   },
 
-  validateKey: function(key) {
-    // Allow empty keys
-    return !key || /^[A-Za-z0-9]+(?:[ _-][A-Za-z0-9]+)*$/.exec(key);
-  },
-
-
   debug: false,
 
   inherits: function(ctor, superCtor) {
@@ -940,8 +354,6 @@ var util = {
     }
     return dest;
   },
-  pack: BinaryPack.pack,
-  unpack: BinaryPack.unpack,
 
   log: function () {
     if (util.debug) {
@@ -962,7 +374,7 @@ var util = {
     var timeouts = [];
     var messageName = 'zero-timeout-message';
 
-    // Like setTimeout, but only takes a function argument.	 There's
+    // Like setTimeout, but only takes a function argument. There's
     // no time argument (always zero) and no arguments (you have to
     // use a closure).
     function setZeroTimeoutPostMessage(fn) {
@@ -988,59 +400,9 @@ var util = {
     return setZeroTimeoutPostMessage;
   }(this)),
 
-  // Binary stuff
-
-  // chunks a blob.
-  chunk: function(bl) {
-    var chunks = [];
-    var size = bl.size;
-    var start = index = 0;
-    var total = Math.ceil(size / util.chunkedMTU);
-    while (start < size) {
-      var end = Math.min(size, start + util.chunkedMTU);
-      var b = bl.slice(start, end);
-
-      var chunk = {
-        __peerData: dataCount,
-        n: index,
-        data: b,
-        total: total
-      };
-
-      chunks.push(chunk);
-
-      start = end;
-      index += 1;
-    }
-    dataCount += 1;
-    return chunks;
-  },
-
-  blobToArrayBuffer: function(blob, cb){
-    var fr = new FileReader();
-    fr.onload = function(evt) {
-      cb(evt.target.result);
-    };
-    fr.readAsArrayBuffer(blob);
-  },
-  blobToBinaryString: function(blob, cb){
-    var fr = new FileReader();
-    fr.onload = function(evt) {
-      cb(evt.target.result);
-    };
-    fr.readAsBinaryString(blob);
-  },
-  binaryStringToArrayBuffer: function(binary) {
-    var byteArray = new Uint8Array(binary.length);
-    for (var i = 0; i < binary.length; i++) {
-      byteArray[i] = binary.charCodeAt(i) & 0xff;
-    }
-    return byteArray.buffer;
-  },
   randomToken: function () {
     return Math.random().toString(36).substr(2);
   },
-  //
 
   isSecure: function() {
     return location.protocol === 'https:';
@@ -1052,42 +414,19 @@ exports.util = util;
  * A peer who can initiate connections with other peers.
  */
 function Peer(id, options) {
-  if (!(this instanceof Peer)) return new Peer(id, options);
   EventEmitter.call(this);
 
-  // Deal with overloading
-  if (id && id.constructor == Object) {
-    options = id;
-    id = undefined;
-  } else if (id) {
-    // Ensure id is a string
-    id = id.toString();
-  }
-  //
-
   // Configurize options
-  options = util.extend({
+  this.options = util.extend({
     debug: 0, // 1: Errors, 2: Warnings, 3: All logs
-    host: util.CLOUD_HOST,
-    port: util.CLOUD_PORT,
-    key: 'peerjs',
     config: util.defaultConfig
   }, options);
-  this.options = options;
-  // Detect relative URL host.
-  if (options.host === '/') {
-    options.host = window.location.hostname;
-  }
-  // Set whether we use SSL to same as current host
-  if (options.secure === undefined && options.host !== util.CLOUD_HOST) {
-    options.secure = util.isSecure();
-  }
+
   // Set a custom log function if present
   if (options.logFunction) {
     util.setLogFunction(options.logFunction);
   }
   util.setLogLevel(options.debug);
-  //
 
   // Sanity checks
   // Ensure WebRTC supported
@@ -1100,117 +439,55 @@ function Peer(id, options) {
     this._delayedAbort('invalid-id', 'ID "' + id + '" is invalid');
     return;
   }
-  // Ensure valid key
-  if (!util.validateKey(options.key)) {
-    this._delayedAbort('invalid-key', 'API KEY "' + options.key + '" is invalid');
-    return;
-  }
-  // Ensure not using unsecure cloud server on SSL page
-  if (options.secure && options.host === '0.peerjs.com') {
-    this._delayedAbort('ssl-unavailable',
-      'The cloud server currently does not support HTTPS. Please run your own PeerServer to use HTTPS.');
-    return;
-  }
-  //
 
-  // States.
+  // States
   this.destroyed = false; // Connections have been killed
   this.disconnected = false; // Connection to PeerServer killed manually but P2P connections still active
   this.open = false; // Sockets and such are not yet open.
-  //
 
   // References
   this.connections = {}; // DataConnections for this peer.
   this._lostMessages = {}; // src => [list of messages]
-  //
-
-  // Initialize the 'socket' (which is actually a mix of XHR streaming and
-  // websockets.)
-  var self = this;
-  this.socket = new Socket(this.options.secure, this.options.host, this.options.port, this.options.key);
-  this.socket.on('message', function(data) {
-    self._handleMessage(data);
-  });
-  this.socket.on('error', function(error) {
-    self._abort('socket-error', error);
-  });
-  this.socket.on('close', function() {
-    if (!self.disconnected) { // If we haven't explicitly disconnected, emit error.
-      self._abort('socket-closed', 'Underlying socket is already closed.');
-    }
-  });
-  //
 
   // Start the connections
-  if (id) {
-    this._initialize(id);
-  } else {
-    this._retrieveId();
-  }
-  //
-};
+  this._initialize(id);
+}
 
 util.inherits(Peer, EventEmitter);
 
 Peer.CHUNK_MTU = 16000;
 
-/** Get a unique ID from the server via XHR. */
-Peer.prototype._retrieveId = function(cb) {
-  var self = this;
-  var http = new XMLHttpRequest();
-  var protocol = this.options.secure ? 'https://' : 'http://';
-  var url = protocol + this.options.host + ':' + this.options.port + '/' + this.options.key + '/id';
-  var queryString = '?ts=' + new Date().getTime() + '' + Math.random();
-  url += queryString;
-
-  // If there's no ID we need to wait for one before trying to init socket.
-  http.open('get', url, true);
-  http.onerror = function(e) {
-    util.error('Error retrieving ID', e);
-    self._abort('server-error', 'Could not get an ID from the server');
-  }
-  http.onreadystatechange = function() {
-    if (http.readyState !== 4) {
-      return;
-    }
-    if (http.status !== 200) {
-      http.onerror();
-      return;
-    }
-    self._initialize(http.responseText);
-  };
-  http.send(null);
-};
-
 /** Initialize a connection with the server. */
-Peer.prototype._initialize = function(id) {
+Peer.prototype._initialize = function (id) {
   var self = this;
   this.id = id;
-  this.socket.start(this.id);
-}
+
+  // Firebase
+  this._ref = this.options.firebaseRef;
+  this._messagesRef = this._ref.child('rooms/' + this.options.room + '/messages');
+  this._yourMessagesRef = this._messagesRef.child(id);
+
+  // Remove received messages on disconnect
+  this._yourMessagesRef.onDisconnect().remove();
+
+  // Listen to incoming messages
+  this._yourMessagesRef.on('child_added', function (snapshot) {
+    var message = snapshot.val();
+    self._handleMessage(message);
+  });
+
+  // The connection to the server is open
+  this.emit('open', this.id);
+  this.open = true;
+};
 
 /** Handles messages from the server. */
-Peer.prototype._handleMessage = function(message) {
+Peer.prototype._handleMessage = function (message) {
   var type = message.type;
   var payload = message.payload;
   var peer = message.src;
 
   switch (type) {
-    case 'OPEN': // The connection to the server is open.
-      this.emit('open', this.id);
-      this.open = true;
-      break;
-    case 'ERROR': // Server error.
-      this._abort('server-error', payload.msg);
-      break;
-    case 'ID-TAKEN': // The selected ID is taken.
-      this._abort('unavailable-id', 'ID `' + this.id + '` is taken');
-      break;
-    case 'INVALID-KEY': // The given API key cannot be found.
-      this._abort('invalid-key', 'API KEY "' + this.options.key + '" is invalid');
-      break;
-
-    //
     case 'LEAVE': // Another peer has closed its connection to this peer.
       util.log('Received leave message from', peer);
       this._cleanupPeer(peer);
@@ -1219,6 +496,7 @@ Peer.prototype._handleMessage = function(message) {
     case 'EXPIRE': // The offer sent to a peer has expired without response.
       this.emit('error', new Error('Could not connect to peer ' + peer));
       break;
+
     case 'OFFER': // we should consider switching this to CALL/CONNECT, but this is the least breaking option.
       var connectionId = payload.connectionId;
       var connection = this.getConnection(peer, connectionId);
@@ -1229,7 +507,7 @@ Peer.prototype._handleMessage = function(message) {
       } else {
         // Create a new connection.
         if (payload.type === 'media') {
-          var connection = new MediaConnection(peer, this, {
+          connection = new MediaConnection(peer, this, {
             connectionId: connectionId,
             _payload: payload,
             metadata: payload.metadata
@@ -1258,6 +536,7 @@ Peer.prototype._handleMessage = function(message) {
         }
       }
       break;
+
     default:
       if (!payload) {
         util.warn('You received a malformed message from ' + peer + ' of type ' + type);
@@ -1265,7 +544,7 @@ Peer.prototype._handleMessage = function(message) {
       }
 
       var id = payload.connectionId;
-      var connection = this.getConnection(peer, id);
+      connection = this.getConnection(peer, id);
 
       if (connection && connection.pc) {
         // Pass it on.
@@ -1278,18 +557,18 @@ Peer.prototype._handleMessage = function(message) {
       }
       break;
   }
-}
+};
 
 /** Stores messages without a set up connection, to be claimed later. */
-Peer.prototype._storeMessage = function(connectionId, message) {
+Peer.prototype._storeMessage = function (connectionId, message) {
   if (!this._lostMessages[connectionId]) {
     this._lostMessages[connectionId] = [];
   }
   this._lostMessages[connectionId].push(message);
-}
+};
 
 /** Retrieve messages from lost message store */
-Peer.prototype._getMessages = function(connectionId) {
+Peer.prototype._getMessages = function (connectionId) {
   var messages = this._lostMessages[connectionId];
   if (messages) {
     delete this._lostMessages[connectionId];
@@ -1297,7 +576,7 @@ Peer.prototype._getMessages = function(connectionId) {
   } else {
     return [];
   }
-}
+};
 
 /**
  * Returns a DataConnection to the specified peer. See documentation for a
@@ -1314,7 +593,7 @@ Peer.prototype.connect = function(peer, options) {
   var connection = new DataConnection(peer, this, options);
   this._addConnection(peer, connection);
   return connection;
-}
+};
 
 /**
  * Returns a MediaConnection to the specified peer. See documentation for a
@@ -1337,7 +616,7 @@ Peer.prototype.call = function(peer, stream, options) {
   var call = new MediaConnection(peer, this, options);
   this._addConnection(peer, call);
   return call;
-}
+};
 
 /** Add a data/media connection to this peer. */
 Peer.prototype._addConnection = function(peer, connection) {
@@ -1345,7 +624,7 @@ Peer.prototype._addConnection = function(peer, connection) {
     this.connections[peer] = [];
   }
   this.connections[peer].push(connection);
-}
+};
 
 /** Retrieve a data/media connection for this peer. */
 Peer.prototype.getConnection = function(peer, id) {
@@ -1359,14 +638,14 @@ Peer.prototype.getConnection = function(peer, id) {
     }
   }
   return null;
-}
+};
 
 Peer.prototype._delayedAbort = function(type, message) {
   var self = this;
-  util.setZeroTimeout(function(){
+  util.setZeroTimeout(function (){
     self._abort(type, message);
   });
-}
+};
 
 /** Destroys the Peer and emits an error message. */
 Peer.prototype._abort = function(type, message) {
@@ -1386,10 +665,9 @@ Peer.prototype._abort = function(type, message) {
 Peer.prototype.destroy = function() {
   if (!this.destroyed) {
     this._cleanup();
-    this.disconnect();
     this.destroyed = true;
   }
-}
+};
 
 
 /** Disconnects every connection on this peer. */
@@ -1401,7 +679,7 @@ Peer.prototype._cleanup = function() {
     }
   }
   this.emit('close');
-}
+};
 
 /** Closes all connections to this peer. */
 Peer.prototype._cleanupPeer = function(peer) {
@@ -1409,27 +687,7 @@ Peer.prototype._cleanupPeer = function(peer) {
   for (var j = 0, jj = connections.length; j < jj; j += 1) {
     connections[j].close();
   }
-}
-
-/**
- * Disconnects the Peer's connection to the PeerServer. Does not close any
- *  active connections.
- * Warning: The peer can no longer create or accept connections after being
- *  disconnected. It also cannot reconnect to the server.
- */
-Peer.prototype.disconnect = function() {
-  var self = this;
-  util.setZeroTimeout(function(){
-    if (!self.disconnected) {
-      self.disconnected = true;
-      self.open = false;
-      if (self.socket) {
-        self.socket.close();
-      }
-      self.id = null;
-    }
-  });
-}
+};
 
 exports.Peer = Peer;
 /**
@@ -1441,7 +699,8 @@ function DataConnection(peer, provider, options) {
 
   this.options = util.extend({
     serialization: 'binary',
-    reliable: false
+    reliable: false,
+    metadata: {} // Firebase doesn't allow undefined values
   }, options);
 
   // Connection is not open yet.
@@ -1485,32 +744,33 @@ DataConnection._idPrefix = 'dc_';
 DataConnection.prototype.initialize = function(dc) {
   this._dc = this.dataChannel = dc;
   this._configureDataChannel();
-}
+};
 
 DataConnection.prototype._configureDataChannel = function() {
   var self = this;
+
   if (util.supports.sctp) {
     this._dc.binaryType = 'arraybuffer';
   }
+
   this._dc.onopen = function() {
     util.log('Data channel connection success');
     self.open = true;
     self.emit('open');
-  }
+  };
 
-  this._dc.onmessage = function(e) {
+  this._dc.onmessage = function (e) {
     self._handleDataMessage(e);
   };
 
-  this._dc.onclose = function(e) {
+  this._dc.onclose = function (e) {
     util.log('DataChannel closed for:', self.peer);
     self.close();
   };
-}
+};
 
 // Handles a DataChannel message.
 DataConnection.prototype._handleDataMessage = function(e) {
-  var self = this;
   var data = e.data;
 
   if (data.byteLength !== undefined) {
@@ -1521,7 +781,7 @@ DataConnection.prototype._handleDataMessage = function(e) {
   }
 
   this.emit('data', data);
-}
+};
 
 /**
  * Exposed functionality for users.
@@ -1535,7 +795,7 @@ DataConnection.prototype.close = function() {
   this.open = false;
   Negotiator.cleanup(this);
   this.emit('close');
-}
+};
 
 /** Allows user to send data. */
 DataConnection.prototype.send = function(data) {
@@ -1551,14 +811,14 @@ DataConnection.prototype.send = function(data) {
   }
 
   this._bufferedSend(data);
-}
+};
 
 DataConnection.prototype._bufferedSend = function(msg) {
   if (this._buffering || !this._trySend(msg)) {
     this._buffer.push(msg);
     this.bufferSize = this._buffer.length;
   }
-}
+};
 
 // Returns true if the send succeeds.
 DataConnection.prototype._trySend = function(msg) {
@@ -1576,7 +836,7 @@ DataConnection.prototype._trySend = function(msg) {
     return false;
   }
   return true;
-}
+};
 
 // Try to send the first message in the buffer.
 DataConnection.prototype._tryBuffer = function() {
@@ -1591,7 +851,7 @@ DataConnection.prototype._tryBuffer = function() {
     this.bufferSize = this._buffer.length;
     this._tryBuffer();
   }
-}
+};
 
 DataConnection.prototype.handleMessage = function(message) {
   var payload = message.payload;
@@ -1610,7 +870,8 @@ DataConnection.prototype.handleMessage = function(message) {
       util.warn('Unrecognized message type:', message.type, 'from peer:', this.peer);
       break;
   }
-}
+};
+
 /**
  * Wraps the streaming interface between two Peers.
  */
@@ -1634,7 +895,7 @@ function MediaConnection(peer, provider, options) {
       {_stream: this.localStream, originator: true}
     );
   }
-};
+}
 
 util.inherits(MediaConnection, EventEmitter);
 
@@ -1664,7 +925,7 @@ MediaConnection.prototype.handleMessage = function(message) {
       util.warn('Unrecognized message type:', message.type, 'from peer:', this.peer);
       break;
   }
-}
+};
 
 MediaConnection.prototype.answer = function(stream) {
   if (this.localStream) {
@@ -1678,7 +939,8 @@ MediaConnection.prototype.answer = function(stream) {
   Negotiator.startConnection(
     this,
     this.options._payload
-  )
+  );
+
   // Retrieve lost messages stored because PeerConnection not set up.
   var messages = this.provider._getMessages(this.id);
   for (var i = 0, ii = messages.length; i < ii; i += 1) {
@@ -1698,8 +960,9 @@ MediaConnection.prototype.close = function() {
   }
   this.open = false;
   Negotiator.cleanup(this);
-  this.emit('close')
+  this.emit('close');
 };
+
 /**
  * Manages all negotiations between Peers.
  */
@@ -1710,7 +973,7 @@ var Negotiator = {
   }, // type => {peerId: {pc_id: pc}}.
   //providers: {}, // provider's id => providers (there may be multiple providers/client.
   queue: [] // connections that are delayed due to a PC being in use.
-}
+};
 
 Negotiator._idPrefix = 'pc_';
 
@@ -1750,7 +1013,7 @@ Negotiator.startConnection = function(connection, options) {
   } else {
     Negotiator.handleSDP('OFFER', connection, options.sdp);
   }
-}
+};
 
 Negotiator._getPeerConnection = function (connection, options) {
   if (!Negotiator.pcs[connection.type]) {
@@ -1760,7 +1023,6 @@ Negotiator._getPeerConnection = function (connection, options) {
   if (!Negotiator.pcs[connection.type][connection.peer]) {
     Negotiator.pcs[connection.type][connection.peer] = {};
   }
-  var peerConnections = Negotiator.pcs[connection.type][connection.peer];
 
   var pc;
 
@@ -1772,7 +1034,7 @@ Negotiator._getPeerConnection = function (connection, options) {
     pc = Negotiator._startPeerConnection(connection);
   }
   return pc;
-}
+};
 
 /** Start a PC. */
 Negotiator._startPeerConnection = function(connection) {
@@ -1794,27 +1056,29 @@ Negotiator._startPeerConnection = function(connection) {
   Negotiator._setupListeners(connection, pc, id);
 
   return pc;
-}
+};
 
 /** Set up various WebRTC listeners. */
-Negotiator._setupListeners = function(connection, pc, pc_id) {
-  var peerId = connection.peer;
-  var connectionId = connection.id;
-  var provider = connection.provider;
+Negotiator._setupListeners = function(connection, pc) {
+  var provider = connection.provider,
+      src = provider.id,
+      dst = connection.peer,
+      connectionId = connection.id;
 
   // ICE CANDIDATES.
   util.log('Listening for ICE candidates.');
   pc.onicecandidate = function(evt) {
     if (evt.candidate) {
-      util.log('Received ICE candidates for:', connection.peer);
-      provider.socket.send({
+      util.log('Received ICE candidates for:', dst);
+      provider._messagesRef.child(dst).push({
         type: 'CANDIDATE',
         payload: {
           candidate: evt.candidate,
           type: connection.type,
-          connectionId: connection.id
+          connectionId: connectionId
         },
-        dst: peerId
+        src: src,
+        dst: dst
       });
     }
   };
@@ -1823,7 +1087,7 @@ Negotiator._setupListeners = function(connection, pc, pc_id) {
     switch (pc.iceConnectionState) {
       case 'disconnected':
       case 'failed':
-        util.log('iceConnectionState is disconnected, closing connections to ' + peerId);
+        util.log('iceConnectionState is disconnected, closing connections to ' + dst);
         connection.close();
         break;
       case 'completed':
@@ -1853,7 +1117,7 @@ Negotiator._setupListeners = function(connection, pc, pc_id) {
   pc.ondatachannel = function(evt) {
     util.log('Received data channel');
     var dc = evt.channel;
-    var connection = provider.getConnection(peerId, connectionId);
+    var connection = provider.getConnection(dst, connectionId);
     connection.initialize(dc);
   };
 
@@ -1862,9 +1126,9 @@ Negotiator._setupListeners = function(connection, pc, pc_id) {
   pc.onaddstream = function(evt) {
     util.log('Received remote stream');
     var stream = evt.stream;
-    provider.getConnection(peerId, connectionId).addStream(stream);
+    provider.getConnection(dst, connectionId).addStream(stream);
   };
-}
+};
 
 Negotiator.cleanup = function(connection) {
   util.log('Cleaning up PeerConnection to ' + connection.peer);
@@ -1875,16 +1139,19 @@ Negotiator.cleanup = function(connection) {
     pc.close();
     connection.pc = null;
   }
-}
+};
 
 Negotiator._makeOffer = function(connection) {
-  var pc = connection.pc;
+  var pc = connection.pc,
+      src = connection.provider.id,
+      dst = connection.peer;
+
   pc.createOffer(function(offer) {
     util.log('Created offer.');
 
     pc.setLocalDescription(offer, function() {
-      util.log('Set localDescription: offer', 'for:', connection.peer);
-      connection.provider.socket.send({
+      util.log('Set localDescription: offer', 'for:', dst);
+      connection.provider._messagesRef.child(dst).push({
         type: 'OFFER',
         payload: {
           sdp: offer,
@@ -1896,7 +1163,8 @@ Negotiator._makeOffer = function(connection) {
           metadata: connection.metadata,
           browser: util.browser
         },
-        dst: connection.peer
+        src: src,
+        dst: dst
       });
     }, function(err) {
       connection.provider.emit('error', err);
@@ -1906,17 +1174,20 @@ Negotiator._makeOffer = function(connection) {
     connection.provider.emit('error', err);
     util.log('Failed to createOffer, ', err);
   }, connection.options.constraints);
-}
+};
 
 Negotiator._makeAnswer = function(connection) {
-  var pc = connection.pc;
+  var pc = connection.pc,
+      provider = connection.provider,
+      src = provider.id,
+      dst = connection.peer;
 
   pc.createAnswer(function(answer) {
     util.log('Created answer.');
 
     pc.setLocalDescription(answer, function() {
-      util.log('Set localDescription: answer', 'for:', connection.peer);
-      connection.provider.socket.send({
+      util.log('Set localDescription: answer', 'for:', dst);
+      provider._messagesRef.child(dst).push({
         type: 'ANSWER',
         payload: {
           sdp: answer,
@@ -1924,7 +1195,8 @@ Negotiator._makeAnswer = function(connection) {
           connectionId: connection.id,
           browser: util.browser
         },
-        dst: connection.peer
+        src: src,
+        dst: dst
       });
     }, function(err) {
       connection.provider.emit('error', err);
@@ -1934,7 +1206,7 @@ Negotiator._makeAnswer = function(connection) {
     connection.provider.emit('error', err);
     util.log('Failed to create answer, ', err);
   });
-}
+};
 
 /** Handle an SDP. */
 Negotiator.handleSDP = function(type, connection, sdp) {
@@ -1952,7 +1224,7 @@ Negotiator.handleSDP = function(type, connection, sdp) {
     connection.provider.emit('error', err);
     util.log('Failed to setRemoteDescription, ', err);
   });
-}
+};
 
 /** Handle a candidate. */
 Negotiator.handleCandidate = function(connection, ice) {
@@ -1963,206 +1235,6 @@ Negotiator.handleCandidate = function(connection, ice) {
     candidate: candidate
   }));
   util.log('Added ICE candidate for:', connection.peer);
-}
-/**
- * An abstraction on top of WebSockets and XHR streaming to provide fastest
- * possible connection for peers.
- */
-function Socket(secure, host, port, key) {
-  if (!(this instanceof Socket)) return new Socket(secure, host, port, key);
-
-  EventEmitter.call(this);
-
-  // Disconnected manually.
-  this.disconnected = false;
-  this._queue = [];
-
-  var httpProtocol = secure ? 'https://' : 'http://';
-  var wsProtocol = secure ? 'wss://' : 'ws://';
-  this._httpUrl = httpProtocol + host + ':' + port + '/' + key;
-  this._wsUrl = wsProtocol + host + ':' + port + '/peerjs?key=' + key;
-}
-
-util.inherits(Socket, EventEmitter);
-
-
-/** Check in with ID or get one from server. */
-Socket.prototype.start = function(id) {
-  this.id = id;
-
-  var token = util.randomToken();
-  this._httpUrl += '/' + id + '/' + token;
-  this._wsUrl += '&id='+id+'&token='+token;
-
-  this._startXhrStream();
-  this._startWebSocket();
-}
-
-
-/** Start up websocket communications. */
-Socket.prototype._startWebSocket = function(id) {
-  var self = this;
-
-  if (this._socket) {
-    return;
-  }
-
-  this._socket = new WebSocket(this._wsUrl);
-
-  this._socket.onmessage = function(event) {
-    var data;
-    try {
-      data = JSON.parse(event.data);
-    } catch(e) {
-      util.log('Invalid server message', event.data);
-      return;
-    }
-    self.emit('message', data);
-  };
-
-  // Take care of the queue of connections if necessary and make sure Peer knows
-  // socket is open.
-  this._socket.onopen = function() {
-    if (self._timeout) {
-      clearTimeout(self._timeout);
-      setTimeout(function(){
-        self._http.abort();
-        self._http = null;
-      }, 5000);
-    }
-    self._sendQueuedMessages();
-    util.log('Socket open');
-  };
-}
-
-/** Start XHR streaming. */
-Socket.prototype._startXhrStream = function(n) {
-  try {
-    var self = this;
-    this._http = new XMLHttpRequest();
-    this._http._index = 1;
-    this._http._streamIndex = n || 0;
-    this._http.open('post', this._httpUrl + '/id?i=' + this._http._streamIndex, true);
-    this._http.onreadystatechange = function() {
-      if (this.readyState == 2 && this.old) {
-        this.old.abort();
-        delete this.old;
-      }
-      if (this.readyState > 2 && this.status == 200 && this.responseText) {
-        self._handleStream(this);
-      }
-    };
-    this._http.send(null);
-    this._setHTTPTimeout();
-  } catch(e) {
-    util.log('XMLHttpRequest not available; defaulting to WebSockets');
-  }
-}
-
-
-/** Handles onreadystatechange response as a stream. */
-Socket.prototype._handleStream = function(http) {
-  // 3 and 4 are loading/done state. All others are not relevant.
-  var messages = http.responseText.split('\n');
-
-  // Check to see if anything needs to be processed on buffer.
-  if (http._buffer) {
-    while (http._buffer.length > 0) {
-      var index = http._buffer.shift();
-      var bufferedMessage = messages[index];
-      try {
-        bufferedMessage = JSON.parse(bufferedMessage);
-      } catch(e) {
-        http._buffer.shift(index);
-        break;
-      }
-      this.emit('message', bufferedMessage);
-    }
-  }
-
-  var message = messages[http._index];
-  if (message) {
-    http._index += 1;
-    // Buffering--this message is incomplete and we'll get to it next time.
-    // This checks if the httpResponse ended in a `\n`, in which case the last
-    // element of messages should be the empty string.
-    if (http._index === messages.length) {
-      if (!http._buffer) {
-        http._buffer = [];
-      }
-      http._buffer.push(http._index - 1);
-    } else {
-      try {
-        message = JSON.parse(message);
-      } catch(e) {
-        util.log('Invalid server message', message);
-        return;
-      }
-      this.emit('message', message);
-    }
-  }
-}
-
-Socket.prototype._setHTTPTimeout = function() {
-  var self = this;
-  this._timeout = setTimeout(function() {
-    var old = self._http;
-    if (!self._wsOpen()) {
-      self._startXhrStream(old._streamIndex + 1);
-      self._http.old = old;
-    } else {
-      old.abort();
-    }
-  }, 25000);
-}
-
-/** Is the websocket currently open? */
-Socket.prototype._wsOpen = function() {
-  return this._socket && this._socket.readyState == 1;
-}
-
-/** Send queued messages. */
-Socket.prototype._sendQueuedMessages = function() {
-  for (var i = 0, ii = this._queue.length; i < ii; i += 1) {
-    this.send(this._queue[i]);
-  }
-}
-
-/** Exposed send for DC & Peer. */
-Socket.prototype.send = function(data) {
-  if (this.disconnected) {
-    return;
-  }
-
-  // If we didn't get an ID yet, we can't yet send anything so we should queue
-  // up these messages.
-  if (!this.id) {
-    this._queue.push(data);
-    return;
-  }
-
-  if (!data.type) {
-    this.emit('error', 'Invalid message');
-    return;
-  }
-
-  var message = JSON.stringify(data);
-  if (this._wsOpen()) {
-    this._socket.send(message);
-  } else {
-    var http = new XMLHttpRequest();
-    var url = this._httpUrl + '/' + data.type.toLowerCase();
-    http.open('post', url, true);
-    http.setRequestHeader('Content-Type', 'application/json');
-    http.send(message);
-  }
-}
-
-Socket.prototype.close = function() {
-  if (!this.disconnected && this._wsOpen()) {
-    this._socket.close();
-    this.disconnected = true;
-  }
-}
+};
 
 })(this);

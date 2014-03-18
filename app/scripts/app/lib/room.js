@@ -1,6 +1,5 @@
-ShareDrop.Room = function () {
-    var url = window.location.protocol + '//' + window.location.hostname;
-    this._socket = new io.connect(url);
+ShareDrop.Room = function (firebaseRef) {
+    this._ref = firebaseRef;
     this.name = null;
 };
 
@@ -12,58 +11,57 @@ ShareDrop.Room.prototype.join = function (user) {
 
     // Join room and listen for changes
     .then(function (data) {
-        var socket = self._socket;
+        self.name = data.name;
+        user.public_ip = data.public_ip;
 
-        self.name = data.name,
+        // Setup Firebase refs
+        self._connectionRef = self._ref.child('.info/connected');
+        self._roomRef = self._ref.child('rooms/' + self.name);
+        self._usersRef = self._roomRef.child('users');
+        self._userRef = self._usersRef.child(user.uuid);
 
-        $.extend(user, {
-            uuid: data.uuid,
-            public_ip: data.public_ip
-        });
-
-        socket.emit('join', {
-            room: self.name,
-            peer: user
-        });
         console.log('Room:\t Connecting to: ', self.name);
 
-        socket.on('user_list', function (data) {
-            console.log('Room:\t Connected to: ', self.name);
-            $.publish('connected.room', user);
+        self._connectionRef.on('value', function (snapshot) {
+            // Once connected (or reconnected) to Firebase
+            if (snapshot.val() === true) {
+                console.log('Firebase: (Re)Connected');
 
-            console.log('Room:\t user_list: ', data);
-            $.publish('user_list.room', [data]);
-        });
+                // Remove yourself from the room when disconnected
+                self._userRef.onDisconnect().remove();
 
-        socket.on('user_added', function (user) {
-            console.log('Room:\t user_added: ', user);
-            $.publish('user_added.room', user);
-        });
+                // Join the room
+                self._userRef.set(user, function (error) {
+                    console.log('Firebase: User added to the room');
+                    $.publish('connected.room', user);
+                });
 
-        socket.on('user_changed', function (user) {
-            console.log('Room:\t user_changed: ', user);
-            $.publish('user_changed.room', user);
-        });
+                self._usersRef.on('child_added', function (snapshot) {
+                    var user = snapshot.val();
 
-        socket.on('user_removed', function (user) {
-            console.log('Room:\t user_removed: ', user);
-            $.publish('user_removed.room', user);
-        });
+                    console.log('Room:\t user_added: ', user);
+                    $.publish('user_added.room', user);
+                });
 
-        socket.on('disconnect', function () {
-            console.log('Room:\t disconnect');
-        });
+                self._usersRef.on('child_removed', function (snapshot) {
+                    var user = snapshot.val();
 
-        socket.on('error', function () {
-            console.log('Room:\t error');
-        });
+                    console.log('Room:\t user_removed: ', user);
+                    $.publish('user_removed.room', user);
+                });
 
-        socket.on('reconnecting', function () {
-            console.log('Room:\t reconnecting');
-        });
+                self._usersRef.on('child_changed', function (snapshot) {
+                    var user = snapshot.val();
 
-        socket.on('reconnect', function () {
-            console.log('Room:\t reconnect');
+                    console.log('Room:\t user_changed: ', user);
+                    $.publish('user_changed.room', user);
+                });
+            } else {
+                console.log('Firebase: Disconnected');
+
+                $.publish('disconnected.room');
+                self._usersRef.off();
+            }
         });
     });
 
@@ -71,8 +69,5 @@ ShareDrop.Room.prototype.join = function (user) {
 };
 
 ShareDrop.Room.prototype.update = function (attrs) {
-    this._socket.emit('update', {
-        room: this.name,
-        peer: attrs
-    });
+    this._userRef.update(attrs);
 };

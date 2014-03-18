@@ -1,5 +1,9 @@
 window.ShareDrop.App = Ember.Application.create();
 
+ShareDrop.App.config = {
+    FIREBASE_URL: "https://sharedrop.firebaseio.com/"
+};
+
 ShareDrop.App.deferReadiness();
 
 // Check if everything we need is available
@@ -9,6 +13,7 @@ ShareDrop.App.deferReadiness();
     .catch(function (error) {
         ShareDrop.App.error = error;
     })
+    .then(authenticateToFirebase)
     .then(function () {
         ShareDrop.App.advanceReadiness();
     });
@@ -31,6 +36,21 @@ ShareDrop.App.deferReadiness();
             })
             .catch(function () {
                 reject('filesystem_unavailable');
+            });
+        });
+    }
+
+    function authenticateToFirebase() {
+        return new Promise(function (resolve, reject) {
+            var xhr = Ember.$.getJSON('/auth');
+            xhr.then(function (data) {
+                var ref = new Firebase(ShareDrop.App.config.FIREBASE_URL);
+                ShareDrop.App.ref = ref;
+                ShareDrop.App.userId = data.id;
+
+                ref.auth(data.token, function (error) {
+                    error ? reject(error) : resolve();
+                });
             });
         });
     }

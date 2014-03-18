@@ -1,19 +1,24 @@
 {
   "name": "ShareDrop",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "P2P file sharing",
-  "main": "index.js",
+  "repository" : {
+    "type" : "git",
+    "url" : "https://github.com/cowbell/sharedrop.git"
+  },
+  "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Szymon Nowak",
   "license": "MIT",
   "dependencies": {
-    "socket.io": "~0.9.16",
     "express": "~3.4.7",
     "express-persona": "~0.1.1",
     "node-uuid": "~1.4.1",
-    "deep-extend": "~0.2.6",
+    "firebase-token-generator": "^0.1.4",
+    "newrelic": "^1.4.0",
+
     "grunt": "~0.4.2",
     "grunt-cli": "~0.1.9",
     "load-grunt-tasks": "~0.2.1",

@@ -4,10 +4,14 @@ ShareDrop.App.User = ShareDrop.App.Peer.extend({
             local_ip = this.get('local_ip'),
             label;
 
-        if (email) {
+        if (email && local_ip) {
             label = email + ' (' + local_ip + ')';
-        } else {
+        } else if (local_ip) {
             label = local_ip;
+        } else if (email) {
+            label = email;
+        } else {
+            label = null;
         }
 
         return label;
