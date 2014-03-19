@@ -13,8 +13,7 @@ module.exports.server = function (options) {
         FirebaseTokenGenerator = require("firebase-token-generator"),
         firebaseTokenGenerator = new FirebaseTokenGenerator(process.env.FIREBASE_SECRET),
         app = express(),
-        host = process.env.HOST,
-        webPort = process.env.WEB_PORT, // 80 or 443
+        personaUrl= process.env.PERSONA_URL,
         secret = process.env.SECRET,
         base;
 
@@ -47,7 +46,7 @@ module.exports.server = function (options) {
     //
 
     // Handle Persona authentication
-    persona(app, { audience: 'http://' + host + ':' + webPort });
+    persona(app, { audience: personaUrl });
 
     app.get('/', function (req, res) {
         var root = path.join(__dirname, '..', base[0]);
