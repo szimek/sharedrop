@@ -56,7 +56,8 @@ module.exports.server = function (options) {
     });
 
     app.get('/room', function (req, res) {
-        var ip = req.headers['x-forwarded-for'] || req.ip,
+        var ips = req.headers['x-forwarded-for'] || req.ip,
+            ip = ips.split(',').pop().trim(),
             name = crypto.createHmac('md5', secret).update(ip).digest('hex');
 
         res.json({name: name, public_ip: ip});
