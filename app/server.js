@@ -1,7 +1,9 @@
 module.exports.server = function (options) {
     'use strict';
 
-    require('newrelic');
+    if (process.env.NODE_ENV === 'production') {
+        require('newrelic');
+    }
 
     // Room server
     var http = require('http'),
