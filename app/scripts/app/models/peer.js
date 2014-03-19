@@ -33,7 +33,7 @@ ShareDrop.App.Peer = Ember.Object.extend({
             path;
 
         path = email ? this.MD5(email.trim().toLowerCase()) + '.jpg?s=128' : '?d=mm&s=128';
-        return 'http://www.gravatar.com/avatar/' + path;
+        return 'https://www.gravatar.com/avatar/' + path;
     }.property('email'),
 
     MD5: function (s) {
