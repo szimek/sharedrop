@@ -1,9 +1,5 @@
 window.ShareDrop.App = Ember.Application.create();
 
-ShareDrop.App.config = {
-    FIREBASE_URL: "https://sharedrop.firebaseio.com/"
-};
-
 ShareDrop.App.deferReadiness();
 
 // Check if everything we need is available
@@ -44,7 +40,7 @@ ShareDrop.App.deferReadiness();
         return new Promise(function (resolve, reject) {
             var xhr = Ember.$.getJSON('/auth');
             xhr.then(function (data) {
-                var ref = new Firebase(ShareDrop.App.config.FIREBASE_URL);
+                var ref = new Firebase(window.ENV.FIREBASE_URL);
                 ShareDrop.App.ref = ref;
                 ShareDrop.App.userId = data.id;
 

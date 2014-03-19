@@ -51,7 +51,12 @@
   <script src="/scripts/vendor/ba-tiny-pubsub.js"></script>
   <!-- endbuild -->
 
-  <script>window.ShareDrop = {};</script>
+  <script>
+    window.ShareDrop = {};
+    window.ENV = {
+      FIREBASE_URL: '<!-- @echo FIREBASE_URL -->'
+    };
+  </script>
   <!-- build:js({.tmp,app}) /scripts/app.js -->
   <script src="/scripts/app/lib/room.js"></script>
   <script src="/scripts/app/lib/file.js"></script>
