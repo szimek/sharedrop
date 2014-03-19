@@ -1,0 +1,24 @@
+{
+    "rules": {
+        "rooms": {
+            "$roomid": {
+                // You can see people in the room only if you are in it as well
+                ".read": "auth != null && data.child('users').hasChild(auth.id)",
+                "users": {
+                    "$userid": {
+                        // You can add/update only your own info
+                        ".write": "auth != null && $userid == auth.id"
+                    }
+                },
+                "messages": {
+                    // You can send message to anybody in the room
+                    ".write": "auth != null",
+                    "$userid": {
+                        // You can read only messages sent to you
+                        ".read": "auth != null && $userid == auth.id"
+                    }
+                }
+            }
+        }
+    }
+}
