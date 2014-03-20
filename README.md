@@ -1,6 +1,6 @@
 # ![ShareDrop](https://www.sharedrop.io/images/a2781750.sharedrop.svg)
 
-ShareDrop is HTML5 clone of Apple [AirDrop](http://support.apple.com/kb/ht4783) that uses WebRTC for secure peer-to-peer file transfer. It uses [Firebase](https://www.firebase.com) for presence management and WebRTC signaling.
+ShareDrop is HTML5 clone of Apple [AirDrop](http://support.apple.com/kb/ht4783) that uses [WebRTC](http://www.webrtc.org) for secure peer-to-peer file transfer. It uses [Firebase](https://www.firebase.com) for presence management and WebRTC signaling.
 
 Files are transfered directly between users - they don't go through any server, so you don't have to upload them anywhere first.
 
