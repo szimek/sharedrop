@@ -22,7 +22,7 @@ Firefox support is coming soon.
 2. Run `npm -g install grunt-cli` to install Grunt.
 3. Run `npm install` to install NodeJS dependencies.
 4. Run `bundle install` to install Ruby dependencies.
-5. Run `cp .env{.sample,}` to create `.env` file. This file will be used by Grunt to set environemnt variables when running the app locally. You only need `NEW_RELIC_*` variables on production.
+5. Run `cp .env{.sample,}` to create `.env` file. This file will be used by Grunt to set environemnt variables when running the app locally. You only need `NEW_RELIC_*` variables in production.
 6. Run `grunt serve` to start the app.
 7. Run `grunt build` to build production version of the app to `dist` directory.
 
