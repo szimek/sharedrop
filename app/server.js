@@ -39,7 +39,9 @@ module.exports.server = function (options) {
 
     base.forEach(function (dir) {
         ['scripts', 'styles', 'images', 'fonts'].forEach(function (subdir) {
-            app.use('/' + subdir, express.static(dir + '/' + subdir));
+            app.use('/' + subdir, express.static(dir + '/' + subdir, {
+                maxAge: 31104000000 // ~1 year
+            }));
         });
     });
 
