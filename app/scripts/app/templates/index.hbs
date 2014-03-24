@@ -1,6 +1,6 @@
 {{outlet modal}}
 
-<div class="l-content">
+<main class="l-content">
   <div class="user others">
     {{#each peer in model}}
       {{render "peer" peer}}
@@ -12,7 +12,7 @@
       {{render "user" you}}
     </div>
   {{/if}}
-</div>
+</main>
 
 <svg class="circles" viewBox="-0.5 -0.5 1140 700">
   <circle class="circle" cx="570" cy="570" r="30"  stroke="rgba(160,160,160, 1)" />
