@@ -1,0 +1,63 @@
+.modal-overlay
+  position: fixed
+  z-index: 300
+  top: 0
+  bottom: 0
+  left: 0
+  right: 0
+  background-color: rgba(black,.6)
+  overflow: auto
+
+.modal-body
+  position: absolute
+  top: 0
+  bottom: 0
+  left: 0
+  right: 0
+  margin: auto
+  background-color: white
+  width: 580px
+  height: 500px
+  padding: 20px
+  border-radius: 5px
+  h3
+    font-size: 1.8rem
+    font-weight: bold
+    margin-bottom: 1.11em
+  p
+    font-size: 1.4rem
+    line-height: 1.4em
+    margin-bottom: 1.42em
+    &.note
+
+      font-size: 1.1rem
+
+  a
+    color: $blue
+    opacity: .6
+    &:hover
+      opacity: 1
+
+  .actions
+    text-align: center
+    button
+      +button_reset
+      font-size: 1.6rem
+      cursor: pointer
+      border-radius: 5px
+      background: rgba($blue,.8)
+      color: #fff
+      padding: 14px 80px
+      text-shadow: rgba(black,.3) 0 -1px 0
+      transition: background .3s
+      margin-bottom: 20px
+      &:hover
+        background: $blue
+
+  .logo
+    height: 38px
+    margin-bottom: 20px
+    background: transparent image-url("/images/sharedrop.svg") no-repeat left
+    span
+      display: none
+

@@ -6,6 +6,9 @@
     </h1>
 
     <ul class="nav">
+      <li>
+        <a href="javascript:void(0)" class="about" {{action 'openModal' 'about'}}>?</a>
+      </li>
       {{#if you.email}}
         <li class="email">
           {{you.email}}
