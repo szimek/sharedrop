@@ -1,6 +1,6 @@
 ShareDrop.App.ProgressBarView = Ember.View.extend({
     tagName: 'svg',
-    templateName: 'progress-bar',
+    templateName: 'progress_bar',
 
     attributeBindings: ['width', 'height', 'viewport'],
     width: "76",

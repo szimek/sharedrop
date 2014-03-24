@@ -66,6 +66,21 @@ ShareDrop.App.IndexRoute = Ember.Route.extend({
             into: 'application',
             outlet: 'about_you'
         });
+    },
+
+    actions: {
+        openModal: function(modalName) {
+            return this.render(modalName, {
+                into: 'index',
+                outlet: 'modal'
+            });
+        },
+
+        closeModal: function() {
+            return this.disconnectOutlet({
+                outlet: 'modal'
+            });
+        }
     }
 });
 

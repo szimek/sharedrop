@@ -1,4 +1,4 @@
-ShareDrop.App.ConfirmPopoverComponent = Ember.Component.extend({
+ShareDrop.App.PopoverConfirmComponent = Ember.Component.extend({
     classNames: ['popover-confirm'],
 
     iconClass: function () {

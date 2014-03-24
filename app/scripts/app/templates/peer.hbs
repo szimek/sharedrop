@@ -1,20 +1,20 @@
 <!-- Sender related popups -->
-{{#confirm-popover confirm="sendFileTransferInquiry" cancel="cancelFileTransfer" isShowing=view.isAwaitingFileInfo filename=filename confirm-button-label="Send" cancel-button-label="Cancel"}}
+{{#popover-confirm confirm="sendFileTransferInquiry" cancel="cancelFileTransfer" isShowing=view.isAwaitingFileInfo filename=filename confirm-button-label="Send" cancel-button-label="Cancel"}}
   Do you want to send <strong>"{{filename}}"</strong> to <strong>"{{peer.label}}"</strong>?
-{{/confirm-popover}}
+{{/popover-confirm}}
 
-{{#confirm-popover  cancel="abortFileTransfer" isShowing=view.isAwaitingResponse filename=filename cancel-button-label="Cancel"}}
+{{#popover-confirm  cancel="abortFileTransfer" isShowing=view.isAwaitingResponse filename=filename cancel-button-label="Cancel"}}
   Waiting for <strong>"{{peer.label}}"</strong> to accept&hellip;
-{{/confirm-popover}}
+{{/popover-confirm}}
 
-{{#confirm-popover confirm="cancelFileTransfer" isShowing=view.hasDeclinedFileTransfer filename=filename confirm-button-label="Ok"}}
+{{#popover-confirm confirm="cancelFileTransfer" isShowing=view.hasDeclinedFileTransfer filename=filename confirm-button-label="Ok"}}
   <strong>"{{peer.label}}"</strong> has declined your request.
-{{/confirm-popover}}
+{{/popover-confirm}}
 
 <!-- Recipient related popups -->
-{{#confirm-popover confirm="acceptFileTransfer" cancel="rejectFileTransfer" isShowing=view.hasReceivedFileInfo filename=filename confirm-button-label="Save" cancel-button-label="Decline"}}
+{{#popover-confirm confirm="acceptFileTransfer" cancel="rejectFileTransfer" isShowing=view.hasReceivedFileInfo filename=filename confirm-button-label="Save" cancel-button-label="Decline"}}
   <strong>"{{peer.label}}"</strong> wants to send you <strong>"{{filename}}"</strong>.
-{{/confirm-popover}}
+{{/popover-confirm}}
 
 <div class="avatar">
   {{view ShareDrop.App.ProgressBarView}}
