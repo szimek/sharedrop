@@ -6,6 +6,9 @@
     </h1>
 
     <ul class="nav">
+      <li>
+        <a href="javascript:void(0)" class="about" {{action 'openModal' 'about'}}>?</a>
+      </li>
       {{#if you.email}}
         <li class="email">
           {{you.email}}
@@ -18,9 +21,6 @@
           <a href="javascript:void(0)" class="sign" {{action 'signIn'}} title="Signing will allow others to recognize you by your email address and Gravatar">Sign in</a>
         </li>
       {{/if}}
-      <li>
-        <a href="javascript:void(0)" {{action 'openModal' 'about'}}>?</a>
-      </li>
     </ul>
   </nav>
 </header>

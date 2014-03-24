@@ -36,12 +36,21 @@
         line-height: 30px
         a
           display: inline-block
+          transition: opacity .2s linear
+          color: #000
           img
             vertical-align: middle
 
+    .about
+      +circle(18px)
+      border: 1px solid #000
+      font-size: 12px
+      opacity: .15
+      margin-top: -2px
+      &:hover
+        opacity: .6
+
     .sign
-      color: #000
-      transition: opacity .2s linear
       background: transparent image-url("/images/persona.svg") no-repeat left
       padding-left: 25px
       &:hover
