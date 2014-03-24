@@ -74,11 +74,19 @@ ShareDrop.App.IndexController = Ember.ArrayController.extend({
 
     _onRoomUserChanged: function (event, data) {
         var peer = this.findBy('uuid', data.uuid),
-            peerAttrs = data.peer;
+            peerAttrs = data.peer,
+            defaults = {
+                uuid: null,
+                email: null,
+                public_ip: null,
+                local_ip: null
+            };
 
         if (peer) {
             delete data.peer;
-            peer.setProperties(data);
+            // Firebase doesn't return keys with null values,
+            // so we have to add them back.
+            peer.setProperties($.extend({}, defaults, data));
             peer.get('peer').setProperties(peerAttrs);
         }
     },
