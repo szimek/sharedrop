@@ -52,6 +52,24 @@ ShareDrop.App.deferReadiness();
     }
 })();
 
+ShareDrop.App.ApplicationRoute = Ember.Route.extend({
+    actions: {
+        openModal: function (modalName) {
+            return this.render(modalName, {
+                outlet: 'modal',
+                into: 'index'
+            });
+        },
+
+        closeModal: function () {
+            return this.disconnectOutlet({
+                outlet: 'modal',
+                parentView: 'index'
+            });
+        }
+    }
+});
+
 ShareDrop.App.IndexRoute = Ember.Route.extend({
     beforeModel: function() {
         if (ShareDrop.App.error) {
@@ -66,21 +84,10 @@ ShareDrop.App.IndexRoute = Ember.Route.extend({
             into: 'application',
             outlet: 'about_you'
         });
-    },
 
-    actions: {
-        openModal: function(modalName) {
-            return this.render(modalName, {
-                outlet: 'modal',
-                into: 'index'
-            });
-        },
-
-        closeModal: function() {
-            return this.disconnectOutlet({
-                outlet: 'modal',
-                parentView: 'index'
-            });
+        if (!localStorage.seenInstructions) {
+            this.send('openModal', 'about');
+            localStorage.seenInstructions = 'yup';
         }
     }
 });
