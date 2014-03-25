@@ -45,6 +45,8 @@ $icon-prefix: glyphicon
   100%
     transform: rotate(359deg)
 
+[class*="#{$icon-prefix}-"]:before
+  content: "\E120"
 
 .#{$icon-prefix}-txt:before
   content: "\E001"
@@ -81,7 +83,7 @@ $icon-prefix: glyphicon
 .#{$icon-prefix}-pps:before
   content: "\E017"
 .#{$icon-prefix}-key:before
-  content: "\1F511"
+  content: "\E018"
 .#{$icon-prefix}-ppt:before
   content: "\E019"
 .#{$icon-prefix}-pptx:before
@@ -148,7 +150,7 @@ $icon-prefix: glyphicon
   content: "\E050"
 .#{$icon-prefix}-psp:before
   content: "\E051"
-.#{$icon-prefix}-jpg:before
+.#{$icon-prefix}-jpg:before, .#{$icon-prefix}-jpeg:before
   content: "\E052"
 .#{$icon-prefix}-tif:before
   content: "\E053"
@@ -305,4 +307,4 @@ $icon-prefix: glyphicon
 .#{$icon-prefix}-ini:before
   content: "\E129"
 .#{$icon-prefix}-prf:before
-  content: "\E30"
+  content: "\E130"
