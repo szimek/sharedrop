@@ -7,10 +7,9 @@ At the moment ShareDrop allows you to send files only to other devices in the sa
 The main difference between ShareDrop and AirDrop is that ShareDrop requires internet connection to find devices, while AirDrop doesn't need one - it creates ad-hoc wireless network between them. On the other hand, ShareDrop allows you to send files between mobile (Android) and desktop devices.
 
 ### Supported browsers
-* Chrome (desktop and mobile) 33+
-* Opera 20+
-
-Firefox support is coming soon.
+* Chrome (desktop and Android) 33+
+* Opera (desktop and Android) 20+
+* Firefox (desktop and Android) 28+ (though we suggest using Chrome or Opera for transferring larger files)
 
 ### How to set it up for local development
 1. Setup Firebase:

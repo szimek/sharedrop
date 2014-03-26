@@ -176,7 +176,7 @@ ShareDrop.App.IndexController = Ember.ArrayController.extend({
             peer = this.findBy('peer.id', connection.peer);
 
         connection.close();
-        peer.set('transfer.receiving_progress', 0);
+        peer.set('transfer.receivingProgress', 0);
         peer.set('transfer.info', null);
         peer.set('internalState', 'idle');
     },
@@ -187,7 +187,7 @@ ShareDrop.App.IndexController = Ember.ArrayController.extend({
         var connection = data.connection,
             peer = this.findBy('peer.id', connection.peer);
 
-        peer.set('transfer.sending_progress', 0);
+        peer.set('transfer.sendingProgress', 0);
         peer.set('transfer.file', null);
         peer.set('internalState', 'idle');
     },

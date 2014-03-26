@@ -455,8 +455,6 @@ function Peer(id, options) {
 
 util.inherits(Peer, EventEmitter);
 
-Peer.CHUNK_MTU = 16000;
-
 /** Initialize a connection with the server. */
 Peer.prototype._initialize = function (id) {
   var self = this;
@@ -1070,10 +1068,15 @@ Negotiator._setupListeners = function(connection, pc) {
   pc.onicecandidate = function(evt) {
     if (evt.candidate) {
       util.log('Received ICE candidates for:', dst);
+
+      // For some reason Firefox requires toJSON call
+      var c = evt.candidate,
+          candidate = 'toJSON' in c ? c.toJSON() : c;
+
       provider._messagesRef.child(dst).push({
         type: 'CANDIDATE',
         payload: {
-          candidate: evt.candidate,
+          candidate: candidate,
           type: connection.type,
           connectionId: connectionId
         },
@@ -1150,6 +1153,10 @@ Negotiator._makeOffer = function(connection) {
     util.log('Created offer.');
 
     pc.setLocalDescription(offer, function() {
+      // For some reason Firefox requires toJSON call
+      var o = offer;
+      offer = 'toJSON' in o ? o.toJSON() : o;
+
       util.log('Set localDescription: offer', 'for:', dst);
       connection.provider._messagesRef.child(dst).push({
         type: 'OFFER',
@@ -1186,6 +1193,10 @@ Negotiator._makeAnswer = function(connection) {
     util.log('Created answer.');
 
     pc.setLocalDescription(answer, function() {
+      // For some reason Firefox requires toJSON call
+      var a = answer;
+      answer = 'toJSON' in a ? a.toJSON() : a;
+
       util.log('Set localDescription: answer', 'for:', dst);
       provider._messagesRef.child(dst).push({
         type: 'ANSWER',

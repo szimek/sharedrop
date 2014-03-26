@@ -30,6 +30,7 @@ ShareDrop.WebRTC = function (id, options) {
     });
 };
 
+ShareDrop.WebRTC.CHUNK_MTU = 16000;
 ShareDrop.WebRTC.CHUNKS_PER_ACK = 64;
 
 ShareDrop.WebRTC.prototype.connect = function (id) {
@@ -171,7 +172,7 @@ ShareDrop.WebRTC.prototype.getFileInfo = function (file) {
         name: file.name,
         size: file.size,
         type: file.type,
-        chunksTotal: Math.ceil(file.size / Peer.CHUNK_MTU)
+        chunksTotal: Math.ceil(file.size / ShareDrop.WebRTC.CHUNK_MTU)
     };
 };
 
@@ -234,45 +235,47 @@ ShareDrop.WebRTC.prototype._requestFileBlock = function (connection, chunkNum) {
     connection.send(JSON.stringify(message));
 };
 
-// FIXME: Figure out why 64th chunk is sent twice
 ShareDrop.WebRTC.prototype._sendBlock = function (connection, file, beginChunkNum) {
     var info = this.files.outgoing[connection.peer].info,
+        chunkSize = ShareDrop.WebRTC.CHUNK_MTU,
         chunksPerAck = ShareDrop.WebRTC.CHUNKS_PER_ACK,
         remainingChunks = info.chunksTotal - beginChunkNum,
         chunksToSend = Math.min(remainingChunks, chunksPerAck),
         endChunkNum = beginChunkNum + chunksToSend - 1,
-        chunkNum;
+        begin = beginChunkNum * chunkSize,
+        end = endChunkNum * chunkSize + chunkSize,
+        reader = new FileReader(),
+        blockBlob, chunkNum;
 
-    // console.log('Send block: start: ' + beginChunkNum + ' end: ' + endChunkNum);
+    // Read the whole block from file
+    blockBlob = file.slice(begin, end);
 
-    for (chunkNum = beginChunkNum; chunkNum <  endChunkNum + 1; chunkNum++) {
-        this._sendChunk(connection, file, chunkNum);
-    }
-};
+    // console.log('Sending block: start chunk: ' + beginChunkNum + ' end chunk: ' + endChunkNum);
+    // console.log('Sending block: start byte : ' + begin + ' end byte : ' + end);
 
-// TODO: check for finish condition (if end is file.size => last chunk)
-ShareDrop.WebRTC.prototype._sendChunk = function (connection, file, chunkNum) {
-    var info = this.files.outgoing[connection.peer].info,
-        chunkSize = Peer.CHUNK_MTU,
-        begin, end, blob;
-
-    var reader = new FileReader();
-    begin = chunkNum * chunkSize;
-    end = Math.min(begin + chunkSize, info.size);
-
-    blob = file.slice(begin, end);
-
-    reader.onload = function(event) {
+    reader.onload = function (event) {
         if (reader.readyState == FileReader.DONE) {
-            connection.send(event.target.result);
+            var blockBuffer = event.target.result;
 
-            connection.emit('sending_progress', chunkNum / (info.chunksTotal - 1));
-            // console.log('Sent chunk no ' + (chunkNum + 1) + ' out of ' + info.chunksTotal);
+            for (chunkNum = beginChunkNum; chunkNum <  endChunkNum + 1; chunkNum++) {
+                // Send each chunk (begin index is inclusive, end index is exclusive)
+                var begin = (chunkNum % chunksPerAck) * chunkSize,
+                    end = Math.min(begin + chunkSize, blockBuffer.byteLength),
+                    chunkBuffer = blockBuffer.slice(begin, end);
 
-            if (chunkNum === info.chunksTotal - 1) {
+                connection.send(chunkBuffer);
+
+                // console.log('Sent chunk: start byte: ' + begin + ' end byte: ' + end + ' length: ' + chunkBuffer.byteLength);
+                // console.log('Sent chunk no ' + (chunkNum + 1) + ' out of ' + info.chunksTotal);
+
+                connection.emit('sending_progress', chunkNum / (info.chunksTotal - 1));
+            }
+
+            if (endChunkNum === info.chunksTotal - 1) {
                 $.publish('file_sent.p2p.peer', {connection: connection});
             }
         }
     };
-    reader.readAsArrayBuffer(blob);
+
+    reader.readAsArrayBuffer(blockBlob);
 };

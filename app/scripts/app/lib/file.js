@@ -61,9 +61,10 @@ ShareDrop.File.prototype.append = function (data) {
     return new Promise(function (resolve, reject) {
         self.filesystem.root.getFile(self.localName, options, function (fileEntry) {
             if (self.create) {
-                self.fileEntry = fileEntry;
                 self.create = false;
             }
+
+            self.fileEntry = fileEntry;
 
             fileEntry.createWriter(function (writer) {
                 var blob = new Blob(data, {type: self.type});

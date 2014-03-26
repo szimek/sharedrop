@@ -16,7 +16,7 @@ ShareDrop.App.deferReadiness();
 
     function checkWebRTCSupport() {
         return new Promise(function (resolve, reject) {
-            if (('webkitRTCPeerConnection' in window) && util.supports.sctp) {
+            if (util.supports.sctp) {
                 resolve();
             } else {
                 reject('browser_unsupported');
