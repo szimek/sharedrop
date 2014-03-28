@@ -48,6 +48,9 @@ ShareDrop.Room.prototype.join = function (user) {
 
                     console.log('Room:\t user_removed: ', user);
                     $.publish('user_removed.room', user);
+                }, function () {
+                    // Handle case when the whole room is removed from Firebase
+                    $.publish('disconnected.room');
                 });
 
                 self._usersRef.on('child_changed', function (snapshot) {
