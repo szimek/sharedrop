@@ -3,6 +3,7 @@ ShareDrop.App.IndexController = Ember.ArrayController.extend({
 
     you: Ember.computed.alias('controllers.application.you'),
     room: null,
+    webrtc: null,
 
     init: function () {
         // Handle room events
@@ -164,7 +165,7 @@ ShareDrop.App.IndexController = Ember.ArrayController.extend({
             peer = this.findBy('peer.id', connection.peer);
 
         connection.close();
-        peer.set('transfer.receiving_progress', 0);
+        peer.set('transfer.receivingProgress', 0);
         peer.set('transfer.info', null);
         peer.set('internalState', 'idle');
     },
