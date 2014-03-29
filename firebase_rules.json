@@ -6,8 +6,12 @@
                 ".read": "auth != null && data.child('users').hasChild(auth.id)",
                 "users": {
                     "$userid": {
-                        // You can add/update only your own info
-                        ".write": "auth != null && $userid == auth.id"
+                        // You can modify only your own info
+                        ".write": "auth != null && $userid == auth.id",
+
+                        // Ensure that all required attributes are there
+                        ".validate": "newData.hasChildren(['uuid', 'public_ip', 'peer']) && newData.child('peer').hasChildren(['id'])"
+
                     }
                 },
                 "messages": {
