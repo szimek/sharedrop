@@ -25,10 +25,16 @@ ShareDrop.App.PeerAvatarView = Ember.View.extend(Ember.ViewTargetActionSupport, 
     // Handle drop events
     dragEnter: function (event) {
         this.cancelEvent(event);
+
+        this.$().parent('.avatar').addClass('hover');
     },
 
     dragOver: function (event) {
         this.cancelEvent(event);
+    },
+
+    dragLeave: function (event) {
+        this.$().parent('.avatar').removeClass('hover');
     },
 
     drop: function (event) {
