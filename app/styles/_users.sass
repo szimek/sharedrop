@@ -111,6 +111,18 @@ $user-size: 76px
           +scale(1.1)
           .gravatar
             border-color: rgba($blue,.8)
+        &.sent
+          &::after
+            position: absolute
+            top: 5px
+            left: 5px
+            z-index: 100
+            content: "\2713"
+            color: white
+            font-size: 3rem
+            background: transparentize($blue,.4)
+            +circle($user-size - 10)
+
 
 +keyframes(shadow)
   0%

@@ -1,6 +1,6 @@
 ShareDrop.App.PeerAvatarView = Ember.View.extend(Ember.ViewTargetActionSupport, {
     tagName: 'img',
-    classNames: ['gravatar', 'img-circle'],
+    classNames: ['gravatar'],
     attributeBindings: [
         'src',
         'alt',
