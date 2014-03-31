@@ -33,16 +33,19 @@ ShareDrop.App.PeerAvatarView = Ember.View.extend(Ember.ViewTargetActionSupport, 
     drop: function (event) {
         this.cancelEvent(event);
 
-        var dt = event.originalEvent.dataTransfer,
+        var self = this,
+            dt = event.originalEvent.dataTransfer,
             files = dt.files,
             file = files[0];
 
         if (this.canSendFile()) {
-            this.triggerAction({
-                action: 'uploadFile',
-                actionContext: {
-                    file: file
-                }
+            this.isFile(file).then(function () {
+                self.triggerAction({
+                    action: 'uploadFile',
+                    actionContext: {
+                        file: file
+                    }
+                });
             });
         }
     },
@@ -59,5 +62,25 @@ ShareDrop.App.PeerAvatarView = Ember.View.extend(Ember.ViewTargetActionSupport, 
         if (peer.get('transfer.file') || peer.get('transfer.info')) return false;
 
         return true;
+    },
+
+    isFile: function (file) {
+        return new Promise(function (resolve, reject) {
+            if (file instanceof File) {
+                if (file.size > 1048576) {
+                    // It's bigger than 1MB, so we assume it's a file
+                    resolve();
+                } else {
+                    // Try to read it using FileReader - if it's not a file,
+                    // it should trigger onerror handler
+                    var reader = new FileReader();
+                    reader.onload = function () { resolve(); };
+                    reader.onerror = function () { reject(); };
+                    reader.readAsArrayBuffer(file);
+                }
+            } else {
+                reject();
+            }
+        });
     }
 });
