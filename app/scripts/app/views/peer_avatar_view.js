@@ -8,11 +8,12 @@ ShareDrop.App.PeerAvatarView = Ember.View.extend(Ember.ViewTargetActionSupport, 
         'data-sending-progress',
         'data-receiving-progress'
     ],
-    src: Ember.computed.alias('controller.model.avatarUrl'),
-    alt: Ember.computed.alias('controller.model.label'),
-    title: Ember.computed.alias('controller.model.uuid'),
-    "data-sending-progress": Ember.computed.alias('controller.model.transfer.sendingProgress'),
-    "data-receiving-progress": Ember.computed.alias('controller.model.transfer.receivingProgress'),
+    peer: Ember.computed.alias('controller.model'),
+    src: Ember.computed.alias('peer.avatarUrl'),
+    alt: Ember.computed.alias('peer.label'),
+    title: Ember.computed.alias('peer.uuid'),
+    "data-sending-progress": Ember.computed.alias('peer.transfer.sendingProgress'),
+    "data-receiving-progress": Ember.computed.alias('peer.transfer.receivingProgress'),
 
     // Delegate click to hidden file field in peer template
     click: function (event) {
@@ -34,19 +35,27 @@ ShareDrop.App.PeerAvatarView = Ember.View.extend(Ember.ViewTargetActionSupport, 
         this.cancelEvent(event);
 
         var self = this,
+            peer = this.get('peer'),
             dt = event.originalEvent.dataTransfer,
             files = dt.files,
             file = files[0];
 
         if (this.canSendFile()) {
-            this.isFile(file).then(function () {
-                self.triggerAction({
-                    action: 'uploadFile',
-                    actionContext: {
-                        file: file
-                    }
+            if (files.length > 1) {
+                peer.setProperties({
+                    internalState: 'error',
+                    errorCode: 'multiple_files'
                 });
-            });
+            } else {
+                this.isFile(file).then(function () {
+                    self.triggerAction({
+                        action: 'uploadFile',
+                        actionContext: {
+                            file: file
+                        }
+                    });
+                });
+            }
         }
     },
 

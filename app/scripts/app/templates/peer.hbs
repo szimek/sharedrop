@@ -11,6 +11,10 @@
   <strong>"{{peer.label}}"</strong> has declined your request.
 {{/popover-confirm}}
 
+{{#popover-confirm confirm="cancelFileTransfer" isShowing=view.hasError partialName=view.errorTemplateName confirm-button-label="Ok"}}
+  {{partial view.partialName}}
+{{/popover-confirm}}
+
 <!-- Recipient related popups -->
 {{#popover-confirm confirm="acceptFileTransfer" cancel="rejectFileTransfer" isShowing=view.hasReceivedFileInfo filename=filename confirm-button-label="Save" cancel-button-label="Decline"}}
   <strong>"{{peer.label}}"</strong> wants to send you <strong>"{{filename}}"</strong>.

@@ -48,9 +48,19 @@ ShareDrop.App.Peer = Ember.Object.extend({
     // - declined_file_transfer
     // - receiving_file_data
     // - sending_file_data
+    // - error
     internalState: "idle",
+
+    // Used to display error messages in popovers. Possible codes:
+    // - multiple_files
+    errorCode: null,
 
     internalStateChanged: function () {
         console.log('Peer:\t Internal state has changed: ', this.get('internalState'));
+
+        // Automatically clear error code if transitioning to a non-error state
+        if (this.get('internalState') !== 'error') {
+            this.set('errorCode', null);
+        }
     }.observes('internalState').on('init')
 });
