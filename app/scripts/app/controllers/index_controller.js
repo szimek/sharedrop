@@ -180,6 +180,7 @@ ShareDrop.App.IndexController = Ember.ArrayController.extend({
         peer.set('transfer.receivingProgress', 0);
         peer.set('transfer.info', null);
         peer.set('internalState', 'idle');
+        peer.trigger('didReceiveFile');
     },
 
     _onPeerP2PFileSent: function (event, data) {
@@ -191,6 +192,7 @@ ShareDrop.App.IndexController = Ember.ArrayController.extend({
         peer.set('transfer.sendingProgress', 0);
         peer.set('transfer.file', null);
         peer.set('internalState', 'idle');
+        peer.trigger('didSendFile');
     },
 
     // Based on http://net.ipcalf.com/
