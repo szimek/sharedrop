@@ -32,10 +32,14 @@ ShareDrop.Room.prototype.join = function (user) {
 
                 // Join the room
                 self._userRef.set(user, function (error) {
-                    console.log('Firebase: User added to the room');
-                    // Create a copy of user data,
-                    // so that deleting properties won't affect the original variable
-                    $.publish('connected.room', $.extend(true, {}, user));
+                    if (error) {
+                        console.warn('Firebase: Adding user to the room failed: ', error);
+                    } else {
+                        console.log('Firebase: User added to the room');
+                        // Create a copy of user data,
+                        // so that deleting properties won't affect the original variable
+                        $.publish('connected.room', $.extend(true, {}, user));
+                    }
                 });
 
                 self._usersRef.on('child_added', function (snapshot) {
