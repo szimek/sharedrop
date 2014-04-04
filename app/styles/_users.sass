@@ -111,6 +111,26 @@ $user-size: 76px
           +scale(1.1)
           .gravatar
             border-color: rgba($blue,.8)
+        &::after
+          opacity: 0
+          transition: opacity .3s
+          position: absolute
+          pointer-events: none
+          top: 5px
+          left: 5px
+          z-index: 100
+          content: "L"
+          color: white
+          font-size: 3rem
+          font-weight: bold
+          background: transparentize($green,.2)
+          border: 1px solid white
+          +transform(scaleX(-1) rotate(-45deg))
+          +circle($user-size - 10)
+        &.transfer-completed
+          &::after
+            opacity: 1
+
 
 +keyframes(shadow)
   0%

@@ -1,4 +1,4 @@
-ShareDrop.App.Peer = Ember.Object.extend({
+ShareDrop.App.Peer = Ember.Object.extend(Ember.Evented, {
     uuid: null,
     email: null,
     public_ip: null,
