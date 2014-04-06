@@ -196,7 +196,7 @@ ShareDrop.App.IndexController = Ember.ArrayController.extend({
     // Based on http://net.ipcalf.com/
     // SDP offer is used on Firefox, ICE candidate on Chrome
     _setUserLocalIP: function () {
-        var you = this.get('you');
+        var ips = this.get('you.local_ips');
 
         // RTCPeerConnection is provided by PeerJS library
         var rtc = new window.RTCPeerConnection({iceServers: []});
@@ -211,7 +211,7 @@ ShareDrop.App.IndexController = Ember.ArrayController.extend({
                 var addr = grep(event.candidate.candidate);
                 if (addr) {
                     console.log('Local IP found: ', addr);
-                    you.set('local_ip', addr);
+                    ips.addObject(addr);
                 }
             }
         };
@@ -223,7 +223,7 @@ ShareDrop.App.IndexController = Ember.ArrayController.extend({
                 var addr = grep(offer.sdp);
                 if (addr && addr !== '0.0.0.0') {
                     console.log('Local IP found: ', addr);
-                    you.set('local_ip', addr);
+                    ips.addObject(addr);
                 }
 
             },
