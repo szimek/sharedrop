@@ -62,17 +62,19 @@ module.exports.server = function (options) {
             ip = ips.split(',').pop().trim(),
             name = crypto.createHmac('md5', secret).update(ip).digest('hex');
 
-        res.json({name: name, public_ip: ip});
+        res.json({name: name});
     });
 
     app.get('/auth', function (req, res) {
-        var id = uuid.v1(),
+        var ips = req.headers['x-forwarded-for'] || req.ip,
+            ip = ips.split(',').pop().trim(),
+            id = uuid.v1(),
             token = firebaseTokenGenerator.createToken(
                 {id: id}, // will be available in Firebase security rules as 'auth'
                 {expires: 32503680000} // 01.01.3000 00:00
             );
 
-        res.json({id: id, token: token});
+        res.json({id: id, token: token, public_ip: ip});
     });
 
     return http.createServer(app);

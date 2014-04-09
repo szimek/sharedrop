@@ -3,12 +3,14 @@ ShareDrop.App.ApplicationController = Ember.Controller.extend({
         this._super();
 
         var id = ShareDrop.App.userId,
+            ip = ShareDrop.App.publicIp,
             you = ShareDrop.App.User.create({
-            uuid: id,
-            email: localStorage.email || null
-        });
-        you.set('peer.id', id);
+                uuid: id,
+                public_ip: ip,
+                email: localStorage.email || null
+            });
 
+        you.set('peer.id', id);
         this.set('you', you);
         this.handlePersonaAuth();
     },
