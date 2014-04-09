@@ -59,6 +59,18 @@ $user-size: 76px
         height: 6px
         vertical-align: middle
         border-radius: 50%
+      select
+        +appearance(none)
+        border: none
+        font-size: 10px
+        font-family: "Helvetica Neue", sans-serif
+        color: #808080
+        padding-right: 10px
+        outline: none
+        background: transparent image-url("/images/select-arrow.svg") no-repeat 66px 50%
+        // firefox fix - remove arrow from select
+        text-indent: 0.01px
+        text-overflow: ''
 
     &:nth-of-type(2)
       margin-left: -186px
@@ -111,6 +123,7 @@ $user-size: 76px
           +scale(1.1)
           .gravatar
             border-color: rgba($blue,.8)
+
 
 +keyframes(shadow)
   0%
