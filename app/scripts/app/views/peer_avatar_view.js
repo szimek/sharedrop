@@ -1,6 +1,6 @@
 ShareDrop.App.PeerAvatarView = Ember.View.extend(Ember.ViewTargetActionSupport, {
     tagName: 'img',
-    classNames: ['gravatar', 'img-circle'],
+    classNames: ['gravatar'],
     attributeBindings: [
         'src',
         'alt',
@@ -14,6 +14,35 @@ ShareDrop.App.PeerAvatarView = Ember.View.extend(Ember.ViewTargetActionSupport, 
     title: Ember.computed.alias('peer.uuid'),
     "data-sending-progress": Ember.computed.alias('peer.transfer.sendingProgress'),
     "data-receiving-progress": Ember.computed.alias('peer.transfer.receivingProgress'),
+
+    didInsertElement: function () {
+        var self = this,
+            peer = this.get('peer'),
+            toggleTransferCompletedClass = function () {
+                var klass = 'transfer-completed';
+
+                Ember.run.later(self, function () {
+                    this.$().parent('.avatar')
+                    .addClass(klass)
+                    .delay(2000)
+                    .queue(function () {
+                        $(this).removeClass(klass).dequeue();
+                    });
+                }, 250);
+            };
+
+        peer.on('didReceiveFile', toggleTransferCompletedClass);
+        peer.on('didSendFile', toggleTransferCompletedClass);
+
+        this._super();
+    },
+
+    willDestroyElement: function () {
+        var peer = this.get('peer');
+
+        peer.off('didReceiveFile');
+        peer.off('didSendFile');
+    },
 
     // Delegate click to hidden file field in peer template
     click: function (event) {
