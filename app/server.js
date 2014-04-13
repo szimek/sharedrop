@@ -22,6 +22,8 @@ module.exports.server = function (options) {
     options = options || {};
     base = options.base || ['.'];
 
+    app.enable('trust proxy');
+
     app.use(express.logger());
     app.use(express.urlencoded());
     app.use(express.cookieParser());
@@ -58,8 +60,7 @@ module.exports.server = function (options) {
     });
 
     app.get('/room', function (req, res) {
-        var ips = req.headers['x-forwarded-for'] || req.ip,
-            ip = ips.split(',').pop().trim(),
+        var ip = req.headers['cf-connecting-ip'] || req.ip,
             name = crypto.createHmac('md5', secret).update(ip).digest('hex');
 
         res.json({name: name});

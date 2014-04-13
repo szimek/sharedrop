@@ -8,7 +8,11 @@
       {{#if model.isConnected}}
         <div class="user-connected"></div>
       {{/if}}
-      {{model.local_ip}}
+      {{#if view.hasManyLocalIps}}
+        {{view Ember.Select content=view.localIps value=model.local_ip}}
+      {{else}}
+        {{model.local_ip}}
+      {{/if}}
     </div>
   {{/if}}
 </div>
