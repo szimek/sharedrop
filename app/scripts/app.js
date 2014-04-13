@@ -146,6 +146,8 @@ ShareDrop.App.IndexRoute = Ember.Route.extend({
 });
 
 ShareDrop.App.RoomRoute = ShareDrop.App.IndexRoute.extend({
+    controllerName: 'index',
+
     model: function (params) {
         // Get room name from params
         return params.room_id;
