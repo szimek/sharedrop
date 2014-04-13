@@ -1089,8 +1089,11 @@ Negotiator._setupListeners = function(connection, pc) {
   pc.oniceconnectionstatechange = function() {
     switch (pc.iceConnectionState) {
       case 'disconnected':
-      case 'failed':
         util.log('iceConnectionState is disconnected, closing connections to ' + dst);
+        connection.close();
+        break;
+      case 'failed':
+        util.log('iceConnectionState is failed, closing connections to ' + dst);
         connection.close();
         break;
       case 'completed':

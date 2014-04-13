@@ -53,8 +53,12 @@ ShareDrop.App.deferReadiness();
     }
 })();
 
+ShareDrop.App.Router.reopen({
+  location: 'auto'
+});
+
 ShareDrop.App.Router.map(function () {
-    this.route('room', { path: '/room/:room_id' });
+    this.route('room', { path: '/rooms/:room_id' });
 });
 
 ShareDrop.App.ApplicationRoute = Ember.Route.extend({
