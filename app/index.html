@@ -21,7 +21,7 @@
     m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
     })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
-    ga('create', 'UA-41889586-2', 'sharedrop.io');
+    ga('create', '<!-- @echo GOOGLE_ANALYTICS_ID -->', 'auto');
     ga('send', 'pageview');
   </script>
   <!-- End Google Analytics -->
@@ -59,6 +59,7 @@
     };
   </script>
   <!-- build:js({.tmp,app}) /scripts/app.js -->
+  <script src="/scripts/app/lib/analytics.js"></script>
   <script src="/scripts/app/lib/room.js"></script>
   <script src="/scripts/app/lib/file.js"></script>
   <script src="/scripts/app/lib/webrtc.js"></script>
