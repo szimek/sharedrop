@@ -66,14 +66,14 @@ ShareDrop.App.ApplicationRoute = Ember.Route.extend({
         openModal: function (modalName) {
             return this.render(modalName, {
                 outlet: 'modal',
-                into: 'index'
+                into: 'application'
             });
         },
 
         closeModal: function () {
             return this.disconnectOutlet({
                 outlet: 'modal',
-                parentView: 'index'
+                parentView: 'application'
             });
         }
     }
