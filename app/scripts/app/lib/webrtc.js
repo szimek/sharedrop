@@ -98,6 +98,7 @@ ShareDrop.WebRTC.prototype._onBinaryData = function (data, connection) {
 
                 $.publish('file_received.p2p.peer', {
                     blob: file,
+                    info: info,
                     connection: connection
                 });
             } else {
