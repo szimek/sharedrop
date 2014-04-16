@@ -1,14 +1,14 @@
 <!-- Sender related popups -->
-{{#popover-confirm confirm="sendFileTransferInquiry" cancel="cancelFileTransfer" isShowing=view.isAwaitingFileInfo filename=filename confirm-button-label="Send" cancel-button-label="Cancel"}}
-  Do you want to send <strong>"{{filename}}"</strong> to <strong>"{{peer.label}}"</strong>?
+{{#popover-confirm confirm="sendFileTransferInquiry" cancel="cancelFileTransfer" isShowing=view.isAwaitingFileInfo filename=filename label=view.label confirm-button-label="Send" cancel-button-label="Cancel"}}
+  Do you want to send <strong>"{{filename}}"</strong> to <strong>"{{view.label}}"</strong>?
 {{/popover-confirm}}
 
-{{#popover-confirm  cancel="abortFileTransfer" isShowing=view.isAwaitingResponse filename=filename cancel-button-label="Cancel"}}
-  Waiting for <strong>"{{peer.label}}"</strong> to accept&hellip;
+{{#popover-confirm  cancel="abortFileTransfer" isShowing=view.isAwaitingResponse filename=filename label=view.label cancel-button-label="Cancel"}}
+  Waiting for <strong>"{{view.label}}"</strong> to accept&hellip;
 {{/popover-confirm}}
 
-{{#popover-confirm confirm="cancelFileTransfer" isShowing=view.hasDeclinedFileTransfer filename=filename confirm-button-label="Ok"}}
-  <strong>"{{peer.label}}"</strong> has declined your request.
+{{#popover-confirm confirm="cancelFileTransfer" isShowing=view.hasDeclinedFileTransfer filename=filename label=view.label confirm-button-label="Ok"}}
+  <strong>"{{view.label}}"</strong> has declined your request.
 {{/popover-confirm}}
 
 {{#popover-confirm confirm="cancelFileTransfer" isShowing=view.hasError partialName=view.errorTemplateName confirm-button-label="Ok"}}
@@ -16,8 +16,8 @@
 {{/popover-confirm}}
 
 <!-- Recipient related popups -->
-{{#popover-confirm confirm="acceptFileTransfer" cancel="rejectFileTransfer" isShowing=view.hasReceivedFileInfo filename=filename confirm-button-label="Save" cancel-button-label="Decline"}}
-  <strong>"{{peer.label}}"</strong> wants to send you <strong>"{{filename}}"</strong>.
+{{#popover-confirm confirm="acceptFileTransfer" cancel="rejectFileTransfer" isShowing=view.hasReceivedFileInfo filename=filename label=view.label confirm-button-label="Save" cancel-button-label="Decline"}}
+  <strong>"{{view.label}}"</strong> wants to send you <strong>"{{filename}}"</strong>.
 {{/popover-confirm}}
 
 <div class="avatar">
@@ -27,6 +27,11 @@
 
 <div class="user-info">
   {{#if model.email}}<div class="user-email">{{model.email}}</div>{{/if}}
+  {{#if controller.hasCustomRoomName}}
+    <div class="user-id">
+      {{model.public_ip}}
+    </div>
+  {{/if}}
   {{#if model.local_ip}}
     <div class="user-id">
       {{#if model.isConnected}}

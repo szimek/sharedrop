@@ -2,6 +2,7 @@ ShareDrop.App.PeerController = Ember.ObjectController.extend({
     needs: 'index',
 
     webrtc: Ember.computed.alias('controllers.index.webrtc'),
+    hasCustomRoomName: Ember.computed.alias('controllers.index.hasCustomRoomName'),
 
     filename: function () {
         var file = this.get('model.transfer.file'),

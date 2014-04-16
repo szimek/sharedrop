@@ -1,13 +1,21 @@
 <div class="avatar">
-  <img class="gravatar" {{bind-attr src="avatarUrl" alt="label" title="uuid"}}>
+  <img class="gravatar" {{bind-attr src="model.avatarUrl" alt="model.label" title="model.uuid"}}>
 </div>
 <div class="user-info">
   <div class="user-label">You</div>
+
+  {{#if controller.hasCustomRoomName}}
+    <div class="user-id">
+      {{model.public_ip}}
+    </div>
+  {{/if}}
+
   {{#if model.local_ip}}
     <div class="user-id">
       {{#if model.isConnected}}
         <div class="user-connected"></div>
       {{/if}}
+
       {{#if view.hasManyLocalIps}}
         {{view Ember.Select content=view.localIps value=model.local_ip}}
       {{else}}

@@ -1,1 +1,9 @@
-ShareDrop lets you share files with others in the same local network. Other people will see you as <b>{{you.label}}</b>
+ShareDrop lets you share files with others in the same local network.
+Other people will see you as
+<b>
+{{#if controller.hasCustomRoomName}}
+  {{you.labelWithPublicIp}}
+{{else}}
+  {{you.label}}
+{{/if}}
+</b>

@@ -24,6 +24,11 @@ ShareDrop.App.Peer = Ember.Object.extend(Ember.Evented, {
         return this.get('email') || this.get('local_ip');
     }.property('email', 'local_ip'),
 
+    labelWithPublicIp: function () {
+        return this.get('email') || this.get('public_ip') + '/' + this.get('local_ip');
+    }.property('email', 'public_ip', 'local_ip'),
+
+
     isConnected: function () {
         return !!this.get('peer.connection');
     }.property('peer.connection'),

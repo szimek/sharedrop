@@ -42,6 +42,25 @@ ShareDrop.App.User = ShareDrop.App.Peer.extend({
         return label;
     }.property('email', 'local_ip'),
 
+    labelWithPublicIp: function () {
+        var email = this.get('email'),
+            public_ip = this.get('public_ip'),
+            local_ip = this.get('local_ip'),
+            label;
+
+        if (email && local_ip) {
+            label = email + ' (' + public_ip + '/' + local_ip + ')';
+        } else if (local_ip) {
+            label = public_ip + '/' + local_ip;
+        } else if (email) {
+            label = email + ' (' + public_ip + ')';
+        } else {
+            label = null;
+        }
+
+        return label;
+    }.property('email', 'public_ip', 'local_ip'),
+
     serialize: function () {
         var data = {
             uuid: this.get('uuid'),

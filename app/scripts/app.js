@@ -153,6 +153,12 @@ ShareDrop.App.RoomRoute = ShareDrop.App.IndexRoute.extend({
         return params.room_id;
     },
 
+    setupController: function (ctrl, model) {
+        this._super(ctrl, model);
+
+        ctrl.set('hasCustomRoomName', true);
+    },
+
     actions: {
         willTransition: function () {
             $.unsubscribe('.room');
