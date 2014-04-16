@@ -22,6 +22,10 @@ ShareDrop.App.ApplicationController = Ember.Controller.extend({
 
         signOut: function () {
             navigator.id.logout();
+        },
+
+        redirect: function () {
+            this.transitionToRoute('room', $.uuid());
         }
     },
 
