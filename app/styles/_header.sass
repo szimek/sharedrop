@@ -36,10 +36,16 @@
         line-height: 30px
         a
           display: inline-block
-          transition: opacity .2s linear
+          transition: opacity .17s linear
           color: #000
           img
             vertical-align: middle
+          &:hover
+            opacity: .6
+
+    .icon-create-room
+      font-size: 28px
+      line-height: 24px
 
     .icon-circle
       +circle(18px)
@@ -47,14 +53,7 @@
       font-size: 12px
       opacity: .18
       margin-top: -2px
-      &:hover
-        opacity: .6
-
-      &.icon-create-room
-        line-height: 16px
 
     .sign
       background: transparent image-url("/images/persona.svg") no-repeat left
       padding-left: 25px
-      &:hover
-        opacity: .6
