@@ -1,15 +1,14 @@
 ShareDrop.App.PeerView = Ember.View.extend({
     peer: Ember.computed.alias('controller.model'),
-    isConnected: Ember.computed.alias('peer.isConnected'),
     classNames: ['peer'],
-    classNameBindings: ['isConnected:connected:disconnected'],
+    classNameBindings: ['peer.peer.state'],
 
-    isIdle: Ember.computed.equal('peer.internalState', 'idle'),
-    isAwaitingFileInfo: Ember.computed.equal('peer.internalState', 'awaiting_file_info'),
-    isAwaitingResponse: Ember.computed.equal('peer.internalState', 'awaiting_response'),
-    hasReceivedFileInfo: Ember.computed.equal('peer.internalState', 'received_file_info'),
-    hasDeclinedFileTransfer: Ember.computed.equal('peer.internalState', 'declined_file_transfer'),
-    hasError: Ember.computed.equal('peer.internalState', 'error'),
+    isIdle: Ember.computed.equal('peer.state', 'idle'),
+    isAwaitingFileInfo: Ember.computed.equal('peer.state', 'awaiting_file_info'),
+    isAwaitingResponse: Ember.computed.equal('peer.state', 'awaiting_response'),
+    hasReceivedFileInfo: Ember.computed.equal('peer.state', 'received_file_info'),
+    hasDeclinedFileTransfer: Ember.computed.equal('peer.state', 'declined_file_transfer'),
+    hasError: Ember.computed.equal('peer.state', 'error'),
 
     errorTemplateName: function () {
         var errorCode = this.get('peer.errorCode');

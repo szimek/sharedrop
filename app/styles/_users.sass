@@ -52,13 +52,19 @@ $user-size: 76px
       .user-id
         font-size: 10px
         color: #808080
-      .user-connected
+      .user-connection-status
         display: inline-block
-        background: rgba($blue,.5)
         width: 6px
         height: 6px
         vertical-align: middle
         border-radius: 50%
+        &.disconnected
+          display: none
+        &.connecting
+          background: rgba($blue,.5)
+        &.connected
+          background: rgba($green,.5)
+
       select
         +appearance(none)
         border: none

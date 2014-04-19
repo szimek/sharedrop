@@ -34,9 +34,7 @@
   {{/if}}
   {{#if model.local_ip}}
     <div class="user-id">
-      {{#if model.isConnected}}
-        <div class="user-connected"></div>
-      {{/if}}
+      <div {{bind-attr class=":user-connection-status model.peer.state"}}></div>
       {{model.local_ip}}
     </div>
   {{/if}}

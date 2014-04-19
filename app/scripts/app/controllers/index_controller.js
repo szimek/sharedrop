@@ -76,17 +76,33 @@ ShareDrop.App.IndexController = Ember.ArrayController.extend({
             peer = this.findBy('peer.id', connection.peer);
 
         peer.set('peer.connection', connection);
+        peer.set('peer.state', 'connecting');
+    },
+
+    _onPeerDCIncomingConnection: function (event, data) {
+        var connection = data.connection,
+            peer = this.findBy('peer.id', connection.peer);
+
+        peer.set('peer.state', 'connected');
     },
 
     _onPeerP2POutgoingConnection: function (event, data) {
-        var webrtc = this.get('webrtc'),
-            connection = data.connection,
-            peer = this.findBy('peer.id', connection.peer),
-            file = peer.get('transfer.file'),
-            info = webrtc.getFileInfo(file);
+        var connection = data.connection,
+            peer = this.findBy('peer.id', connection.peer);
 
         peer.set('peer.connection', connection);
-        peer.set('internalState', 'awaiting_response');
+        peer.set('peer.state', 'connecting');
+    },
+
+    _onPeerDCOutgoingConnection: function (event, data) {
+        var connection = data.connection,
+            peer = this.findBy('peer.id', connection.peer),
+            file = peer.get('transfer.file'),
+            webrtc = this.get('webrtc'),
+            info = webrtc.getFileInfo(file);
+
+        peer.set('peer.state', 'connected');
+        peer.set('state', 'awaiting_response');
 
         webrtc.sendFileInfo(connection, info);
         console.log('Sending a file info...', info);
@@ -98,6 +114,7 @@ ShareDrop.App.IndexController = Ember.ArrayController.extend({
 
         if (peer) {
             peer.set('peer.connection', null);
+            peer.set('peer.state', 'disconnected');
         }
     },
 
@@ -109,7 +126,7 @@ ShareDrop.App.IndexController = Ember.ArrayController.extend({
             info = data.info;
 
         peer.set('transfer.info', info);
-        peer.set('internalState', 'received_file_info');
+        peer.set('state', 'received_file_info');
     },
 
     _onPeerP2PFileResponse: function (event, data) {
@@ -128,9 +145,9 @@ ShareDrop.App.IndexController = Ember.ArrayController.extend({
                 peer.set('transfer.sendingProgress', progress);
             });
             webrtc.sendFile(connection, file);
-            peer.set('internalState', 'receiving_file_data');
+            peer.set('state', 'receiving_file_data');
         } else {
-            peer.set('internalState', 'declined_file_transfer');
+            peer.set('state', 'declined_file_transfer');
         }
     },
 
@@ -141,7 +158,7 @@ ShareDrop.App.IndexController = Ember.ArrayController.extend({
         connection.close();
         peer.set('transfer.receivingProgress', 0);
         peer.set('transfer.info', null);
-        peer.set('internalState', 'idle');
+        peer.set('state', 'idle');
     },
 
     _onPeerP2PFileReceived: function (event, data) {
@@ -153,7 +170,7 @@ ShareDrop.App.IndexController = Ember.ArrayController.extend({
         connection.close();
         peer.set('transfer.receivingProgress', 0);
         peer.set('transfer.info', null);
-        peer.set('internalState', 'idle');
+        peer.set('state', 'idle');
         peer.trigger('didReceiveFile');
     },
 
@@ -165,7 +182,7 @@ ShareDrop.App.IndexController = Ember.ArrayController.extend({
 
         peer.set('transfer.sendingProgress', 0);
         peer.set('transfer.file', null);
-        peer.set('internalState', 'idle');
+        peer.set('state', 'idle');
         peer.trigger('didSendFile');
     },
 

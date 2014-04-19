@@ -11,7 +11,7 @@ ShareDrop.Analytics = {
 };
 
 (function () {
-    $.subscribe('file_received.p2p.peer', function (event, data) {
+    $.subscribe('file_received.p2p', function (event, data) {
         ShareDrop.Analytics.trackEvent('file', 'transferred', 'size', data.info.size);
     });
 })();

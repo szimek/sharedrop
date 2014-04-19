@@ -1,4 +1,9 @@
-window.ShareDrop.App = Ember.Application.create({});
+window.ShareDrop.App = Ember.Application.create({
+    // LOG_TRANSITIONS: true,
+    // LOG_TRANSITIONS_INTERNAL: true,
+    // LOG_ACTIVE_GENERATION: true,
+    // LOG_VIEW_LOOKUPS: true
+});
 
 ShareDrop.App.deferReadiness();
 
@@ -95,6 +100,7 @@ ShareDrop.App.IndexRoute = Ember.Route.extend({
 
     setupController: function (ctrl, model) {
         ctrl.set('model', []);
+        ctrl.set('hasCustomRoomName', false);
 
         // Handle room events
         $.subscribe('connected.room', ctrl._onRoomConnected.bind(ctrl));
@@ -104,14 +110,16 @@ ShareDrop.App.IndexRoute = Ember.Route.extend({
         $.subscribe('user_removed.room', ctrl._onRoomUserRemoved.bind(ctrl));
 
         // Handle peer events
-        $.subscribe('incoming_connection.p2p.peer', ctrl._onPeerP2PIncomingConnection.bind(ctrl));
-        $.subscribe('outgoing_connection.p2p.peer', ctrl._onPeerP2POutgoingConnection.bind(ctrl));
-        $.subscribe('disconnected.p2p.peer', ctrl._onPeerP2PDisconnected.bind(ctrl));
-        $.subscribe('info.p2p.peer', ctrl._onPeerP2PFileInfo.bind(ctrl));
-        $.subscribe('response.p2p.peer', ctrl._onPeerP2PFileResponse.bind(ctrl));
-        $.subscribe('file_canceled.p2p.peer', ctrl._onPeerP2PFileCanceled.bind(ctrl));
-        $.subscribe('file_received.p2p.peer', ctrl._onPeerP2PFileReceived.bind(ctrl));
-        $.subscribe('file_sent.p2p.peer', ctrl._onPeerP2PFileSent.bind(ctrl));
+        $.subscribe('incoming_peer_connection.p2p', ctrl._onPeerP2PIncomingConnection.bind(ctrl));
+        $.subscribe('incoming_dc_connection.p2p', ctrl._onPeerDCIncomingConnection.bind(ctrl));
+        $.subscribe('outgoing_peer_connection.p2p', ctrl._onPeerP2POutgoingConnection.bind(ctrl));
+        $.subscribe('outgoing_dc_connection.p2p', ctrl._onPeerDCOutgoingConnection.bind(ctrl));
+        $.subscribe('disconnected.p2p', ctrl._onPeerP2PDisconnected.bind(ctrl));
+        $.subscribe('info.p2p', ctrl._onPeerP2PFileInfo.bind(ctrl));
+        $.subscribe('response.p2p', ctrl._onPeerP2PFileResponse.bind(ctrl));
+        $.subscribe('file_canceled.p2p', ctrl._onPeerP2PFileCanceled.bind(ctrl));
+        $.subscribe('file_received.p2p', ctrl._onPeerP2PFileReceived.bind(ctrl));
+        $.subscribe('file_sent.p2p', ctrl._onPeerP2PFileSent.bind(ctrl));
 
         // Join the room
         var room = new ShareDrop.Room(model, ShareDrop.App.ref);
@@ -136,7 +144,7 @@ ShareDrop.App.IndexRoute = Ember.Route.extend({
     actions: {
         willTransition: function () {
             $.unsubscribe('.room');
-            $.unsubscribe('.peer');
+            $.unsubscribe('.p2p');
 
             this.controllerFor('index').get('room').leave();
 
@@ -157,19 +165,7 @@ ShareDrop.App.RoomRoute = ShareDrop.App.IndexRoute.extend({
         this._super(ctrl, model);
 
         ctrl.set('hasCustomRoomName', true);
-    },
-
-    actions: {
-        willTransition: function () {
-            $.unsubscribe('.room');
-            $.unsubscribe('.peer');
-
-            this.controllerFor('room').get('room').leave();
-
-            return true;
-        }
     }
-
 });
 
 ShareDrop.App.ErrorRoute = Ember.Route.extend({

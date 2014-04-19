@@ -1,7 +1,6 @@
 ShareDrop.App.UserView = Ember.View.extend({
     classNames: ['peer'],
-    classNameBindings: ['isConnected:connected:disconnected'],
-    isConnected: Ember.computed.alias('controller.model.isConnected'),
+    classNameBindings: ['peer.peer.state'],
 
     localIps: function () {
         // Convert unordered set to sorted array

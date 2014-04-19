@@ -12,10 +12,6 @@
 
   {{#if model.local_ip}}
     <div class="user-id">
-      {{#if model.isConnected}}
-        <div class="user-connected"></div>
-      {{/if}}
-
       {{#if view.hasManyLocalIps}}
         {{view Ember.Select content=view.localIps value=model.local_ip}}
       {{else}}

@@ -22,7 +22,7 @@ ShareDrop.App.PeerController = Ember.ObjectController.extend({
             // Cache the file, so that it's available
             // when the response from the recipient comes in
             peer.set('transfer.file', file);
-            peer.set('internalState', 'awaiting_file_info');
+            peer.set('state', 'awaiting_file_info');
         },
 
         sendFileTransferInquiry: function () {
@@ -53,7 +53,7 @@ ShareDrop.App.PeerController = Ember.ObjectController.extend({
             peer.get('peer.connection').on('receiving_progress', function (progress) {
                 peer.set('transfer.receivingProgress', progress);
             });
-            peer.set('internalState', 'sending_file_data');
+            peer.set('state', 'sending_file_data');
         },
 
         rejectFileTransfer: function () {
@@ -61,7 +61,7 @@ ShareDrop.App.PeerController = Ember.ObjectController.extend({
 
             this._sendFileTransferResponse(false);
             peer.set('transfer.info', null);
-            peer.set('internalState', 'idle');
+            peer.set('state', 'idle');
         }
     },
 
@@ -69,7 +69,7 @@ ShareDrop.App.PeerController = Ember.ObjectController.extend({
         var peer = this.get('model');
 
         peer.set('transfer.file', null);
-        peer.set('internalState', 'idle');
+        peer.set('state', 'idle');
     },
 
     _sendFileTransferResponse: function (response) {

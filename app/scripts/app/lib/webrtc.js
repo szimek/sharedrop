@@ -17,12 +17,18 @@ ShareDrop.WebRTC = function (id, options) {
 
     // Listen for incoming connections
     this.conn.on('connection', function (connection) {
-        $.publish('incoming_connection.p2p.peer', {connection: connection});
+        $.publish('incoming_peer_connection.p2p', {connection: connection});
+
+        connection.on('open', function () {
+            console.log('Peer:\t Data channel connection opened: ', connection);
+            $.publish('incoming_dc_connection.p2p', {connection: connection});
+        });
+
         this._onConnection(connection);
     }.bind(this));
 
     this.conn.on('close', function () {
-        console.log('Peer:\t Connected to server closed.');
+        console.log('Peer:\t Connection to server closed.');
     });
 
     this.conn.on('error', function (error) {
@@ -41,19 +47,22 @@ ShareDrop.WebRTC.prototype.connect = function (id) {
     });
 
     connection.on('open', function () {
-        $.publish('outgoing_connection.p2p.peer', {connection: connection});
-        this._onConnection(connection);
-    }.bind(this));
+        console.log('Peer:\t Data channel connection opened: ', connection);
+        $.publish('outgoing_dc_connection.p2p', {connection: connection});
+    });
+
+    $.publish('outgoing_peer_connection.p2p', {connection: connection});
+    this._onConnection(connection);
 
     connection.on('error', function (error) {
-        console.log('Peer:\t P2P connection error', error);
+        console.log('Peer:\t Data channel connection error', error);
     }.bind(this));
 };
 
 ShareDrop.WebRTC.prototype._onConnection = function (connection) {
     var self = this;
 
-    console.log('Peer:\t P2P connection opened: ', connection);
+    console.log('Peer:\t Opening data channel connection...', connection);
 
     connection.on('data', function (data) {
         // Lame type check
@@ -67,8 +76,8 @@ ShareDrop.WebRTC.prototype._onConnection = function (connection) {
     });
 
     connection.on('close', function () {
-        $.publish('disconnected.p2p.peer', {connection: connection});
-        console.log('Peer:\t P2P connection opened: ', connection);
+        $.publish('disconnected.p2p', {connection: connection});
+        console.log('Peer:\t P2P connection closed: ', connection);
     });
 };
 
@@ -96,7 +105,7 @@ ShareDrop.WebRTC.prototype._onBinaryData = function (data, connection) {
             if (lastChunkInFile) {
                 file.save();
 
-                $.publish('file_received.p2p.peer', {
+                $.publish('file_received.p2p', {
                     blob: file,
                     info: info,
                     connection: connection
@@ -115,7 +124,7 @@ ShareDrop.WebRTC.prototype._onJSONData = function (data, connection) {
     case 'info':
         var info = data.payload;
 
-        $.publish('info.p2p.peer', {
+        $.publish('info.p2p', {
             connection: connection,
             info: info
         });
@@ -132,7 +141,7 @@ ShareDrop.WebRTC.prototype._onJSONData = function (data, connection) {
         break;
 
     case 'cancel':
-        $.publish('file_canceled.p2p.peer', {
+        $.publish('file_canceled.p2p', {
             connection: connection
         });
 
@@ -147,7 +156,7 @@ ShareDrop.WebRTC.prototype._onJSONData = function (data, connection) {
             delete this.files.outgoing[connection.peer];
         }
 
-        $.publish('response.p2p.peer', {
+        $.publish('response.p2p', {
             connection: connection,
             response: response
         });
@@ -273,7 +282,7 @@ ShareDrop.WebRTC.prototype._sendBlock = function (connection, file, beginChunkNu
             }
 
             if (endChunkNum === info.chunksTotal - 1) {
-                $.publish('file_sent.p2p.peer', {connection: connection});
+                $.publish('file_sent.p2p', {connection: connection});
             }
         }
     };

@@ -80,7 +80,7 @@ ShareDrop.App.PeerAvatarView = Ember.View.extend(Ember.ViewTargetActionSupport, 
         if (this.canSendFile()) {
             if (files.length > 1) {
                 peer.setProperties({
-                    internalState: 'error',
+                    state: 'error',
                     errorCode: 'multiple_files'
                 });
             } else {

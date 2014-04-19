@@ -7,7 +7,12 @@ ShareDrop.App.Peer = Ember.Object.extend(Ember.Evented, {
     init: function () {
         this.set('peer', Ember.Object.create({
             id: null,
-            connection: null
+            connection: null,
+            // State of data channel connection. Possible states:
+            // - disconnected
+            // - connecting
+            // - connected
+            state: 'disconnected'
         }));
 
         this.set('transfer', Ember.Object.create({
@@ -27,11 +32,6 @@ ShareDrop.App.Peer = Ember.Object.extend(Ember.Evented, {
     labelWithPublicIp: function () {
         return this.get('email') || this.get('public_ip') + '/' + this.get('local_ip');
     }.property('email', 'public_ip', 'local_ip'),
-
-
-    isConnected: function () {
-        return !!this.get('peer.connection');
-    }.property('peer.connection'),
 
     avatarUrl: function () {
         var email = this.get('email'),
@@ -54,18 +54,18 @@ ShareDrop.App.Peer = Ember.Object.extend(Ember.Evented, {
     // - receiving_file_data
     // - sending_file_data
     // - error
-    internalState: "idle",
+    state: 'idle',
 
     // Used to display error messages in popovers. Possible codes:
     // - multiple_files
     errorCode: null,
 
-    internalStateChanged: function () {
-        console.log('Peer:\t Internal state has changed: ', this.get('internalState'));
+    stateChanged: function () {
+        console.log('Peer:\t State has changed: ', this.get('state'));
 
         // Automatically clear error code if transitioning to a non-error state
-        if (this.get('internalState') !== 'error') {
+        if (this.get('state') !== 'error') {
             this.set('errorCode', null);
         }
-    }.observes('internalState').on('init')
+    }.observes('state').on('init')
 });
