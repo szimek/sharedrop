@@ -484,6 +484,7 @@ Peer.prototype._handleMessage = function (message) {
   var type = message.type;
   var payload = message.payload;
   var peer = message.src;
+  var connectionId, connection;
 
   switch (type) {
     case 'LEAVE': // Another peer has closed its connection to this peer.
@@ -496,8 +497,8 @@ Peer.prototype._handleMessage = function (message) {
       break;
 
     case 'OFFER': // we should consider switching this to CALL/CONNECT, but this is the least breaking option.
-      var connectionId = payload.connectionId;
-      var connection = this.getConnection(peer, connectionId);
+      connectionId = payload.connectionId;
+      connection = this.getConnection(peer, connectionId);
 
       if (connection) {
         util.warn('Offer received for existing Connection ID:', connectionId);
@@ -532,6 +533,18 @@ Peer.prototype._handleMessage = function (message) {
         for (var i = 0, ii = messages.length; i < ii; i += 1) {
           connection.handleMessage(messages[i]);
         }
+      }
+      break;
+
+    case 'ERROR':
+      connectionId = payload.connectionId;
+      connection = this.getConnection(peer, connectionId);
+
+      var error = new Error(payload.message);
+      error.type = payload.type;
+
+      if (connection) {
+        connection.emit('error', error);
       }
       break;
 
@@ -1065,6 +1078,7 @@ Negotiator._setupListeners = function(connection, pc) {
 
   // ICE CANDIDATES.
   util.log('Listening for ICE candidates.');
+
   pc.onicecandidate = function(evt) {
     if (evt.candidate) {
       util.log('Received ICE candidates for:', dst);
@@ -1087,15 +1101,40 @@ Negotiator._setupListeners = function(connection, pc) {
   };
 
   pc.oniceconnectionstatechange = function() {
+    var error;
+
     switch (pc.iceConnectionState) {
-      case 'disconnected':
-        util.log('iceConnectionState is disconnected, closing connections to ' + dst);
-        connection.close();
-        break;
       case 'failed':
-        util.log('iceConnectionState is failed, closing connections to ' + dst);
+        util.log("ICE connection state is 'failed', notifying " + dst);
+
+        error = new Error("ICE connection state is 'failed'");
+        error.type = 'failed';
+
+        connection.provider._messagesRef.child(dst).push({
+          type: 'ERROR',
+          payload: {
+            message: error.message,
+            type: error.type,
+            connectionId: connectionId
+          },
+          src: src,
+          dst: dst
+        });
+
+        connection.emit('error', error);
         connection.close();
         break;
+
+      case 'disconnected':
+        util.log("ICE connection state is 'disconnected', closing connections to " + dst);
+
+        error = new Error("ICE connection state is 'disconnected'");
+        error.type = 'disconnected';
+
+        connection.emit('error', error);
+        connection.close();
+        break;
+
       case 'completed':
         pc.onicecandidate = util.noop;
         break;

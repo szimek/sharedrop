@@ -24,6 +24,11 @@ ShareDrop.WebRTC = function (id, options) {
             $.publish('incoming_dc_connection.p2p', {connection: connection});
         });
 
+        connection.on('error', function (error) {
+            console.log('Peer:\t Data channel connection error', error);
+            $.publish('incoming_dc_connection_error.p2p', {connection: connection, error: error});
+        });
+
         this._onConnection(connection);
     }.bind(this));
 
@@ -51,12 +56,13 @@ ShareDrop.WebRTC.prototype.connect = function (id) {
         $.publish('outgoing_dc_connection.p2p', {connection: connection});
     });
 
-    $.publish('outgoing_peer_connection.p2p', {connection: connection});
-    this._onConnection(connection);
-
     connection.on('error', function (error) {
         console.log('Peer:\t Data channel connection error', error);
-    }.bind(this));
+        $.publish('outgoing_dc_connection_error.p2p', {connection: connection, error: error});
+    });
+
+    $.publish('outgoing_peer_connection.p2p', {connection: connection});
+    this._onConnection(connection);
 };
 
 ShareDrop.WebRTC.prototype._onConnection = function (connection) {

@@ -68,8 +68,10 @@ ShareDrop.App.PeerController = Ember.ObjectController.extend({
     _cancelFileTransfer: function () {
         var peer = this.get('model');
 
-        peer.set('transfer.file', null);
-        peer.set('state', 'idle');
+        peer.setProperties({
+            'transfer.file': null,
+            'state': 'idle'
+        });
     },
 
     _sendFileTransferResponse: function (response) {

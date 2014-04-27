@@ -75,8 +75,9 @@ ShareDrop.App.IndexController = Ember.ArrayController.extend({
         var connection = data.connection,
             peer = this.findBy('peer.id', connection.peer);
 
+        // Don't switch to 'connecting' state on incoming connection,
+        // as p2p connection may still fail.
         peer.set('peer.connection', connection);
-        peer.set('peer.state', 'connecting');
     },
 
     _onPeerDCIncomingConnection: function (event, data) {
@@ -86,12 +87,21 @@ ShareDrop.App.IndexController = Ember.ArrayController.extend({
         peer.set('peer.state', 'connected');
     },
 
+    _onPeerDCIncomingConnectionError: function (event, data) {
+        var connection = data.connection,
+            peer = this.findBy('peer.id', connection.peer);
+
+            peer.set('peer.connection', null);
+    },
+
     _onPeerP2POutgoingConnection: function (event, data) {
         var connection = data.connection,
             peer = this.findBy('peer.id', connection.peer);
 
-        peer.set('peer.connection', connection);
-        peer.set('peer.state', 'connecting');
+        peer.setProperties({
+            'peer.connection': connection,
+            'peer.state': 'connecting'
+        });
     },
 
     _onPeerDCOutgoingConnection: function (event, data) {
@@ -106,6 +116,18 @@ ShareDrop.App.IndexController = Ember.ArrayController.extend({
 
         webrtc.sendFileInfo(connection, info);
         console.log('Sending a file info...', info);
+    },
+
+    _onPeerDCOutgoingConnectionError: function (event, data) {
+        var connection = data.connection,
+            peer = this.findBy('peer.id', connection.peer);
+
+        peer.setProperties({
+            'peer.connection': null,
+            'peer.state': 'disconnected',
+            'state': 'error',
+            'errorCode': data.error.type
+        });
     },
 
     _onPeerP2PDisconnected: function (event, data) {

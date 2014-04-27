@@ -12,8 +12,7 @@ ShareDrop.App.PeerView = Ember.View.extend({
 
     errorTemplateName: function () {
         var errorCode = this.get('peer.errorCode');
-
-        return errorCode ? 'errors/' + errorCode : null;
+        return errorCode ? 'errors/popovers/' + errorCode : null;
     }.property('peer.errorCode'),
 
     label: function () {
