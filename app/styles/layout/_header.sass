@@ -6,7 +6,7 @@
     width: 100%
     height: 60px
     background: transparent
-    color: #000
+    color: black
     +user-select(none)
     .logo
       position: relative
@@ -20,7 +20,7 @@
         position: absolute
         bottom: 0
         left: 44px
-        font-size: 10px
+        font-size: 1rem
         font-weight: bold
       img
         vertical-align: top
@@ -32,26 +32,26 @@
       > li
         float: left
         margin-left: 15px
-        font-size: 14px
+        font-size: 1.4rem
         line-height: 30px
         a
           display: inline-block
           transition: opacity .2s linear
-          color: #000
+          color: black
           img
             vertical-align: middle
 
     .about
       +circle(18px)
-      border: 1px solid #000
-      font-size: 12px
+      border: 1px solid black
+      font-size: 1.2rem
       opacity: .18
       margin-top: -2px
       &:hover
         opacity: .6
 
     .sign
-      background: transparent image-url("/images/persona.svg") no-repeat left
+      background: transparent inline-image("persona.svg") no-repeat left
       padding-left: 25px
       &:hover
         opacity: .6

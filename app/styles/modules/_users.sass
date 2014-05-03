@@ -45,12 +45,12 @@ $user-size: 76px
         color: #606060
         padding-bottom: 4px
       .user-email
-        font-size: 10px
+        font-size: 1rem
         +ellipsis
       .user-label
-        font-size: 14px
+        font-size: 1.4rem
       .user-id
-        font-size: 10px
+        font-size: 1rem
         color: #808080
       .user-connected
         display: inline-block
@@ -62,12 +62,11 @@ $user-size: 76px
       select
         +appearance(none)
         border: none
-        font-size: 10px
-        font-family: "Helvetica Neue", sans-serif
+        font-size: 1rem
         color: #808080
         padding-right: 10px
         outline: none
-        background: transparent image-url("/images/select-arrow.svg") no-repeat 66px 50%
+        background: transparent inline-image("select-arrow.svg") no-repeat 66px 50%
         // firefox fix - remove arrow from select
         text-indent: 0.01px
         text-overflow: ''
@@ -142,8 +141,6 @@ $user-size: 76px
         &.transfer-completed
           &::after
             opacity: 1
-
-
 
 +keyframes(shadow)
   0%
