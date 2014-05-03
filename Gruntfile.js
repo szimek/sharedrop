@@ -55,8 +55,7 @@ module.exports = function (grunt) {
           cssDir: '.tmp/styles',
           fontsDir: 'app/fonts',
           httpFontsDir: 'fonts',
-          imagesDir: 'app/images',
-          httpImagesPath: '../images'
+          imagesDir: 'app/images'
         }
       },
       dist: {
@@ -66,7 +65,6 @@ module.exports = function (grunt) {
           fontsDir: 'dist/fonts',
           httpFontsDir: 'fonts',
           imagesDir: 'app/images',
-          httpImagesPath: '../images',
           environment: 'production'
         }
       }
