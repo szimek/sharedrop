@@ -27,17 +27,15 @@
 
 <div class="user-info">
   {{#if model.email}}<div class="user-email">{{model.email}}</div>{{/if}}
-  {{#if controller.hasCustomRoomName}}
-    <div class="user-id">
-      {{model.public_ip}}
-    </div>
-  {{/if}}
-  {{#if model.local_ip}}
-    <div class="user-id">
-      <div {{bind-attr class=":user-connection-status model.peer.state"}}></div>
+  <div class="user-ip">
+    <div {{bind-attr class=":user-connection-status model.peer.state"}}></div>
+    {{#if controller.hasCustomRoomName}}
+      <strong>{{model.public_ip}}</strong>
+    {{/if}}
+    {{#if model.local_ip}}
       {{model.local_ip}}
-    </div>
-  {{/if}}
+    {{/if}}
+  </div>
 </div>
 
 {{view ShareDrop.App.FileField action="uploadFile" file=transfer.file}}

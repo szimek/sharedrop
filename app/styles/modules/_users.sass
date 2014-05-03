@@ -14,7 +14,7 @@ $user-size: 76px
       position: relative
       width: $user-size
       height: $user-size
-      +transition(all .2s ease-in-out)
+      transition: all .2s ease-in-out
       svg
         top: 0
         bottom: 0
@@ -32,7 +32,7 @@ $user-size: 76px
       height: $user-size - 10
       border-radius: 50%
       +animation(shadow .8s ease-in)
-      +transition(all .2s ease-in-out)
+      transition: all .2s ease-in-out
 
     .user-info
       position: absolute
@@ -43,27 +43,35 @@ $user-size: 76px
       .user-label, .user-email
         font-weight: bold
         color: #606060
-        padding-bottom: 4px
+        padding-bottom: .4rem
       .user-email
         font-size: 1rem
         +ellipsis
       .user-label
         font-size: 1.4rem
-      .user-id
-        font-size: 1rem
-        color: #808080
-      .user-connection-status
+      .user-ip
+        position: relative
         display: inline-block
-        width: 6px
-        height: 6px
-        vertical-align: middle
+        font-size: 1rem
+        line-height: 1.2em
+        color: #808080
+        > strong
+          display: block
+      .user-connection-status
+        position: absolute
+        left: -1rem
+        top: 50%
+        margin-top: -.3rem
+        width: .6rem
+        height: .6rem
         border-radius: 50%
         &.disconnected
           display: none
         &.connecting
           background: rgba($blue,.5)
+          +animation(blink .75s infinite)
         &.connected
-          background: rgba($green,.5)
+          background: rgba($green,.8)
 
       select
         +appearance(none)
@@ -130,7 +138,6 @@ $user-size: 76px
             border-color: rgba($blue,.8)
         &::after
           opacity: 0
-          transition: opacity .3s
           position: absolute
           pointer-events: none
           top: 5px
@@ -140,17 +147,24 @@ $user-size: 76px
           color: white
           font-size: 3rem
           font-weight: bold
-          background: transparentize($green,.2)
+          background: rgba($green,.8)
           border: 1px solid white
           +transform(scaleX(-1) rotate(-45deg))
           +circle($user-size - 10)
+          transition: opacity .3s
         &.transfer-completed
           &::after
             opacity: 1
+
++keyframes(blink)
+  0%
+    opacity: 1
+  50%
+    opacity: 0
 
 +keyframes(shadow)
   0%
     opacity: 0
   50%
     opacity: 1
-    box-shadow: rgba(0, 0, 0, 0.3) 0 0 15px
+    box-shadow: rgba(black, .3) 0 0 15px
