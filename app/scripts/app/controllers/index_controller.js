@@ -89,9 +89,14 @@ ShareDrop.App.IndexController = Ember.ArrayController.extend({
 
     _onPeerDCIncomingConnectionError: function (event, data) {
         var connection = data.connection,
-            peer = this.findBy('peer.id', connection.peer);
+            peer = this.findBy('peer.id', connection.peer),
+            error = data.error;
 
-            peer.set('peer.connection', null);
+            switch (error.type) {
+                case 'failed':
+                peer.set('peer.connection', null);
+                break;
+            }
     },
 
     _onPeerP2POutgoingConnection: function (event, data) {
@@ -120,14 +125,19 @@ ShareDrop.App.IndexController = Ember.ArrayController.extend({
 
     _onPeerDCOutgoingConnectionError: function (event, data) {
         var connection = data.connection,
-            peer = this.findBy('peer.id', connection.peer);
+            peer = this.findBy('peer.id', connection.peer),
+            error = data.error;
 
-        peer.setProperties({
-            'peer.connection': null,
-            'peer.state': 'disconnected',
-            'state': 'error',
-            'errorCode': data.error.type
-        });
+        switch (error.type) {
+            case 'failed':
+            peer.setProperties({
+                'peer.connection': null,
+                'peer.state': 'disconnected',
+                'state': 'error',
+                'errorCode': data.error.type
+            });
+            break;
+        }
     },
 
     _onPeerP2PDisconnected: function (event, data) {
