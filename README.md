@@ -2,7 +2,7 @@
 
 ShareDrop is HTML5 clone of Apple [AirDrop](http://support.apple.com/kb/ht4783) service. It allows you to transfer files directly between devices, without having to upload them to any server first. It uses [WebRTC](http://www.webrtc.org) for secure peer-to-peer file transfer and [Firebase](https://www.firebase.com) for presence management and WebRTC signaling.
 
-ShareDrop allows you to send files to other devices in the same local network (i.e. devices with the same public IP address) without any configuration - simply open https://www.sharedrop.io on all devices and they will see each other. It also allows you to send files between networks, however, there's no UI for that feature yet - at the moment you'll have to manually enter unique URL like https://www.sharedrop.io/rooms/your-room-name on all devices.
+ShareDrop allows you to send files to other devices in the same local network (i.e. devices with the same public IP address) without any configuration - simply open https://www.sharedrop.io on all devices and they will see each other. It also allows you to send files between networks, however, there's no UI for that feature yet - at the moment you'll have to manually create unique URL like https://www.sharedrop.io/rooms/your-room-name and enter it on all devices.
 
 The main difference between ShareDrop and AirDrop is that ShareDrop requires Internet connection to discover other devices, while AirDrop doesn't need one - it creates ad-hoc wireless network between them. On the other hand, ShareDrop allows you to share files between mobile (Android) and desktop devices and between networks as well.
 
