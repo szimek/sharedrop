@@ -137,9 +137,12 @@ ShareDrop.App.IndexRoute = Ember.Route.extend({
             outlet: 'about_you'
         });
 
-        if (!localStorage.seenInstructions) {
-            this.send('openModal', 'about');
-            localStorage.seenInstructions = 'yup';
+        // TODO: modify key name when cross-network feature is ready
+        // and info about it is added to 'about_app' template
+        var key =  'seenInstructions';
+        if (!localStorage.getItem(key)) {
+            this.send('openModal', 'about_app');
+            localStorage.setItem(key, 'yup');
         }
     },
 
@@ -167,6 +170,23 @@ ShareDrop.App.RoomRoute = ShareDrop.App.IndexRoute.extend({
         this._super(ctrl, model);
 
         ctrl.set('hasCustomRoomName', true);
+    },
+
+    renderTemplate: function (ctrl, model) {
+        this.render();
+
+        this.render('about_you', {
+            into: 'application',
+            outlet: 'about_you'
+        });
+
+        var room = ctrl.get('room').name,
+            key = 'show-instructions-for-room-' + room;
+
+        if (sessionStorage.getItem(key)) {
+            this.send('openModal', 'about_room');
+            sessionStorage.removeItem(key);
+        }
     }
 });
 

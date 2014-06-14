@@ -1,0 +1,15 @@
+{{#modal-dialog action="closeModal" currentURL=view.currentURL}}
+  <h2 class="logo"><span>ShareDrop</span></h2>
+  <h3>How rooms work?</h3>
+  <p>
+    Share this URL with others blah blah:
+  </p>
+
+  <p>
+    {{input value=view.currentURL disabled="disabled"}}
+  </p>
+
+  <div class="actions">
+    <button {{action "closeModal"}}>Got it!</button>
+  </div>
+{{/modal-dialog}}
