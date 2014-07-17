@@ -137,9 +137,7 @@ ShareDrop.App.IndexRoute = Ember.Route.extend({
             outlet: 'about_you'
         });
 
-        // TODO: modify key name when cross-network feature is ready
-        // and info about it is added to 'about_app' template
-        var key =  'seenInstructions';
+        var key =  'show-instructions-for-app';
         if (!localStorage.getItem(key)) {
             this.send('openModal', 'about_app');
             localStorage.setItem(key, 'yup');
