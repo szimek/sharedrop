@@ -25,7 +25,11 @@ ShareDrop.App.ApplicationController = Ember.Controller.extend({
         },
 
         redirect: function () {
-            this.transitionToRoute('room', $.uuid());
+            var uuid = $.uuid(),
+                key = 'show-instructions-for-room-' + uuid;
+
+            sessionStorage.setItem(key, 'yup');
+            this.transitionToRoute('room', uuid);
         }
     },
 

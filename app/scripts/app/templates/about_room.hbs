@@ -1,0 +1,24 @@
+{{#modal-dialog action="closeModal"}}
+  <h2 class="logo"><span>ShareDrop</span></h2>
+  <h3>Sharing files between devices in different networks</h3>
+
+  <p>
+    Copy provided address and send it to the other person.
+  </p>
+
+  <p>
+    {{room-url value=controller.currentUrl disabled="disabled" style="display: block; margin: auto;"}}
+  </p>
+
+  <p>
+    Once the other person open this page in a browser, you'll see each other's avatars.
+  </p>
+
+  <p>
+    Drag and drop a file directly on other person's avatar or click the avatar and select the file you want to send. The file transfer will start once the recipient accepts the file.
+  </p>
+
+  <div class="actions">
+    <button {{action "closeModal"}}>Got it!</button>
+  </div>
+{{/modal-dialog}}

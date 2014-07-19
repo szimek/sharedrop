@@ -137,9 +137,10 @@ ShareDrop.App.IndexRoute = Ember.Route.extend({
             outlet: 'about_you'
         });
 
-        if (!localStorage.seenInstructions) {
-            this.send('openModal', 'about');
-            localStorage.seenInstructions = 'yup';
+        var key =  'show-instructions-for-app';
+        if (!localStorage.getItem(key)) {
+            this.send('openModal', 'about_app');
+            localStorage.setItem(key, 'yup');
         }
     },
 
@@ -163,10 +164,33 @@ ShareDrop.App.RoomRoute = ShareDrop.App.IndexRoute.extend({
         return params.room_id;
     },
 
+    afterModel: function (model, transition) {
+        transition.then(function (route) {
+            route.controllerFor('application').set('currentUrl', window.location.href);
+        });
+    },
+
     setupController: function (ctrl, model) {
         this._super(ctrl, model);
 
         ctrl.set('hasCustomRoomName', true);
+    },
+
+    renderTemplate: function (ctrl, model) {
+        this.render();
+
+        this.render('about_you', {
+            into: 'application',
+            outlet: 'about_you'
+        });
+
+        var room = ctrl.get('room').name,
+            key = 'show-instructions-for-room-' + room;
+
+        if (sessionStorage.getItem(key)) {
+            this.send('openModal', 'about_room');
+            sessionStorage.removeItem(key);
+        }
     }
 });
 

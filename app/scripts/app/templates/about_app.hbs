@@ -1,0 +1,28 @@
+{{#modal-dialog action="closeModal"}}
+  <h2 class="logo"><span>ShareDrop</span></h2>
+  <h3>What is it?</h3>
+  <p>
+    ShareDrop is a free app that allows you to easily and securely share files directly between devices without having to upload them to any server first.
+  </p>
+
+  <h3>How to use it?</h3>
+  <h4>Sharing files between devices in local network<sup>*</sup></h4>
+  <p>
+    To send a file to another device in the same local network, open this page (i.e. <a href="https://www.sharedrop.io">www.sharedrop.io</a>) on both devices. Drag and drop a file directly on other person's avatar or click the avatar and select the file you want to send. The file transfer will start once the recipient accepts the file.
+  </p>
+
+  <h4>Sharing files between devices in different networks</h4>
+  <p>
+    To send a file to another device in a different network, click <span style="font-weight: bold; font-size: 2rem">+</span> button in the upper right corner of the page and follow futher instructions.
+  </p>
+
+  <h4>Signing in</h4>
+  <p>
+    Additionally, you can sign in using <a href="http://www.mozilla.org/persona" target="_blank">Persona</a> to allow others to easily recognize you. This will show others your email address and also your <a href="http://gravatar.com" target="_blank">Gravatar</a>, if you have one.
+  </p>
+
+  <div class="actions">
+    <button {{action "closeModal"}}>Got it!</button>
+    <p class="note"><sup>*</sup>Devices need to have the same <a href="https://www.google.com/search?q=what+is+my+ip" target="_blank">public IP</a> to see each other.</p>
+  </div>
+{{/modal-dialog}}
