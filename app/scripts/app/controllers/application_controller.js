@@ -15,10 +15,6 @@ ShareDrop.App.ApplicationController = Ember.Controller.extend({
         this.handlePersonaAuth();
     },
 
-    currentURL: function () {
-        return window.location.href;
-    }.property('currentPath'),
-
     actions: {
         signIn: function () {
             navigator.id.request();

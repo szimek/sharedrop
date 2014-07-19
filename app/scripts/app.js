@@ -164,6 +164,12 @@ ShareDrop.App.RoomRoute = ShareDrop.App.IndexRoute.extend({
         return params.room_id;
     },
 
+    afterModel: function (model, transition) {
+        transition.then(function (route) {
+            route.controllerFor('application').set('currentUrl', window.location.href);
+        });
+    },
+
     setupController: function (ctrl, model) {
         this._super(ctrl, model);
 
