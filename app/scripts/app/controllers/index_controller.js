@@ -224,11 +224,7 @@ ShareDrop.App.IndexController = Ember.ArrayController.extend({
 
         // RTCPeerConnection is provided by PeerJS library
         var rtc = new window.RTCPeerConnection({iceServers: []});
-
-        // Firefox needs a channel/stream to proceed
-        if (window.mozRTCPeerConnection) {
-            rtc.createDataChannel('', {reliable: false});
-        }
+        rtc.createDataChannel('', {reliable: false});
 
         rtc.onicecandidate = function (event) {
             if (event.candidate) {
