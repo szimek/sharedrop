@@ -253,7 +253,7 @@ ShareDrop.App.IndexController = Ember.ArrayController.extend({
             for (i = 0; i < lines.length; i++) {
                 var line = lines[i];
 
-                if (~line.indexOf("a=candidate")) {
+                if (~line.indexOf("a=candidate") || line.match(/^candidate:\d+\s/)) {
                     parts = line.split(' ');
                     addr = parts[4];
                     type = parts[7];
