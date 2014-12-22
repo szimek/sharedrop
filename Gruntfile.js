@@ -19,9 +19,9 @@ module.exports = function (grunt) {
         tasks: ['emberTemplates:dev']
       },
 
-      compass: {
-        files: 'app/styles//**/*.{sass,scss}',
-        tasks: ['compass:dev']
+      sass: {
+        files: 'app/styles/**/*.{sass,scss}',
+        tasks: ['sass:dev']
       },
 
       html: {
@@ -45,28 +45,41 @@ module.exports = function (grunt) {
       dev: '.tmp'
     },
 
-    compass: {
+    sass: {
       options: {
-        bundleExec: true
+        includePaths: ['app/styles/**/*.sass'],
+        sourceMap: true,
+        imagesPath: '' // Prepended to generated image URL
       },
       dev: {
+        files: {
+          '.tmp/styles/app.css': 'app/styles/app.sass'
+        },
         options: {
-          sassDir: 'app/styles',
-          cssDir: '.tmp/styles',
-          fontsDir: 'app/fonts',
-          httpFontsDir: 'fonts',
-          imagesDir: 'app/images'
+          outputStyle: 'nested'
         }
       },
       dist: {
+        files: {
+          'dist/styles/app.css': 'app/styles/app.sass'
+        },
         options: {
-          sassDir: 'app/styles',
-          cssDir: '.tmp/styles',
-          fontsDir: 'dist/fonts',
-          httpFontsDir: 'fonts',
-          imagesDir: 'app/images',
-          environment: 'production'
+          outputStyle: 'compressed'
         }
+      }
+    },
+
+    autoprefixer: {
+      options: {
+        browsers: 'last 2 versions'
+      },
+      env: {
+        src: '.tmp/styles/app.css',
+        dest: '.tmp/styles/app.css'
+      },
+      dist: {
+        src: 'dist/styles/app.css',
+        dest: 'dist/styles/app.css'
       }
     },
 
@@ -154,12 +167,12 @@ module.exports = function (grunt) {
     // Run some tasks in parallel to speed up the build process
     concurrent: {
       dev: [
-        'compass:dev',
+        'sass:dev',
         'emberTemplates:dev'
       ],
 
       dist: [
-        'compass:dist',
+        'sass:dist',
         'emberTemplates:dist'
       ]
     },
@@ -202,6 +215,7 @@ module.exports = function (grunt) {
       'env:dev',
       'preprocess:dev',
       'concurrent:dev',
+      // 'autoprefixer:dev',
       'server:dev',
       'watch'
     ]);
@@ -212,6 +226,7 @@ module.exports = function (grunt) {
     'preprocess:dist',
     'useminPrepare',
     'concurrent:dist',
+    // 'autoprefixer:dist',
     'concat',
     'copy:dist',
     'cssmin',

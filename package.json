@@ -13,11 +13,11 @@
   "author": "Szymon Nowak",
   "license": "MIT",
   "dependencies": {
-    "express": "~3.4.7",
-    "express-persona": "~0.1.1",
-    "node-uuid": "~1.4.1",
-    "firebase-token-generator": "^0.1.4",
-    "newrelic": "^1.4.0",
+    "express": "~3.18.6",
+    "express-persona": "~0.1.2",
+    "node-uuid": "~1.4.2",
+    "firebase-token-generator": "~2.0.0",
+    "newrelic": "~1.14.3",
 
     "grunt": "~0.4.2",
     "grunt-cli": "~0.1.9",
@@ -29,13 +29,15 @@
     "grunt-contrib-uglify": "~0.3.2",
     "grunt-contrib-copy": "~0.5.0",
     "grunt-contrib-cssmin": "~0.7.0",
-    "grunt-ember-templates": "~0.4.18",
     "grunt-usemin": "~2.0.2",
     "grunt-concurrent": "~0.4.3",
     "grunt-contrib-compass": "~0.7.1",
     "grunt-env": "~0.4.1",
     "grunt-preprocess": "^4.0.0",
-    "grunt-rev": "^0.1.0"
+    "grunt-rev": "^0.1.0",
+    "grunt-ember-templates": "~0.4.23",
+    "grunt-sass": "~0.17.0",
+    "grunt-autoprefixer": "~2.0.0"
   },
   "engines": {
     "node": "~0.10.0"
