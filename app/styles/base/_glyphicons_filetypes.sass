@@ -1,6 +1,8 @@
 /* GLYPHICONS FILETYPES 1.8 */
 
-+font-face("Glyphicons Filetypes", font-files("glyphicons/glyphicons-filetypes-regular.woff", woff, "glyphicons/glyphicons-filetypes-regular.ttf", truetype, "glyphicons/glyphicons-filetypes-regular.svg#glyphicons_filetypesregular", svg))
+@font-face
+  font-family: "Glyphicons Filetypes"
+  src: url(glyphicons/glyphicons-filetypes-regular.woff) format("woff"), url(glyphicons/glyphicons-filetypes-regular.ttf) format("truetype"), url(glyphicons/glyphicons-filetypes-regular.svg#glyphicons_filetypesregular) format("svg")
 
 $icon-prefix: glyphicon
 
@@ -14,9 +16,6 @@ $icon-prefix: glyphicon
     size: 1em
 
 .#{$icon-prefix}-spin
-  -moz-animation: #{$icon-prefix}-spin 2s infinite linear
-  -o-animation: #{$icon-prefix}-spin 2s infinite linear
-  -webkit-animation: #{$icon-prefix}-spin 2s infinite linear
   animation: #{$icon-prefix}-spin 2s infinite linear
 
 @-moz-keyframes #{$icon-prefix}-spin

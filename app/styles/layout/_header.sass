@@ -7,13 +7,13 @@
     height: 60px
     background: transparent
     color: black
-    +user-select(none)
+    user-select: none
     .logo
       position: relative
       height: 38px
       width: 162px
       margin: 15px 0 0 15px
-      background: transparent image-url("/images/sharedrop.svg") no-repeat left top
+      background: transparent image-url("images/sharedrop.svg") no-repeat left top
       .logo-title
         display: none
       .logo-subtitle
@@ -48,12 +48,20 @@
       line-height: 24px
 
     .icon-circle
-      +circle(18px)
+      // +circle
+      display: inline-block;
+      width: 18px;
+      height: 18px;
+      line-height: 18px;
+      text-align: center;
+      vertical-align: middle;
+      border-radius: 50%;
+
       border: 1px solid black
       font-size: 1.2rem
       opacity: .18
       margin-top: -2px
 
     .sign
-      background: transparent inline-image("persona.svg") no-repeat left
+      background: transparent image-url("images/persona.svg") no-repeat left
       padding-left: 25px

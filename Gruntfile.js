@@ -48,8 +48,7 @@ module.exports = function (grunt) {
     sass: {
       options: {
         includePaths: ['app/styles/**/*.sass'],
-        sourceMap: true,
-        imagesPath: '' // Prepended to generated image URL
+        sourceMap: true
       },
       dev: {
         files: {
@@ -70,10 +69,7 @@ module.exports = function (grunt) {
     },
 
     autoprefixer: {
-      options: {
-        browsers: 'last 2 versions'
-      },
-      env: {
+      dev: {
         src: '.tmp/styles/app.css',
         dest: '.tmp/styles/app.css'
       },
@@ -215,7 +211,7 @@ module.exports = function (grunt) {
       'env:dev',
       'preprocess:dev',
       'concurrent:dev',
-      // 'autoprefixer:dev',
+      'autoprefixer:dev',
       'server:dev',
       'watch'
     ]);
@@ -226,7 +222,7 @@ module.exports = function (grunt) {
     'preprocess:dist',
     'useminPrepare',
     'concurrent:dist',
-    // 'autoprefixer:dist',
+    'autoprefixer:dist',
     'concat',
     'copy:dist',
     'cssmin',

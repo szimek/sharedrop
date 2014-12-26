@@ -1,7 +1,8 @@
 $user-size: 76px
 
 .user
-  +user-select(none)
+  user-select: none
+
   .peer
     position: absolute
     left: 50%
@@ -31,7 +32,7 @@ $user-size: 76px
       width: $user-size - 10
       height: $user-size - 10
       border-radius: 50%
-      +animation(shadow .8s ease-in)
+      animation: shadow .8s ease-in
       transition: all .2s ease-in-out
 
     .user-info
@@ -69,18 +70,18 @@ $user-size: 76px
           display: none
         &.connecting
           background: rgba($blue,.5)
-          +animation(blink .75s infinite)
+          animation: blink .75s infinite
         &.connected
           background: rgba($green,.8)
 
       select
-        +appearance(none)
+        appearance: none
         border: none
         font-size: 1rem
         color: #808080
         padding-right: 10px
         outline: none
-        background: transparent inline-image("select-arrow.svg") no-repeat 66px 50%
+        background: transparent image-url("images/select-arrow.svg") no-repeat 66px 50%
         // firefox fix - remove arrow from select
         text-indent: 0.01px
         text-overflow: ''
@@ -133,7 +134,7 @@ $user-size: 76px
       .avatar
         cursor: pointer
         &:hover, &.hover
-          +scale(1.1)
+          transform: scale(1.1, 1.1)
           .gravatar
             border-color: rgba($blue,.8)
         &::after
@@ -149,20 +150,29 @@ $user-size: 76px
           font-weight: bold
           background: rgba($green,.8)
           border: 1px solid white
-          +transform(scaleX(-1) rotate(-45deg))
-          +circle($user-size - 10)
+          transform: scaleX(-1) rotate(-45deg)
+
+          // +circle
+          display: inline-block;
+          width: 66px;
+          height: $user-size - 10
+          line-height: $user-size - 10
+          text-align: center
+          vertical-align: middle
+          border-radius: 50%
+
           transition: opacity .3s
         &.transfer-completed
           &::after
             opacity: 1
 
-+keyframes(blink)
+@keyframes blink
   0%
     opacity: 1
   50%
     opacity: 0
 
-+keyframes(shadow)
+@keyframes shadow
   0%
     opacity: 0
   50%
