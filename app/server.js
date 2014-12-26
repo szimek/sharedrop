@@ -74,13 +74,13 @@ module.exports.server = function (options) {
 
     app.get('/auth', function (req, res) {
         var ip = req.headers['cf-connecting-ip'] || req.ip,
-            id = uuid.v1(),
+            uid = uuid.v1(),
             token = firebaseTokenGenerator.createToken(
-                {id: id}, // will be available in Firebase security rules as 'auth'
+                {uid: uid, id: uid}, // will be available in Firebase security rules as 'auth'
                 {expires: 32503680000} // 01.01.3000 00:00
             );
 
-        res.json({id: id, token: token, public_ip: ip});
+        res.json({id: uid, token: token, public_ip: ip});
     });
 
     return http.createServer(app);

@@ -50,7 +50,7 @@ ShareDrop.App.deferReadiness();
                 ShareDrop.App.userId = data.id;
                 ShareDrop.App.publicIp = data.public_ip;
 
-                ref.auth(data.token, function (error) {
+                ref.authWithCustomToken(data.token, function (error) {
                     error ? reject(error) : resolve();
                 });
             });
