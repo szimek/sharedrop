@@ -60,7 +60,7 @@ module.exports = function (grunt) {
       },
       dist: {
         files: {
-          'dist/styles/app.css': 'app/styles/app.sass'
+          '.tmp/styles/app.css': 'app/styles/app.sass'
         },
         options: {
           outputStyle: 'compressed'
@@ -74,8 +74,8 @@ module.exports = function (grunt) {
         dest: '.tmp/styles/app.css'
       },
       dist: {
-        src: 'dist/styles/app.css',
-        dest: 'dist/styles/app.css'
+        src: '.tmp/styles/app.css',
+        dest: '.tmp/styles/app.css'
       }
     },
 
