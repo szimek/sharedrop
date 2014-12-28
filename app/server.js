@@ -9,9 +9,14 @@ module.exports.server = function (options) {
     var http = require('http'),
         path = require('path'),
         express = require('express'),
+        logger = require('morgan'),
+        bodyParser = require('body-parser'),
+        cookieParser = require('cookie-parser'),
+        cookieSession = require('cookie-session'),
+        compression = require('compression'),
+        persona = require('express-persona'),
         uuid = require('node-uuid'),
         crypto = require('crypto'),
-        persona = require('express-persona'),
         FirebaseTokenGenerator = require("firebase-token-generator"),
         firebaseTokenGenerator = new FirebaseTokenGenerator(process.env.FIREBASE_SECRET),
         app = express(),
@@ -24,10 +29,11 @@ module.exports.server = function (options) {
 
     app.enable('trust proxy');
 
-    app.use(express.logger());
-    app.use(express.urlencoded());
-    app.use(express.cookieParser());
-    app.use(express.cookieSession({
+    app.use(logger('combined'));
+    app.use(bodyParser.json());
+    app.use(bodyParser.urlencoded({extended: true}));
+    app.use(cookieParser());
+    app.use(cookieSession({
         cookie: {
             // secure: true,
             httpOnly: true,
@@ -36,9 +42,11 @@ module.exports.server = function (options) {
         secret: secret,
         proxy: true
     }));
-    app.use(express.compress());
-    app.use(express.json());
+    app.use(compression());
 
+    //
+    // Web server
+    //
     base.forEach(function (dir) {
         ['scripts', 'styles', 'images', 'fonts'].forEach(function (subdir) {
             app.use('/' + subdir, express.static(dir + '/' + subdir, {
@@ -48,7 +56,7 @@ module.exports.server = function (options) {
     });
 
     //
-    // Web server
+    // API server
     //
 
     // Handle Persona authentication
