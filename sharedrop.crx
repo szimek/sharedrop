@@ -1,0 +1,19 @@
+{
+  "name": "ShareDrop",
+  "description": "Simple file sharing",
+  "version": "1",
+  "app": {
+    "urls": [
+      "https:/www.sharedrop.io/"
+    ],
+    "launch": {
+      "web_url": "https:/www.sharedrop.io/"
+    }
+  },
+  "icons": {
+    "128": "sharedrop-icon-128.png"
+  },
+  "permissions": [
+    "notifications"
+  ]
+}

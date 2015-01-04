@@ -8,86 +8,47 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta http-equiv="X-UA-Compatible" content="IE=Edge">
 
-  <link rel="shortcut icon" sizes="196x196" href="/images/sharedrop-icon.png">
+  <link rel="shortcut icon" sizes="196x196" href="assets/images/sharedrop-icon.png">
 
-  <!-- build:css(.tmp) /styles/app.css -->
-  <link rel="stylesheet" href="/styles/app.css">
-  <!-- endbuild -->
+  {{content-for 'head'}}
 
-  <!-- @if dist=true -->
-  <!-- Google Analytics -->
-  <script>
-    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  <link rel="stylesheet" href="assets/vendor.css">
+  <link rel="stylesheet" href="assets/sharedrop.css">
 
-    ga('create', '<!-- @echo GOOGLE_ANALYTICS_ID -->', 'auto');
-    ga('send', 'pageview');
-  </script>
-  <!-- End Google Analytics -->
-  <!-- @endif -->
+  {{content-for 'head-footer'}}
 </head>
 
 <body>
   <div class="preloader"><span>Loading...</span></div>
-  <!-- @if dist=false -->
-  <script src="/scripts/vendor/jquery-2.1.1.js"></script>
-  <script src="/scripts/vendor/handlebars-1.3.0.js"></script>
-  <script src="/scripts/vendor/ember-1.6.1.js"></script>
-  <script src="/scripts/vendor/bootstrap-3.2.0.js"></script>
-  <!-- @endif -->
 
-  <!-- @if dist=true -->
-  <script src="//cdn.jsdelivr.net/g/jquery@2.1.1,handlebarsjs@1.3.0,emberjs@1.6.1,bootstrap@3.2.0"></script>
-  <!-- @endif -->
+  {{content-for 'body'}}
 
   <script src="//cdn.firebase.com/js/client/2.0.6/firebase.js"></script>
   <script src="//login.persona.org/include.js"></script>
+  <script src="assets/vendor.js"></script>
+  <script src="assets/sharedrop.js"></script>
 
-  <!-- build:js(app) /scripts/vendor.js -->
+  {{content-for 'body-footer'}}
+
+  <!-- @if dist=false -->
+  <!--
+  <script src="/scripts/vendor/bootstrap-3.2.0.js"></script>
+  -->
+  <!-- @endif -->
+
+  <!-- @if dist=true -->
+  <!--
+  <script src="//cdn.jsdelivr.net/g/jquery@2.1.1,handlebarsjs@1.3.0,emberjs@1.6.1,bootstrap@3.2.0"></script>
+  -->
+  <!-- @endif -->
+
+  <!--
   <script src="/scripts/vendor/promise-1.0.0.min.js"></script>
   <script src="/scripts/vendor/idb.filesystem.min.js"></script>
   <script src="/scripts/vendor/filer.min.js"></script>
   <script src="/scripts/vendor/peer.js"></script>
   <script src="/scripts/vendor/ba-tiny-pubsub.js"></script>
   <script src="/scripts/vendor/jquery-uuid.js"></script>
-  <!-- endbuild -->
-
-  <script>
-    window.ShareDrop = {};
-    window.ENV = {
-      FIREBASE_URL: '<!-- @echo FIREBASE_URL -->'
-    };
-  </script>
-  <!-- build:js({.tmp,app}) /scripts/app.js -->
-  <script src="/scripts/app/lib/analytics.js"></script>
-  <script src="/scripts/app/lib/room.js"></script>
-  <script src="/scripts/app/lib/file.js"></script>
-  <script src="/scripts/app/lib/webrtc.js"></script>
-
-  <script src="/scripts/app.js"></script>
-
-  <script src="/scripts/app/components/modal_dialog_component.js"></script>
-  <script src="/scripts/app/components/popover_confirm_component.js"></script>
-  <script src="/scripts/app/components/room_url_component.js"></script>
-
-  <script src="/scripts/app/controllers/application_controller.js"></script>
-  <script src="/scripts/app/controllers/index_controller.js"></script>
-  <script src="/scripts/app/controllers/peer_controller.js"></script>
-  <script src="/scripts/app/controllers/user_controller.js"></script>
-
-  <script src="/scripts/app/models/peer.js"></script>
-  <script src="/scripts/app/models/user.js"></script>
-
-  <script src="/scripts/app/views/file_field.js"></script>
-  <script src="/scripts/app/views/peer_view.js"></script>
-  <script src="/scripts/app/views/peer_avatar_view.js"></script>
-  <script src="/scripts/app/views/progress_bar_view.js"></script>
-  <script src="/scripts/app/views/room_view.js"></script>
-  <script src="/scripts/app/views/user_view.js"></script>
-
-  <script src="/scripts/app/compiled_templates.js"></script>
-  <!-- endbuild -->
+  -->
 </body>
 </html>
