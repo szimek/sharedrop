@@ -37,8 +37,7 @@
     "firebase-token-generator": "~2.0.0",
     "morgan": "^1.5.0",
     "newrelic": "~1.14.4",
-    "node-uuid": "~1.4.2",
-    "time-grunt": "~0.2.8"
+    "node-uuid": "~1.4.2"
   },
   "engines": {
     "node": "~0.10.0",
