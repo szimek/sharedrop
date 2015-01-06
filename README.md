@@ -19,8 +19,8 @@ The main difference between ShareDrop and AirDrop is that ShareDrop requires Int
 2. Run `npm -g install grunt-cli` to install Grunt.
 3. Run `npm install` to install NodeJS dependencies.
 4. Run `cp .env{.sample,}` to create `.env` file. This file will be used by Grunt to set environemnt variables when running the app locally. You only need `NEW_RELIC_*` variables in production.
-5. Run `grunt serve` to start the app.
-6. Run `grunt build` to build production version of the app to `dist` directory.
+5. Run `ember build --watch` to build Ember app and automatically rebuild it on any changes.
+6. Run `foreman start` to start the server (this will load all env variables in `.env` file and run `node index.js` as specified in `Procfile`). You can install [foreman](http://ddollar.github.io/foreman) with `gem install foreman`.
 
 ### Deployment
 #### Heroku
