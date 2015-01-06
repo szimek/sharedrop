@@ -21,7 +21,7 @@ export function initialize(container, application) {
             if (window.util.supports.sctp) {
                 resolve();
             } else {
-                reject('browser_unsupported');
+                reject('browser-unsupported');
             }
         });
     }
@@ -34,7 +34,7 @@ export function initialize(container, application) {
                 resolve();
             })
             .catch(function () {
-                reject('filesystem_unavailable');
+                reject('filesystem-unavailable');
             });
         });
     }
