@@ -21,3 +21,25 @@ The main difference between ShareDrop and AirDrop is that ShareDrop requires Int
 4. Run `cp .env{.sample,}` to create `.env` file. This file will be used by Grunt to set environemnt variables when running the app locally. You only need `NEW_RELIC_*` variables in production.
 5. Run `grunt serve` to start the app.
 6. Run `grunt build` to build production version of the app to `dist` directory.
+
+### Deployment
+#### Heroku
+When deploying to Heroku, use [multi buildpack](https://github.com/heroku/heroku-buildpack-multi.git).
+
+For new apps:
+```
+heroku create myapp --buildpack https://github.com/heroku/heroku-buildpack-multi.git
+```
+
+For existing apps:
+```
+heroku config:set BUILDPACK_URL=https://github.com/heroku/heroku-buildpack-multi.git
+```
+
+Then run
+```
+heroku config:set NPM_CONFIG_PRODUCTION=false
+```
+to make Node.js buildpack install development dependencies necessary to build Ember CLI app as well as the production ones.
+
+It uses the default [Heroku Node.js buildpack](https://github.com/heroku/heroku-buildpack-nodejs) to install Node.js, npm and Node.js packages and then uses [Ember CLI buildpack](https://github.com/szimek/heroku-buildpack-ember-cli-without-webserver) to install Bower packages and build Ember CLI app.
