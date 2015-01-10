@@ -19,7 +19,9 @@ The main difference between ShareDrop and AirDrop is that ShareDrop requires Int
 2. Run `npm install -g ember-cli` to install Ember CLI.
 3. Run `npm install -g bower` to install Bower.
 4. Run `ember install` to install app dependencies.
-5. Run `cp .env{.sample,}` to create `.env` file. This file will be used by Foreman to set environemnt variables when running the app locally. You only need `NEW_RELIC_*` variables in production.
+5. Run `cp .env{.sample,}` to create `.env` file. This file will be used by Foreman to set environemnt variables when running the app locally.
+    - `SECRET` key is used to encrypt cookies and generate room name based on public IP address for `/` route. It can be any random string - you can generate one using e.g. `date | md5sum`
+    - `NEW_RELIC_*` keys are only necessary in production
 6. Run `ember build --watch` to build Ember app and automatically rebuild it on any changes.
 7. Run `foreman start` to start the server (this will load all env variables in `.env` file and run `node index.js` as specified in `Procfile`). You can install [foreman](http://ddollar.github.io/foreman) with `gem install foreman`.
 
