@@ -16,11 +16,12 @@ The main difference between ShareDrop and AirDrop is that ShareDrop requires Int
     1. [Sign up](https://www.firebase.com) for a Firebase account and create a database.
     2. Go to "Security Rules" tab, click "Load Rules" button and select `firebase_rules.json` file.
     3. Take note of your database URL and its secret, which can be found in "Secrets" tab.
-2. Run `npm -g install grunt-cli` to install Grunt.
-3. Run `npm install` to install NodeJS dependencies.
-4. Run `cp .env{.sample,}` to create `.env` file. This file will be used by Grunt to set environemnt variables when running the app locally. You only need `NEW_RELIC_*` variables in production.
-5. Run `ember build --watch` to build Ember app and automatically rebuild it on any changes.
-6. Run `foreman start` to start the server (this will load all env variables in `.env` file and run `node index.js` as specified in `Procfile`). You can install [foreman](http://ddollar.github.io/foreman) with `gem install foreman`.
+2. Run `npm install -g ember-cli` to install Ember CLI.
+3. Run `npm install -g bower` to install Bower.
+4. Run `ember install` to install app dependencies.
+5. Run `cp .env{.sample,}` to create `.env` file. This file will be used by Foreman to set environemnt variables when running the app locally. You only need `NEW_RELIC_*` variables in production.
+6. Run `ember build --watch` to build Ember app and automatically rebuild it on any changes.
+7. Run `foreman start` to start the server (this will load all env variables in `.env` file and run `node index.js` as specified in `Procfile`). You can install [foreman](http://ddollar.github.io/foreman) with `gem install foreman`.
 
 ### Deployment
 #### Heroku
