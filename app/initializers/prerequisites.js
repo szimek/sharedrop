@@ -1,6 +1,7 @@
 import Ember from 'ember';
 import config from 'ShareDrop/config/environment';
 import FileSystem from '../services/file';
+import Analytics from '../services/analytics';
 
 export function initialize(container, application) {
     application.deferReadiness();
@@ -11,6 +12,7 @@ export function initialize(container, application) {
         application.error = error;
     })
     .then(authenticateToFirebase)
+    .then(trackSizeOfReceivedFiles)
     .then(function () {
         application.advanceReadiness();
     });
@@ -52,6 +54,13 @@ export function initialize(container, application) {
                     error ? reject(error) : resolve();
                 });
             });
+        });
+    }
+
+    // TODO: move it to a separate initializer
+    function trackSizeOfReceivedFiles() {
+        Ember.$.subscribe('file_received.p2p', function (event, data) {
+            Analytics.trackEvent('file', 'received', 'size', data.info.size / 1000);
         });
     }
 }

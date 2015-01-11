@@ -1,6 +1,4 @@
-import Ember from 'ember';
-
-var Analytics = {
+export default {
     hasAnalytics: function () {
         return window.ga && typeof window.ga === "function";
     },
@@ -11,12 +9,3 @@ var Analytics = {
         }
     }
 };
-
-// TODO: run it in initializer?
-(function () {
-    Ember.$.subscribe('file_received.p2p', function (event, data) {
-        Analytics.trackEvent('file', 'transferred', 'size', data.info.size);
-    });
-})();
-
-export default Analytics;
