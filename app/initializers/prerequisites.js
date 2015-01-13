@@ -60,7 +60,7 @@ export function initialize(container, application) {
     // TODO: move it to a separate initializer
     function trackSizeOfReceivedFiles() {
         Ember.$.subscribe('file_received.p2p', function (event, data) {
-            Analytics.trackEvent('file', 'received', 'size', data.info.size / 1000);
+            Analytics.trackEvent('file', 'received', 'size', Math.round(data.info.size / 1000));
         });
     }
 }
