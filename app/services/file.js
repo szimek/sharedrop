@@ -117,7 +117,7 @@ File.prototype.save = function () {
         a.addEventListener('click', function () {
             // Remove file entry from filesystem.
             setTimeout(function () {
-                self.remove().then(self._reset);
+                self.remove().then(self._reset.bind(self));
             }, 100); // Hack, but otherwise browser doesn't save the file at all.
 
             a.parentNode.removeChild(a);
