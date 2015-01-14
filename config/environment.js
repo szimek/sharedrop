@@ -2,7 +2,7 @@
 
 module.exports = function (environment) {
   var ENV = {
-    modulePrefix: 'ShareDrop',
+    modulePrefix: 'share-drop',
     environment: environment,
     baseURL: '/',
     locationType: 'auto',

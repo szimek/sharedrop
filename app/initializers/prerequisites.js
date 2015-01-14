@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import config from 'ShareDrop/config/environment';
+import config from 'share-drop/config/environment';
 import FileSystem from '../services/file';
 import Analytics from '../services/analytics';
 

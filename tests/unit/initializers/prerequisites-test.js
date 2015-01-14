@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import { initialize } from 'ShareDrop/initializers/prerequisites';
+import { initialize } from 'share-drop/initializers/prerequisites';
 
 var container, application;
 
