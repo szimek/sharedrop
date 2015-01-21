@@ -14,11 +14,12 @@
   cursor: pointer
   font-family: $font-family
 
-=circle($size)
+=shape($size, $shape)
   display: inline-block
   width: $size
   height: $size
   line-height: $size
   text-align: center
   vertical-align: middle
-  +border-radius(50%)
+  @if $shape == circle
+    border-radius: 50%
