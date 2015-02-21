@@ -18,7 +18,12 @@ module.exports = function (environment) {
       // when it is created
     },
 
-    FIREBASE_URL: process.env.FIREBASE_URL
+    FIREBASE_URL: process.env.FIREBASE_URL,
+
+    sassOptions: {
+        inputFile: 'app.sass',
+        outputFile: 'share-drop.css'
+    }
   };
 
   if (environment === 'development') {
