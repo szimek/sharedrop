@@ -247,7 +247,7 @@ var util = {
     var audioVideo = true;
 
     var binaryBlob = false;
-    var sctp = false;
+    var sctp = true;
     var onnegotiationneeded = !!window.webkitRTCPeerConnection;
 
     var pc, dc;
@@ -262,6 +262,7 @@ var util = {
       try {
         dc = pc.createDataChannel('_PEERJSTEST');
       } catch (e) {
+        sctp = false;
         data = false;
       }
     }
@@ -273,17 +274,6 @@ var util = {
         binaryBlob = true;
       } catch (e) {
       }
-
-      // Reliable test.
-      // Unfortunately Chrome is a bit unreliable about whether or not they
-      // support reliable.
-      var reliablePC = new RTCPeerConnection(defaultConfig, {});
-      try {
-        var reliableDC = reliablePC.createDataChannel('_PEERJSRELIABLETEST', {});
-        sctp = reliableDC.reliable;
-      } catch (e) {
-      }
-      reliablePC.close();
     }
 
     // FIXME: not really the best check...
