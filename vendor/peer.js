@@ -1212,7 +1212,7 @@ Negotiator._makeOffer = function(connection) {
   }, function(err) {
     connection.provider.emit('error', err);
     util.log('Failed to createOffer, ', err);
-  }, connection.options.constraints);
+  }, connection.options.constraints || {});
 };
 
 Negotiator._makeAnswer = function(connection) {
