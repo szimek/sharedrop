@@ -1193,7 +1193,7 @@ Negotiator._makeOffer = function(connection) {
       connection.provider._messagesRef.child(dst).push({
         type: 'OFFER',
         payload: {
-          sdp: offer,
+          sdp: pc.localDescription,
           type: connection.type,
           label: connection.label,
           connectionId: connection.id,
@@ -1233,7 +1233,7 @@ Negotiator._makeAnswer = function(connection) {
       provider._messagesRef.child(dst).push({
         type: 'ANSWER',
         payload: {
-          sdp: answer,
+          sdp: pc.localDescription,
           type: connection.type,
           connectionId: connection.id,
           browser: util.browser
