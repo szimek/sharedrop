@@ -1185,10 +1185,6 @@ Negotiator._makeOffer = function(connection) {
     util.log('Created offer.');
 
     pc.setLocalDescription(offer, function() {
-      // For some reason Firefox requires toJSON call
-      var o = offer;
-      offer = 'toJSON' in o ? o.toJSON() : o;
-
       util.log('Set localDescription: offer', 'for:', dst);
       connection.provider._messagesRef.child(dst).push({
         type: 'OFFER',
@@ -1225,10 +1221,6 @@ Negotiator._makeAnswer = function(connection) {
     util.log('Created answer.');
 
     pc.setLocalDescription(answer, function() {
-      // For some reason Firefox requires toJSON call
-      var a = answer;
-      answer = 'toJSON' in a ? a.toJSON() : a;
-
       util.log('Set localDescription: answer', 'for:', dst);
       provider._messagesRef.child(dst).push({
         type: 'ANSWER',
@@ -1253,7 +1245,7 @@ Negotiator._makeAnswer = function(connection) {
 
 /** Handle an SDP. */
 Negotiator.handleSDP = function(type, connection, sdp) {
-  sdp = new RTCSessionDescription(sdp);
+  sdp = new RTCSessionDescription(JSON.parse(sdp));
   var pc = connection.pc;
 
   util.log('Setting remote description', sdp);
