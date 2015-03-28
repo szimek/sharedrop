@@ -773,14 +773,6 @@ DataConnection.prototype._configureDataChannel = function() {
 // Handles a DataChannel message.
 DataConnection.prototype._handleDataMessage = function(e) {
   var data = e.data;
-
-  if (data.byteLength !== undefined) {
-    // ArrayBuffer
-  } else {
-    // String (JSON)
-    data = JSON.parse(data);
-  }
-
   this.emit('data', data);
 };
 
@@ -803,12 +795,6 @@ DataConnection.prototype.send = function(data) {
   if (!this.open) {
     this.emit('error', new Error('Connection is not open. You should listen for the `open` event before sending messages.'));
     return;
-  }
-
-  // Lame type check
-  if (data.byteLength === undefined) {
-    // JSON string
-    data = JSON.stringify(data);
   }
 
   this._bufferedSend(data);
