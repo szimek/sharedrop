@@ -102,7 +102,7 @@ WebRTC.prototype._onBinaryData = function (data, connection) {
         chunksPerAck = WebRTC.CHUNKS_PER_ACK,
         nextChunkNum, lastChunkInFile, lastChunkInBlock;
 
-    connection.emit('receiving_progress', receivedChunkNum / (info.chunksTotal - 1));
+    connection.emit('receiving_progress', (receivedChunkNum + 1) / info.chunksTotal);
     // console.log('Got chunk no ' + (receivedChunkNum + 1) + ' out of ' + info.chunksTotal);
 
     block.push(data);
@@ -289,7 +289,7 @@ WebRTC.prototype._sendBlock = function (connection, file, beginChunkNum) {
                 // console.log('Sent chunk: start byte: ' + begin + ' end byte: ' + end + ' length: ' + chunkBuffer.byteLength);
                 // console.log('Sent chunk no ' + (chunkNum + 1) + ' out of ' + info.chunksTotal);
 
-                connection.emit('sending_progress', chunkNum / (info.chunksTotal - 1));
+                connection.emit('sending_progress', (chunkNum + 1) / info.chunksTotal);
             }
 
             if (endChunkNum === info.chunksTotal - 1) {
