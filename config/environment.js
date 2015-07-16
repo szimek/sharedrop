@@ -18,13 +18,8 @@ module.exports = function (environment) {
       // when it is created
     },
 
-    FIREBASE_URL: process.env.FIREBASE_URL,
-
-    sassOptions: {
-        inputFile: 'app.sass',
-        outputFile: 'share-drop.css'
-    }
-  };
+    FIREBASE_URL: process.env.FIREBASE_URL
+};
 
   if (environment === 'development') {
     // ENV.APP.LOG_RESOLVER = true;

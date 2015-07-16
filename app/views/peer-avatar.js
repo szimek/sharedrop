@@ -117,7 +117,7 @@ export default Ember.View.extend(Ember.ViewTargetActionSupport, {
     },
 
     isFile: function (file) {
-        return new Promise(function (resolve, reject) {
+        return new Ember.RSVP.Promise(function (resolve, reject) {
             if (file instanceof window.File) {
                 if (file.size > 1048576) {
                     // It's bigger than 1MB, so we assume it's a file
