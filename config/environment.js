@@ -19,7 +19,7 @@ module.exports = function (environment) {
     },
 
     FIREBASE_URL: process.env.FIREBASE_URL
-};
+  };
 
   if (environment === 'development') {
     // ENV.APP.LOG_RESOLVER = true;
