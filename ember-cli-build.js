@@ -1,11 +1,23 @@
 /* global require, module */
-var EmberApp = require('ember-cli/lib/broccoli/ember-app');
+var EmberApp = require("ember-cli/lib/broccoli/ember-app");
+var env = process.env.EMBER_ENV;
+var config = require("./config/environment")(env);
 
 module.exports = function(defaults) {
-  var app = new EmberApp(defaults, {
-      dotEnv: {
-          clientAllowedKeys: ['FIREBASE_URL']
-      }
+    var app = new EmberApp(defaults, {
+        dotEnv: {
+            clientAllowedKeys: ['FIREBASE_URL']
+        },
+
+        inlineContent: {
+            "analytics": {
+                file: "app/analytics.html",
+                enabled: !!config.GOOGLE_ANALYTICS_ID,
+                postProcess: function (content) {
+                    return content.replace(/\{\{GOOGLE_ANALYTICS_ID\}\}/g, config.GOOGLE_ANALYTICS_ID);
+                }
+            }
+        }
   });
 
   // Use `app.import` to add additional libraries to the generated
