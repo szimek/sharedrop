@@ -21,7 +21,7 @@ export default IndexRoute.extend({
     },
 
     renderTemplate: function (ctrl) {
-        this.render();
+        this.render('index');
 
         this.render('about_you', {
             into: 'application',
