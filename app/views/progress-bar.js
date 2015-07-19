@@ -26,17 +26,17 @@ export default Ember.View.extend({
     }.observes('controller.model.transfer.receivingProgress'),
 
     _calculateSVGAnim: function (progress) {
+        const path = this.get('path');
+        if (!path) { return; }
+
         var π = Math.PI,
             α = progress * 360,
             r = ( α * π / 180 ),
             mid = ( α > 180 ) ? 1 : 0,
             x = Math.sin( r ) * 38,
             y = Math.cos( r ) * - 38,
-            anim = 'M 0 0 v -38 A 38 38 1 '
-                 + mid + ' 1 '
-                 +  x  + ' '
-                 +  y  + ' z';
+            anim = 'M 0 0 v -38 A 38 38 1 ' + mid + ' 1 ' +  x  + ' ' +  y  + ' z';
 
-        this.get('path').attr('d', anim);
+        path.attr('d', anim);
     }
 });
