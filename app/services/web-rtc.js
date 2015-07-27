@@ -102,6 +102,7 @@ WebRTC.prototype._onBinaryData = function (data, connection) {
         chunksPerAck = WebRTC.CHUNKS_PER_ACK,
         nextChunkNum, lastChunkInFile, lastChunkInBlock;
 
+    // TODO move it after requesting a new block to speed things up
     connection.emit('receiving_progress', (receivedChunkNum + 1) / info.chunksTotal);
     // console.log('Got chunk no ' + (receivedChunkNum + 1) + ' out of ' + info.chunksTotal);
 
