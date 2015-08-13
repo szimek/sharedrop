@@ -1,5 +1,7 @@
 import Ember from 'ember';
 
+var alias = Ember.computed.alias;
+
 export default Ember.View.extend({
     tagName: 'svg',
     templateName: 'progress_bar',
@@ -9,21 +11,27 @@ export default Ember.View.extend({
     height: "76",
     viewport: "0 0 76 76",
 
+    transfer: alias('controller.model'),
+
     didInsertElement: function () {
         this.set('path', this.$().find('path'));
     },
 
     sendingProgressDidChange: function () {
-        var progress = this.get('controller.model.transfer.sendingProgress');
+        var progress = this.get('transfer.sendingProgress');
 
-        this._calculateSVGAnim(progress);
-    }.observes('controller.model.transfer.sendingProgress'),
+        if (this.get('path')) {
+            this._calculateSVGAnim(progress);
+        }
+    }.observes('transfer.sendingProgress'),
 
     receivingProgressDidChange: function () {
-        var progress = this.get('controller.model.transfer.receivingProgress');
+        var progress = this.get('transfer.receivingProgress');
 
-        this._calculateSVGAnim(progress);
-    }.observes('controller.model.transfer.receivingProgress'),
+        if (this.get('path')) {
+            this._calculateSVGAnim(progress);
+        }
+    }.observes('transfer.receivingProgress'),
 
     _calculateSVGAnim: function (progress) {
         const path = this.get('path');
