@@ -2,7 +2,7 @@ import Ember from 'ember';
 
 var alias = Ember.computed.alias;
 
-export default Ember.ObjectController.extend({
+export default Ember.Controller.extend({
     index: Ember.inject.controller('index'),
     webrtc: alias('index.webrtc'),
     hasCustomRoomName: alias('index.hasCustomRoomName'),
