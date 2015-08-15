@@ -3,7 +3,7 @@ import Peer from "./peer";
 
 export default Peer.extend({
     init() {
-        this.set("local_ips", new Ember.Set());
+        this.set("local_ips", []);
         this._super();
     },
 

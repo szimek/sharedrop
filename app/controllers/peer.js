@@ -3,10 +3,9 @@ import Ember from 'ember';
 var alias = Ember.computed.alias;
 
 export default Ember.ObjectController.extend({
-    needs: 'index',
-
-    webrtc: alias('controllers.index.webrtc'),
-    hasCustomRoomName: alias('controllers.index.hasCustomRoomName'),
+    index: Ember.inject.controller('index'),
+    webrtc: alias('index.webrtc'),
+    hasCustomRoomName: alias('index.hasCustomRoomName'),
 
     filename: function () {
         var file = this.get('model.transfer.file'),

@@ -2,10 +2,9 @@ import Ember from 'ember';
 import WebRTC from '../services/web-rtc';
 import Peer from '../models/peer';
 
-export default Ember.ArrayController.extend({
-    needs: ['application'],
-
-    you: Ember.computed.alias('controllers.application.you'),
+export default Ember.Controller.extend({
+    application: Ember.inject.controller('application'),
+    you: Ember.computed.alias('application.you'),
     room: null,
     webrtc: null,
 
@@ -48,18 +47,19 @@ export default Ember.ArrayController.extend({
         peer = Peer.create(attrs);
         peer.get('peer').setProperties(peerAttrs);
 
-        this.pushObject(peer);
+        this.get('model').pushObject(peer);
     },
 
     _onRoomUserChanged: function (event, data) {
-        var peer = this.findBy('uuid', data.uuid),
-            peerAttrs = data.peer,
-            defaults = {
-                uuid: null,
-                email: null,
-                public_ip: null,
-                local_ip: null
-            };
+        const peers = this.get('model');
+        const peer = peers.findBy('uuid', data.uuid);
+        const peerAttrs = data.peer;
+        const defaults = {
+            uuid: null,
+            email: null,
+            public_ip: null,
+            local_ip: null
+        };
 
         if (peer) {
             delete data.peer;
@@ -71,13 +71,15 @@ export default Ember.ArrayController.extend({
     },
 
     _onRoomUserRemoved: function (event, data) {
-        var peer = this.findBy('uuid', data.uuid);
-        this.removeObject(peer);
+        const peers = this.get('model');
+        const peer = peers.findBy('uuid', data.uuid);
+        peers.removeObject(peer);
     },
 
     _onPeerP2PIncomingConnection: function (event, data) {
-        var connection = data.connection,
-            peer = this.findBy('peer.id', connection.peer);
+        const connection = data.connection;
+        const peers = this.get('model');
+        const peer = peers.findBy('peer.id', connection.peer);
 
         // Don't switch to 'connecting' state on incoming connection,
         // as p2p connection may still fail.
@@ -85,27 +87,30 @@ export default Ember.ArrayController.extend({
     },
 
     _onPeerDCIncomingConnection: function (event, data) {
-        var connection = data.connection,
-            peer = this.findBy('peer.id', connection.peer);
+        const connection = data.connection;
+        const peers = this.get('model');
+        const peer = peers.findBy('peer.id', connection.peer);
 
         peer.set('peer.state', 'connected');
     },
 
     _onPeerDCIncomingConnectionError: function (event, data) {
-        var connection = data.connection,
-            peer = this.findBy('peer.id', connection.peer),
-            error = data.error;
+        const connection = data.connection;
+        const peers = this.get('model');
+        const peer = peers.findBy('peer.id', connection.peer);
+        const error = data.error;
 
-            switch (error.type) {
-                case 'failed':
-                peer.set('peer.connection', null);
-                break;
-            }
+        switch (error.type) {
+            case 'failed':
+            peer.set('peer.connection', null);
+            break;
+        }
     },
 
     _onPeerP2POutgoingConnection: function (event, data) {
-        var connection = data.connection,
-            peer = this.findBy('peer.id', connection.peer);
+        const connection = data.connection;
+        const peers = this.get('model');
+        const peer = peers.findBy('peer.id', connection.peer);
 
         peer.setProperties({
             'peer.connection': connection,
@@ -114,11 +119,12 @@ export default Ember.ArrayController.extend({
     },
 
     _onPeerDCOutgoingConnection: function (event, data) {
-        var connection = data.connection,
-            peer = this.findBy('peer.id', connection.peer),
-            file = peer.get('transfer.file'),
-            webrtc = this.get('webrtc'),
-            info = webrtc.getFileInfo(file);
+        const connection = data.connection;
+        const peers = this.get('model');
+        const peer = peers.findBy('peer.id', connection.peer);
+        const file = peer.get('transfer.file');
+        const webrtc = this.get('webrtc');
+        const info = webrtc.getFileInfo(file);
 
         peer.set('peer.state', 'connected');
         peer.set('state', 'awaiting_response');
@@ -128,9 +134,10 @@ export default Ember.ArrayController.extend({
     },
 
     _onPeerDCOutgoingConnectionError: function (event, data) {
-        var connection = data.connection,
-            peer = this.findBy('peer.id', connection.peer),
-            error = data.error;
+        const connection = data.connection;
+        const peers = this.get('model');
+        const peer = peers.findBy('peer.id', connection.peer);
+        const error = data.error;
 
         switch (error.type) {
             case 'failed':
@@ -145,8 +152,9 @@ export default Ember.ArrayController.extend({
     },
 
     _onPeerP2PDisconnected: function (event, data) {
-        var connection = data.connection,
-            peer = this.findBy('peer.id', connection.peer);
+        const connection = data.connection;
+        const peers = this.get('model');
+        const peer = peers.findBy('peer.id', connection.peer);
 
         if (peer) {
             peer.set('peer.connection', null);
@@ -157,9 +165,10 @@ export default Ember.ArrayController.extend({
     _onPeerP2PFileInfo: function (event, data) {
         console.log('Peer:\t Received file info', data);
 
-        var connection = data.connection,
-            peer = this.findBy('peer.id', connection.peer),
-            info = data.info;
+        const connection = data.connection;
+        const peers = this.get('model');
+        const peer = peers.findBy('peer.id', connection.peer);
+        const info = data.info;
 
         peer.set('transfer.info', info);
         peer.set('state', 'received_file_info');
@@ -168,14 +177,14 @@ export default Ember.ArrayController.extend({
     _onPeerP2PFileResponse: function (event, data) {
         console.log('Peer:\t Received file response', data);
 
-        var webrtc = this.get('webrtc'),
-            connection = data.connection,
-            peer = this.findBy('peer.id', connection.peer),
-            response = data.response,
-            file;
+        const connection = data.connection;
+        const peers = this.get('model');
+        const peer = peers.findBy('peer.id', connection.peer);
+        const webrtc = this.get('webrtc');
+        const response = data.response;
 
         if (response) {
-            file = peer.get('transfer.file');
+            const file = peer.get('transfer.file');
 
             connection.on('sending_progress', function (progress) {
                 peer.set('transfer.sendingProgress', progress);
@@ -188,8 +197,9 @@ export default Ember.ArrayController.extend({
     },
 
     _onPeerP2PFileCanceled: function (event, data) {
-        var connection = data.connection,
-            peer = this.findBy('peer.id', connection.peer);
+        const connection = data.connection;
+        const peers = this.get('model');
+        const peer = peers.findBy('peer.id', connection.peer);
 
         connection.close();
         peer.set('transfer.receivingProgress', 0);
@@ -200,8 +210,9 @@ export default Ember.ArrayController.extend({
     _onPeerP2PFileReceived: function (event, data) {
         console.log('Peer:\t Received file', data);
 
-        var connection = data.connection,
-            peer = this.findBy('peer.id', connection.peer);
+        const connection = data.connection;
+        const peers = this.get('model');
+        const peer = peers.findBy('peer.id', connection.peer);
 
         connection.close();
         peer.set('transfer.receivingProgress', 0);
@@ -213,8 +224,9 @@ export default Ember.ArrayController.extend({
     _onPeerP2PFileSent: function (event, data) {
         console.log('Peer:\t Sent file', data);
 
-        var connection = data.connection,
-            peer = this.findBy('peer.id', connection.peer);
+        const connection = data.connection;
+        const peers = this.get('model');
+        const peer = peers.findBy('peer.id', connection.peer);
 
         peer.set('transfer.sendingProgress', 0);
         peer.set('transfer.file', null);

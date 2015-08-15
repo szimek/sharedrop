@@ -5,9 +5,8 @@ export default Ember.View.extend({
     classNameBindings: ['peer.peer.state'],
 
     localIps: function () {
-        // Convert unordered set to sorted array
-        var ips = this.get('controller.model.local_ips');
-        return ips.toArray().sort();
+        // Sort ips array
+        return this.get('controller.model.local_ips').sort();
     }.property('controller.model.local_ips.[]'),
 
     hasManyLocalIps: function () {
