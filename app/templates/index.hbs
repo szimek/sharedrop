@@ -1,13 +1,13 @@
 <main class="l-content">
   <div class="user others">
     {{#each peer in model}}
-      {{render "peer" peer}}
+      {{peer-widget peer=peer hasCustomRoomName=hasCustomRoomName webrtc=webrtc}}
     {{/each}}
   </div>
 
   {{#if you.uuid}}
     <div class="user you">
-      {{render "user" you}}
+      {{user-widget user=you}}
     </div>
   {{/if}}
 </main>

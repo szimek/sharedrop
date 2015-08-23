@@ -1,0 +1,19 @@
+<div class="avatar">
+  <img class="gravatar" src={{user.avatarUrl}} alt={{users.label}} title={{user.uuid}}>
+</div>
+<div class="user-info">
+  <div class="user-label">You</div>
+  <div class="user-ip">
+    {{#if hasCustomRoomName}}
+      <strong>{{user.public_ip}}</strong>
+    {{/if}}
+
+    {{#if user.local_ip}}
+      {{#if user.hasManyLocalIps}}
+        {{view Ember.Select content=localIps value=user.local_ip}}
+      {{else}}
+        {{user.local_ip}}
+      {{/if}}
+    {{/if}}
+  </div>
+</div>

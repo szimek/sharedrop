@@ -2,7 +2,7 @@ import Ember from 'ember';
 
 var alias = Ember.computed.alias;
 
-export default Ember.View.extend(Ember.ViewTargetActionSupport, {
+export default Ember.Component.extend(Ember.ViewTargetActionSupport, {
     tagName: 'img',
     classNames: ['gravatar'],
     attributeBindings: [
@@ -12,7 +12,6 @@ export default Ember.View.extend(Ember.ViewTargetActionSupport, {
         'data-sending-progress',
         'data-receiving-progress'
     ],
-    peer: alias('controller.model'),
     src: alias('peer.avatarUrl'),
     alt: alias('peer.label'),
     title: alias('peer.uuid'),
@@ -106,7 +105,7 @@ export default Ember.View.extend(Ember.ViewTargetActionSupport, {
     },
 
     canSendFile: function () {
-        var peer = this.get('controller.model');
+        var peer = this.get('peer');
 
         // Can't send files if another file transfer is already in progress
         if (peer.get('transfer.file') || peer.get('transfer.info')) {

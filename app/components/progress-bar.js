@@ -1,17 +1,14 @@
 import Ember from 'ember';
 
-var alias = Ember.computed.alias;
-
-export default Ember.View.extend({
+export default Ember.Component.extend({
     tagName: 'svg',
-    templateName: 'progress_bar',
 
     attributeBindings: ['width', 'height', 'viewport'],
     width: "76",
     height: "76",
     viewport: "0 0 76 76",
 
-    transfer: alias('controller.model'),
+    transfer: null,
 
     didInsertElement: function () {
         this.set('path', this.$().find('path'));
