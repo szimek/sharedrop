@@ -27,7 +27,7 @@ export default Ember.Controller.extend({
     },
 
     _onRoomDisconnected: function () {
-        this.clear();
+        this.get('model').clear();
         this.set('webrtc', null);
     },
 
