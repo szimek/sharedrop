@@ -1,7 +1,7 @@
 {
   "name": "share-drop",
   "dependencies": {
-    "ember": "1.13.8",
+    "ember": "1.13.9",
     "ember-cli-shims": "ember-cli/ember-cli-shims#0.0.3",
     "ember-cli-test-loader": "ember-cli-test-loader#0.1.3",
     "ember-load-initializers": "ember-cli/ember-load-initializers#0.1.5",

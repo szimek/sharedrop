@@ -10,7 +10,7 @@
 
     {{#if user.local_ip}}
       {{#if user.hasManyLocalIps}}
-        {{view Ember.Select content=localIps value=user.local_ip}}
+        {{ip-select content=localIps action=(action (mut user.local_ip))}}
       {{else}}
         {{user.local_ip}}
       {{/if}}

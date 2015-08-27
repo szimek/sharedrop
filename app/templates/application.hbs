@@ -7,21 +7,21 @@
 
     <ul class="nav">
       <li>
-      <a href="javascript:void(0)" class="icon-create-room" {{action 'redirect'}} title="Create a room. You'll leave the room you're currently in.">+</a>
+      <a href="javascript:void(0)" class="icon-create-room" {{action "redirect"}} title="Create a room. You'll leave the room you're currently in.">+</a>
       </li>
       <li>
-        <a href="javascript:void(0)" class="icon-help" {{action 'openModal' 'about_app'}} title="About">?</a>
+        <a href="javascript:void(0)" class="icon-help" {{action "openModal" "about_app"}} title="About">?</a>
       </li>
       {{#if you.email}}
         <li class="email">
           {{you.email}}
         </li>
         <li>
-          <a href="javascript:void(0)" class="sign" {{action 'signOut'}}>Sign out</a>
+          <a href="javascript:void(0)" class="sign" {{action "signOut"}}>Sign out</a>
         </li>
       {{else}}
         <li>
-          <a href="javascript:void(0)" class="sign" {{action 'signIn'}} title="Signing in will allow others to recognize you by your email address and Gravatar">Sign in</a>
+          <a href="javascript:void(0)" class="sign" {{action "signIn"}} title="Signing in will allow others to recognize you by your email address and Gravatar">Sign in</a>
         </li>
       {{/if}}
     </ul>

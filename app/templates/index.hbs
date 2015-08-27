@@ -1,6 +1,6 @@
 <main class="l-content">
   <div class="user others">
-    {{#each peer in model}}
+    {{#each model as |peer|}}
       {{peer-widget peer=peer hasCustomRoomName=hasCustomRoomName webrtc=webrtc}}
     {{/each}}
   </div>

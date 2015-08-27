@@ -1,5 +1,5 @@
 <div class="modal-overlay" {{action "close"}}>
-  <div class="modal-body" {{action bubbles=false preventDefault=false}}>
+  <div class="modal-body" {{action "nop" bubbles=false preventDefault=true}}>
     {{yield}}
   </div>
 </div>
