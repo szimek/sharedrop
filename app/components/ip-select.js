@@ -4,9 +4,9 @@ export default Ember.Component.extend({
   content: null,
   selectedValue: null,
 
-  didInitAttrs() {
+  didInitAttrs: function () {
     this._super(...arguments);
-    var content = this.get("content");
+    const content = this.get("content");
 
     if (!content) {
       this.set("content", []);
@@ -14,7 +14,7 @@ export default Ember.Component.extend({
   },
 
   actions: {
-    change() {
+    change: function () {
       const changeAction = this.get("action");
       const selectedEl = this.$("select")[0];
       const selectedIndex = selectedEl.selectedIndex;

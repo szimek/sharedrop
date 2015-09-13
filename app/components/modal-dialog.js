@@ -2,11 +2,10 @@ import Ember from 'ember';
 
 export default Ember.Component.extend({
     actions: {
-        close() {
-            console.log("nop");
+        close: function () {
             return this.sendAction();
         },
 
-        nop() {}
+        nop: function () {}
     }
 });

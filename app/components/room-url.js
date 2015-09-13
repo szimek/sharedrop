@@ -9,7 +9,7 @@ export default Ember.TextField.extend({
 
     copyValueToClipboard: function () {
         if (window.ClipboardEvent) {
-            var pasteEvent = new window.ClipboardEvent('paste', {
+            const pasteEvent = new window.ClipboardEvent('paste', {
                 dataType: 'text/plain',
                 data: this.$().val()
             });

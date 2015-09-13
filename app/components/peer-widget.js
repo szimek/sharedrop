@@ -18,19 +18,20 @@ export default Ember.Component.extend({
     hasError: equal('peer.state', 'error'),
 
     filename: function () {
-        var file = this.get('peer.transfer.file'),
-            info = this.get('peer.transfer.info');
+        const file = this.get('peer.transfer.file');
+        const info = this.get('peer.transfer.info');
 
         if (file) { return file.name; }
         if (info) { return info.name; }
+
         return null;
     }.property('peer.transfer.file', 'peer.transfer.info'),
 
     actions: {
         // TODO: rename to something more meaningful (e.g. askIfWantToSendFile)
         uploadFile: function (data) {
-            var peer = this.get('peer'),
-                file = data.file;
+            const peer = this.get('peer');
+            const file = data.file;
 
             // Cache the file, so that it's available
             // when the response from the recipient comes in
@@ -39,8 +40,8 @@ export default Ember.Component.extend({
         },
 
         sendFileTransferInquiry: function () {
-            var webrtc = this.get('webrtc'),
-                peer = this.get('peer');
+            const webrtc = this.get('webrtc');
+            const peer = this.get('peer');
 
             webrtc.connect(peer.get('peer.id'));
         },
@@ -52,14 +53,14 @@ export default Ember.Component.extend({
         abortFileTransfer: function () {
             this._cancelFileTransfer();
 
-            var webrtc = this.get('webrtc'),
-                connection = this.get('peer.peer.connection');
+            const webrtc = this.get('webrtc');
+            const connection = this.get('peer.peer.connection');
 
             webrtc.sendCancelRequest(connection);
         },
 
         acceptFileTransfer: function () {
-            var peer = this.get('peer');
+            const peer = this.get('peer');
 
             this._sendFileTransferResponse(true);
 
@@ -70,7 +71,7 @@ export default Ember.Component.extend({
         },
 
         rejectFileTransfer: function () {
-            var peer = this.get('peer');
+            const peer = this.get('peer');
 
             this._sendFileTransferResponse(false);
             peer.set('transfer.info', null);
@@ -79,7 +80,7 @@ export default Ember.Component.extend({
     },
 
     _cancelFileTransfer: function () {
-        var peer = this.get('peer');
+        const peer = this.get('peer');
 
         peer.setProperties({
             'transfer.file': null,
@@ -88,15 +89,16 @@ export default Ember.Component.extend({
     },
 
     _sendFileTransferResponse: function (response) {
-        var webrtc = this.get('webrtc'),
-            peer = this.get('peer'),
-            connection = peer.get('peer.connection');
+        const webrtc = this.get('webrtc');
+        const peer = this.get('peer');
+        const connection = peer.get('peer.connection');
 
         webrtc.sendFileResponse(connection, response);
     },
 
     errorTemplateName: function () {
-        var errorCode = this.get('peer.errorCode');
+        const errorCode = this.get('peer.errorCode');
+
         return errorCode ? 'errors/popovers/' + errorCode : null;
     }.property('peer.errorCode'),
 

@@ -4,8 +4,8 @@ export default Ember.Component.extend({
     classNames: ['popover-confirm'],
 
     iconClass: function () {
-        var filename = this.get('filename'),
-            regex, match, extension;
+        const filename = this.get('filename');
+        let regex, match, extension;
 
         if (filename) {
             regex = /\.([0-9a-z]+)$/i;

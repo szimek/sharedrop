@@ -15,7 +15,7 @@ export default Ember.Component.extend({
     },
 
     sendingProgressDidChange: function () {
-        var progress = this.get('transfer.sendingProgress');
+        const progress = this.get('transfer.sendingProgress');
 
         if (this.get('path')) {
             this._calculateSVGAnim(progress);
@@ -23,7 +23,7 @@ export default Ember.Component.extend({
     }.observes('transfer.sendingProgress'),
 
     receivingProgressDidChange: function () {
-        var progress = this.get('transfer.receivingProgress');
+        const progress = this.get('transfer.receivingProgress');
 
         if (this.get('path')) {
             this._calculateSVGAnim(progress);
@@ -34,13 +34,13 @@ export default Ember.Component.extend({
         const path = this.get('path');
         if (!path) { return; }
 
-        var π = Math.PI,
-            α = progress * 360,
-            r = ( α * π / 180 ),
-            mid = ( α > 180 ) ? 1 : 0,
-            x = Math.sin( r ) * 38,
-            y = Math.cos( r ) * - 38,
-            anim = 'M 0 0 v -38 A 38 38 1 ' + mid + ' 1 ' +  x  + ' ' +  y  + ' z';
+        const π = Math.PI;
+        const α = progress * 360;
+        const r = ( α * π / 180 );
+        const mid = ( α > 180 ) ? 1 : 0;
+        const x = Math.sin( r ) * 38;
+        const y = Math.cos( r ) * - 38;
+        const anim = 'M 0 0 v -38 A 38 38 1 ' + mid + ' 1 ' +  x  + ' ' +  y  + ' z';
 
         path.attr('d', anim);
     }
