@@ -1,3 +1,5 @@
+/* global process, require, __dirname */
+
 'use strict';
 
 if (process.env.NODE_ENV === 'production') {
