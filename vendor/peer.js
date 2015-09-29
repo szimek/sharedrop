@@ -164,7 +164,13 @@ EventEmitter.prototype.emit = function(type) {
 exports.RTCSessionDescription = window.mozRTCSessionDescription || window.RTCSessionDescription;
 exports.RTCPeerConnection = window.mozRTCPeerConnection || window.webkitRTCPeerConnection || window.RTCPeerConnection;
 exports.RTCIceCandidate = window.mozRTCIceCandidate || window.RTCIceCandidate;
-var defaultConfig = {'iceServers': [{ 'url': 'stun:stun.l.google.com:19302' }]};
+var defaultConfig = {
+    'iceServers': [{
+        'url': 'stun:stun.l.google.com:19302'
+    }, {
+        'urls': 'stun:stun.l.google.com:19302'
+    }]
+};
 
 var util = {
   noop: function() {},

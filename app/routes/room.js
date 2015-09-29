@@ -15,6 +15,7 @@ export default IndexRoute.extend({
     },
 
     setupController: function (ctrl, model) {
+        // Call this method on "index" controller
         this._super(ctrl, model);
 
         ctrl.set('hasCustomRoomName', true);

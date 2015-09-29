@@ -1,6 +1,6 @@
 import Ember from 'ember';
 
-var equal = Ember.computed.equal;
+const equal = Ember.computed.equal;
 
 export default Ember.Component.extend({
     classNames: ['peer'],
