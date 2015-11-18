@@ -30,10 +30,9 @@
     margin-bottom: 0.5em
   p
     font-size: 1.4rem
-    line-height: 1.4em
+    line-height: 1.4
     margin-bottom: 1.42em
     &.note
-
       font-size: 1.1rem
 
   a
@@ -58,6 +57,36 @@
       &:hover
         background: $blue
 
+  .input-copy
+    position: relative
+    input
+      width: calc(100% - 3.8rem)
+      border:
+        top-right-radius: 0
+        bottom-right-radius: 0
+    button
+      position: absolute
+      right: 0
+      top: 0
+      +button_reset
+      width: 3.8rem
+      height: 3.8rem
+      border:
+        width: 1px 1px 1px 0
+        style: solid
+        color: #ccc
+      border:
+        top-right-radius: .3rem
+        bottom-right-radius: .3rem
+      background: #fff url("../assets/images/clippy.svg") no-repeat center
+      background-size: 16px 16px
+      transition: background-color .175s
+      &:hover
+        background-color: #f0f0f0
+      &:active
+        background-color: #e8e8e8
+      span
+        display: none
   .logo
     height: 38px
     margin-bottom: 20px
