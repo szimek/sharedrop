@@ -9,6 +9,10 @@ module.exports = function(defaults) {
             clientAllowedKeys: ['FIREBASE_URL']
         },
 
+        fingerprint: {
+            extensions: ['js', 'css', 'png', 'jpg', 'gif', 'map', 'svg']
+        },
+
         inlineContent: {
             "analytics": {
                 file: "app/analytics.html",
