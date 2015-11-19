@@ -1,4 +1,4 @@
-/* global require, module */
+/* global require, module, process */
 var EmberApp = require("ember-cli/lib/broccoli/ember-app");
 var env = process.env.EMBER_ENV;
 var config = require("./config/environment")(env);
@@ -11,6 +11,10 @@ module.exports = function(defaults) {
 
         fingerprint: {
             extensions: ['js', 'css', 'png', 'jpg', 'gif', 'map', 'svg']
+        },
+
+        SRI: {
+            enabled: false
         },
 
         inlineContent: {
