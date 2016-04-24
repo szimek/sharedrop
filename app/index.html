@@ -10,25 +10,25 @@
     <meta name="mobile-web-app-capable" content="yes">
     <link rel="shortcut icon" sizes="196x196" href="assets/images/sharedrop-icon.png">
 
-    {{content-for 'head'}}
+    {{content-for "head"}}
 
     <link rel="stylesheet" href="assets/vendor.css">
     <link rel="stylesheet" href="assets/share-drop.css">
 
-    {{content-for 'head-footer'}}
-    {{content-for 'analytics'}}
+    {{content-for "head-footer"}}
+    {{content-for "analytics"}}
   </head>
 
   <body>
     <div class="preloader"><span>Loading...</span></div>
 
-    {{content-for 'body'}}
+    {{content-for "body"}}
 
     <script src="//cdn.firebase.com/js/client/2.2.9/firebase.js"></script>
     <script src="//login.persona.org/include.js"></script>
     <script src="assets/vendor.js"></script>
     <script src="assets/share-drop.js"></script>
 
-    {{content-for 'body-footer'}}
+    {{content-for "body-footer"}}
   </body>
 </html>
