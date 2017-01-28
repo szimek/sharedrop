@@ -12,7 +12,7 @@ export default Peer.extend({
             const ips = this.get("local_ips");
             const storedIp = localStorage.getItem("local_ip");
 
-            if (storedIp && ips.contains(storedIp)) {
+            if (storedIp && ips.includes(storedIp)) {
                 return storedIp;
             } else {
                 return ips[0] || null;
@@ -22,7 +22,7 @@ export default Peer.extend({
         set: function (key, value) {
             const ips = this.get("local_ips");
 
-            if (value && ips.contains(value)) {
+            if (value && ips.includes(value)) {
                 localStorage.setItem("local_ip", value);
             }
 

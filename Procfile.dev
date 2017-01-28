@@ -1,2 +1,2 @@
 server: node index.js
-web: ember server
+web: ember build --watch

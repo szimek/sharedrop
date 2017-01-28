@@ -3,27 +3,27 @@
 'use strict';
 
 if (process.env.NODE_ENV === 'production') {
-    require('newrelic');
+  require('newrelic');
 }
 
 // Room server
-var http = require('http'),
-    path = require('path'),
-    express = require('express'),
-    logger = require('morgan'),
-    bodyParser = require('body-parser'),
-    cookieParser = require('cookie-parser'),
-    cookieSession = require('cookie-session'),
-    compression = require('compression'),
-    persona = require('express-persona'),
-    uuid = require('node-uuid'),
-    crypto = require('crypto'),
-    FirebaseTokenGenerator = require("firebase-token-generator"),
-    firebaseTokenGenerator = new FirebaseTokenGenerator(process.env.FIREBASE_SECRET),
-    app = express(),
-    personaUrl= process.env.PERSONA_URL,
-    secret = process.env.SECRET,
-    base = ['dist'];
+const http = require('http');
+const path = require('path');
+const express = require('express');
+const logger = require('morgan');
+const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
+const cookieSession = require('cookie-session');
+const compression = require('compression');
+const persona = require('express-persona');
+const uuid = require('node-uuid');
+const crypto = require('crypto');
+const FirebaseTokenGenerator = require("firebase-token-generator");
+const firebaseTokenGenerator = new FirebaseTokenGenerator(process.env.FIREBASE_SECRET);
+const app = express();
+const personaUrl= process.env.PERSONA_URL;
+const secret = process.env.SECRET;
+const base = ['dist'];
 
 app.enable('trust proxy');
 
@@ -32,27 +32,27 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(cookieParser());
 app.use(cookieSession({
-    cookie: {
-        // secure: true,
-        httpOnly: true,
-        maxAge: 30 * 24 * 60 * 60 * 1000 // 30 days
-    },
-    secret: secret,
-    proxy: true
+  cookie: {
+    // secure: true,
+    httpOnly: true,
+    maxAge: 30 * 24 * 60 * 60 * 1000 // 30 days
+  },
+  secret: secret,
+  proxy: true
 }));
 app.use(compression());
 
 //
 // Web server
 //
-base.forEach(function (dir) {
-    var subdirs = ['assets'];
+base.forEach((dir) => {
+  const subdirs = ['assets'];
 
-    subdirs.forEach(function (subdir) {
-        app.use('/' + subdir, express.static(dir + '/' + subdir, {
-            maxAge: 31104000000 // ~1 year
-        }));
-    });
+  subdirs.forEach((subdir) => {
+    app.use('/' + subdir, express.static(dir + '/' + subdir, {
+      maxAge: 31104000000 // ~1 year
+    }));
+  });
 });
 
 //
@@ -60,39 +60,40 @@ base.forEach(function (dir) {
 //
 
 // Handle Persona authentication
-persona(app, { audience: personaUrl });
+persona(app, {audience: personaUrl});
 
-app.get('/', function (req, res) {
-    var root = path.join(__dirname, base[0]);
-    res.sendfile(root + '/index.html');
+app.get('/', (req, res) => {
+  const root = path.join(__dirname, base[0]);
+  res.sendfile(root + '/index.html');
 });
 
-app.get('/rooms/:id', function (req, res) {
-    var root = path.join(__dirname, base[0]);
-    res.sendfile(root + '/index.html');
+app.get('/rooms/:id', (req, res) => {
+  const root = path.join(__dirname, base[0]);
+  res.sendfile(root + '/index.html');
 });
 
 
-app.get('/room', function (req, res) {
-    var ip = req.headers['cf-connecting-ip'] || req.ip,
-        name = crypto.createHmac('md5', secret).update(ip).digest('hex');
+app.get('/room', (req, res) => {
+  const ip = req.headers['cf-connecting-ip'] || req.ip;
+  const name = crypto.createHmac('md5', secret).update(ip).digest('hex');
 
-    res.json({name: name});
+  res.json({name: name});
 });
 
-app.get('/auth', function (req, res) {
-    var ip = req.headers['cf-connecting-ip'] || req.ip,
-        uid = uuid.v1(),
-        token = firebaseTokenGenerator.createToken(
-            {uid: uid, id: uid}, // will be available in Firebase security rules as 'auth'
-            {expires: 32503680000} // 01.01.3000 00:00
-        );
+app.get('/auth', (req, res) => {
+  const ip = req.headers['cf-connecting-ip'] || req.ip;
+  const uid = uuid.v1();
+  const token = firebaseTokenGenerator.createToken(
+    {uid: uid, id: uid}, // will be available in Firebase security rules as 'auth'
+    {expires: 32503680000} // 01.01.3000 00:00
+  );
 
-    res.json({id: uid, token: token, public_ip: ip});
+  res.json({id: uid, token: token, public_ip: ip});
 });
 
-http.createServer(app)
-.listen(process.env.PORT)
-.on('listening', function () {
-    console.log('Started ShareDrop web server...');
-});
+http
+  .createServer(app)
+  .listen(process.env.PORT)
+  .on('listening', () => {
+    console.log(`Started ShareDrop web server at http://localhost:${process.env.PORT}...`);
+  });

@@ -2,7 +2,7 @@ import Ember from 'ember';
 
 var alias = Ember.computed.alias;
 
-export default Ember.Component.extend(Ember.ViewTargetActionSupport, {
+export default Ember.Component.extend({
     tagName: 'img',
     classNames: ['gravatar'],
     attributeBindings: [
@@ -85,12 +85,7 @@ export default Ember.Component.extend(Ember.ViewTargetActionSupport, {
                 });
             } else {
                 this.isFile(file).then(() => {
-                    this.triggerAction({
-                        action: 'uploadFile',
-                        actionContext: {
-                            file: file
-                        }
-                    });
+                    this.get('onFileDrop')({file: file});
                 });
             }
         }

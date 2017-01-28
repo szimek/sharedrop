@@ -1,32 +1,36 @@
 /* jshint node:true */
 /* global require, module */
-var EmberApp = require("ember-cli/lib/broccoli/ember-app");
+var EmberApp = require('ember-cli/lib/broccoli/ember-app');
 var env = process.env.EMBER_ENV;
-var config = require("./config/environment")(env);
+var config = require('./config/environment')(env);
 
 module.exports = function(defaults) {
-    var app = new EmberApp(defaults, {
-        dotEnv: {
-            clientAllowedKeys: ['FIREBASE_URL']
-        },
+  var app = new EmberApp(defaults, {
+    dotEnv: {
+      clientAllowedKeys: ['FIREBASE_URL']
+    },
 
-        fingerprint: {
-            extensions: ['js', 'css', 'png', 'jpg', 'gif', 'map', 'svg']
-        },
+    fingerprint: {
+      extensions: ['js', 'css', 'png', 'jpg', 'gif', 'map', 'svg']
+    },
 
-        SRI: {
-            enabled: false
-        },
-
-        inlineContent: {
-            "analytics": {
-                file: "app/analytics.html",
-                enabled: !!config.GOOGLE_ANALYTICS_ID,
-                postProcess: function (content) {
-                    return content.replace(/\{\{GOOGLE_ANALYTICS_ID\}\}/g, config.GOOGLE_ANALYTICS_ID);
-                }
-            }
+    inlineContent: {
+      analytics: {
+        file: 'app/analytics.html',
+        enabled: !!config.GOOGLE_ANALYTICS_ID,
+        postProcess: function (content) {
+          return content.replace(/\{\{GOOGLE_ANALYTICS_ID\}\}/g, config.GOOGLE_ANALYTICS_ID);
         }
+      }
+    },
+
+    sassOptions: {
+      extension: 'sass',
+    },
+
+    SRI: {
+      enabled: false
+    }
   });
 
   // Use `app.import` to add additional libraries to the generated
@@ -48,7 +52,6 @@ module.exports = function(defaults) {
   app.import('vendor/idb.filesystem.min.js');
   app.import('vendor/underscore.js');
   app.import('vendor/jquery-uuid.js');
-  app.import('bower_components/bootstrap/dist/js/bootstrap.min.js');
 
   return app.toTree();
 };

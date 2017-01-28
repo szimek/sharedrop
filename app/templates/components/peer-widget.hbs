@@ -22,7 +22,7 @@
 
 <div class="avatar">
   {{progress-bar transfer=peer.transfer}}
-  {{peer-avatar peer=peer}}
+  {{peer-avatar peer=peer onFileDrop=(action "uploadFile")}}
 </div>
 
 <div class="user-info">

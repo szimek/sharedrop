@@ -23,7 +23,7 @@ The main difference between ShareDrop and AirDrop is that ShareDrop requires Int
     - `SECRET` key is used to encrypt cookies and generate room name based on public IP address for `/` route. It can be any random string - you can generate one using e.g. `date | md5sum`
     - `NEW_RELIC_*` keys are only necessary in production
 6. Run `ember build --watch` to build Ember app and automatically rebuild it on any changes.
-7. Run `foreman start` to start the server (this will load all env variables in `.env` file and run `node index.js` as specified in `Procfile`). You can install [foreman](http://ddollar.github.io/foreman) with `gem install foreman`.
+7. Run `nf --procfile=Procfile.dev start` to start the app.
 
 ### Deployment
 #### Heroku

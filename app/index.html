@@ -12,8 +12,8 @@
 
     {{content-for "head"}}
 
-    <link rel="stylesheet" href="assets/vendor.css">
-    <link rel="stylesheet" href="assets/share-drop.css">
+    <link rel="stylesheet" href="{{rootURL}}assets/vendor.css">
+    <link rel="stylesheet" href="{{rootURL}}assets/share-drop.css">
 
     {{content-for "head-footer"}}
     {{content-for "analytics"}}
@@ -26,8 +26,8 @@
 
     <script src="//cdn.firebase.com/js/client/2.2.9/firebase.js"></script>
     <script src="//login.persona.org/include.js"></script>
-    <script src="assets/vendor.js"></script>
-    <script src="assets/share-drop.js"></script>
+    <script src="{{rootURL}}assets/vendor.js"></script>
+    <script src="{{rootURL}}assets/share-drop.js"></script>
 
     {{content-for "body-footer"}}
   </body>
