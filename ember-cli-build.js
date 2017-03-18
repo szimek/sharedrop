@@ -14,6 +14,10 @@ module.exports = function(defaults) {
       extensions: ['js', 'css', 'png', 'jpg', 'gif', 'map', 'svg']
     },
 
+    'ember-bootstrap': {
+      importBootstrapCSS: false,
+    },
+
     inlineContent: {
       analytics: {
         file: 'app/analytics.html',

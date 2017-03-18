@@ -1,17 +1,19 @@
-<div class="popover-body">
-  <div class="popover-icon">
-    <i class="{{iconClass}}"></i>
+{{#bs-popover visible=isVisible placement="top" renderInPlace=true triggerEvents=''}}
+  <div class="popover-body">
+    <div class="popover-icon">
+      <i class="{{iconClass}}"></i>
+    </div>
+
+    <p>{{yield}}</p>
+
+    <div class="popover-buttons">
+      {{#if cancel-button-label}}
+        <button type="button" class="button cancel" {{action "cancel"}}>{{cancel-button-label}}</button>
+      {{/if}}
+
+      {{#if confirm-button-label}}
+        <button type="button" class="button confirm" {{action "confirm"}}>{{confirm-button-label}}</button>
+      {{/if}}
+    </div>
   </div>
-
-  <p>{{yield}}</p>
-
-  <div class="popover-buttons">
-    {{#if cancel-button-label}}
-      <button type="button" class="button cancel" {{action "cancel"}}>{{cancel-button-label}}</button>
-    {{/if}}
-
-    {{#if confirm-button-label}}
-      <button type="button" class="button confirm" {{action "confirm"}}>{{confirm-button-label}}</button>
-    {{/if}}
-  </div>
-</div>
+{{/bs-popover}}
