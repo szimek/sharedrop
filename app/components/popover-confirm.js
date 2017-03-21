@@ -6,12 +6,11 @@ export default Ember.Component.extend({
 
     iconClass: function () {
         const filename = this.get('filename');
-        let regex, match, extension;
 
         if (filename) {
-            regex = /\.([0-9a-z]+)$/i;
-            match = filename.match(/\.([0-9a-z]+)$/i);
-            extension = match && match[1];
+            const regex = /\.([0-9a-z]+)$/i;
+            const match = filename.match(regex);
+            const extension = match && match[1];
 
             if (extension) {
                 return 'glyphicon-' + extension.toLowerCase();
