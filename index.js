@@ -15,13 +15,11 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const cookieSession = require('cookie-session');
 const compression = require('compression');
-const persona = require('express-persona');
 const uuid = require('node-uuid');
 const crypto = require('crypto');
 const FirebaseTokenGenerator = require("firebase-token-generator");
 const firebaseTokenGenerator = new FirebaseTokenGenerator(process.env.FIREBASE_SECRET);
 const app = express();
-const personaUrl= process.env.PERSONA_URL;
 const secret = process.env.SECRET;
 const base = ['dist'];
 
@@ -58,10 +56,6 @@ base.forEach((dir) => {
 //
 // API server
 //
-
-// Handle Persona authentication
-persona(app, {audience: personaUrl});
-
 app.get('/', (req, res) => {
   const root = path.join(__dirname, base[0]);
   res.sendfile(root + '/index.html');

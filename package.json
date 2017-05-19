@@ -54,12 +54,11 @@
     "ember-resolver": "^2.0.3",
     "ember-source": "~2.12.0",
     "express": "^4.10.6",
-    "express-persona": "~0.1.2",
     "firebase-token-generator": "~2.0.0",
+    "loader.js": "^4.2.3",
     "morgan": "^1.5.0",
     "newrelic": "^1.36.1",
-    "node-uuid": "~1.4.2",
-    "loader.js": "^4.2.3"
+    "node-uuid": "~1.4.2"
   },
   "engines": {
     "node": ">= 6"
