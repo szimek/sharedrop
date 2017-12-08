@@ -6,6 +6,10 @@
     Copy provided address and send it to the other person.
   </p>
 
+  <div>
+    {{qr-code data=currentUrl light="#fcfcfc"}}
+  </div>
+
   <p>
     {{room-url value=currentUrl readonly="readonly" style="display: block; margin: auto;"}}
   </p>

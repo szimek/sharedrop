@@ -39,6 +39,7 @@
     "ember-cli-shims": "^1.0.2",
     "ember-cli-sri": "^2.1.0",
     "ember-cli-uglify": "^1.2.0",
+    "ember-qrcode": "0.0.4",
     "foreman": "2.0.0"
   },
   "dependencies": {
