@@ -16,7 +16,7 @@
     "build": "ember build",
     "dev": "nf --procfile=Procfile.dev start",
     "start": "ember server",
-    "test": "ember test",
+    "test": "ember exam --split=4 --parallel",
     "heroku-postbuild": "ember build --environment production"
   },
   "devDependencies": {
@@ -39,6 +39,7 @@
     "ember-cli-shims": "^1.0.2",
     "ember-cli-sri": "^2.1.0",
     "ember-cli-uglify": "^1.2.0",
+    "ember-exam": "^1.0.0",
     "foreman": "2.0.0"
   },
   "dependencies": {
