@@ -1,30 +1,34 @@
 <!-- Sender related popups -->
 {{#popover-confirm
-  confirm="sendFileTransferInquiry"
-  cancel="cancelFileTransfer"
-  isVisible=isAwaitingFileInfo
-  filename=filename
-  label=label
-  confirm-button-label="Send"
-  cancel-button-label="Cancel"}}
-  Do you want to send <strong>"{{filename}}"</strong> to <strong>"{{label}}"</strong>?
+confirm=(action "sendFileTransferInquiry")
+cancel=(action "cancelFileTransfer")
+isVisible=isAwaitingFileInfo
+filename=filename
+label=label
+confirm-button-label="Send"
+cancel-button-label="Cancel"}}
+Do you want to send <strong>"{{filename}}"</strong> to <strong>"{{label}}"</strong>?
 {{/popover-confirm}}
 
-{{#popover-confirm  cancel="abortFileTransfer" isVisible=isAwaitingResponse filename=filename label=label cancel-button-label="Cancel"}}
-  Waiting for <strong>"{{label}}"</strong> to accept&hellip;
+{{#popover-confirm cancel="abortFileTransfer" isVisible=isAwaitingResponse filename=filename label=label
+cancel-button-label="Cancel"}}
+Waiting for <strong>"{{label}}"</strong> to accept&hellip;
 {{/popover-confirm}}
 
-{{#popover-confirm confirm="cancelFileTransfer" isVisible=hasDeclinedFileTransfer filename=filename label=label confirm-button-label="Ok"}}
-  <strong>"{{label}}"</strong> has declined your request.
+{{#popover-confirm confirm=(action "cancelFileTransfer") isVisible=hasDeclinedFileTransfer filename=filename
+label=label confirm-button-label="Ok"}}
+<strong>"{{label}}"</strong> has declined your request.
 {{/popover-confirm}}
 
-{{#popover-confirm confirm="cancelFileTransfer" isVisible=hasError partialName=errorTemplateName confirm-button-label="Ok"}}
-  {{partial partialName}}
+{{#popover-confirm confirm=(action "cancelFileTransfer") isVisible=hasError partialName=errorTemplateName
+confirm-button-label="Ok"}}
+{{partial partialName}}
 {{/popover-confirm}}
 
 <!-- Recipient related popups -->
-{{#popover-confirm confirm="acceptFileTransfer" cancel="rejectFileTransfer" isVisible=hasReceivedFileInfo filename=filename label=label confirm-button-label="Save" cancel-button-label="Decline"}}
-  <strong>"{{label}}"</strong> wants to send you <strong>"{{filename}}"</strong>.
+{{#popover-confirm confirm=(action "acceptFileTransfer") cancel=(action "rejectFileTransfer")
+isVisible=hasReceivedFileInfo filename=filename label=label confirm-button-label="Save" cancel-button-label="Decline"}}
+<strong>"{{label}}"</strong> wants to send you <strong>"{{filename}}"</strong>.
 {{/popover-confirm}}
 
 <div class="avatar">
@@ -37,12 +41,12 @@
   <div class="user-ip">
     <div class="user-connection-status {{peer.peer.state}}"></div>
     {{#if hasCustomRoomName}}
-      <strong>{{peer.public_ip}}</strong>
+    <strong>{{peer.public_ip}}</strong>
     {{/if}}
     {{#if peer.local_ip}}
-      {{peer.local_ip}}
+    {{peer.local_ip}}
     {{/if}}
   </div>
 </div>
 
-{{file-field action="uploadFile"}}
+{{file-field uploadFile=(action "uploadFile")}}

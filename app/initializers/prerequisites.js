@@ -1,8 +1,9 @@
 /* jshint -W030 */
-import Ember from 'ember';
 import config from 'share-drop/config/environment';
 import FileSystem from '../services/file';
 import Analytics from '../services/analytics';
+import { Promise } from 'rsvp';
+import $ from 'jquery';
 
 export function initialize(application) {
     application.deferReadiness();
@@ -19,7 +20,7 @@ export function initialize(application) {
     });
 
     function checkWebRTCSupport() {
-        return new Ember.RSVP.Promise(function (resolve, reject) {
+        return new Promise(function (resolve, reject) {
             // window.util is a part of PeerJS library
             if (window.util.supports.sctp) {
                 resolve();
@@ -30,7 +31,7 @@ export function initialize(application) {
     }
 
     function clearFileSystem() {
-        return new Ember.RSVP.Promise(function (resolve, reject) {
+        return new Promise(function (resolve, reject) {
             // TODO: change File into a service and require it here
             FileSystem.removeAll()
             .then(function () {
@@ -43,24 +44,22 @@ export function initialize(application) {
     }
 
     function authenticateToFirebase() {
-        return new Ember.RSVP.Promise(function (resolve, reject) {
-            var xhr = Ember.$.getJSON('/auth');
-            xhr.then(function (data) {
+        return new Promise(function (resolve) {
+            var xhr = $.getJSON('/auth');
+            return xhr.then(function (data) {
+                console.log(data);
                 var ref = new window.Firebase(config.FIREBASE_URL);
                 application.ref = ref;
                 application.userId = data.id;
                 application.publicIp = data.public_ip;
-
-                ref.authWithCustomToken(data.token, function (error) {
-                    error ? reject(error) : resolve();
-                });
+                resolve();
             });
         });
     }
 
     // TODO: move it to a separate initializer
     function trackSizeOfReceivedFiles() {
-        Ember.$.subscribe('file_received.p2p', function (event, data) {
+        $.subscribe('file_received.p2p', function (event, data) {
             Analytics.trackEvent('file', 'received', 'size', Math.round(data.info.size / 1000));
         });
     }

@@ -1,4 +1,4 @@
-import Ember from 'ember';
+import { Promise } from 'rsvp';
 
 var File = function (options) {
     var self = this;
@@ -10,7 +10,7 @@ var File = function (options) {
 
     this._reset();
 
-    return new Ember.RSVP.Promise(function (resolve, reject) {
+    return new Promise(function (resolve, reject) {
         var requestFileSystem = window.requestFileSystem || window.webkitRequestFileSystem;
 
         requestFileSystem(
@@ -29,7 +29,7 @@ var File = function (options) {
 };
 
 File.removeAll = function () {
-    return new Ember.RSVP.Promise(function (resolve, reject) {
+    return new Promise(function (resolve, reject) {
         var filer = new window.Filer();
 
         filer.init({persistent: false}, function () {
@@ -59,7 +59,7 @@ File.prototype.append = function (data) {
             create: this.create
         };
 
-    return new Ember.RSVP.Promise(function (resolve, reject) {
+    return new Promise(function (resolve, reject) {
         self.filesystem.root.getFile(self.localName, options, function (fileEntry) {
             if (self.create) {
                 self.create = false;
@@ -70,7 +70,7 @@ File.prototype.append = function (data) {
             fileEntry.createWriter(function (writer) {
                 var blob = new Blob(data, {type: self.type});
 
-                // console.log('File: Appending ' + blob.size + ' bytes at ' + self.seek);
+                console.log('File: Appending ' + blob.size + ' bytes at ' + self.seek);
 
                 writer.onwriteend = function () {
                     self.seek += blob.size;
@@ -128,17 +128,17 @@ File.prototype.save = function () {
     }
 };
 
-File.prototype.errorHandler = function (error) {
-    console.error('File error: ', error);
+File.prototype.errorHandler = function (/*error*/) {
+    //console.error('File error: ', error);
 };
 
 File.prototype.remove = function () {
     var self = this;
 
-    return new Ember.RSVP.Promise(function (resolve, reject) {
+    return new Promise(function (resolve, reject) {
         self.filesystem.root.getFile(self.localName, {create: false}, function (fileEntry) {
             fileEntry.remove(function () {
-                console.debug('File: Removed file: ' + self.localName);
+                //console.debug('File: Removed file: ' + self.localName);
                 resolve(fileEntry);
             }, function (error) {
                 self.errorHandler(error);

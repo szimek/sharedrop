@@ -22,7 +22,12 @@ module.exports = function (environment) {
       // when it is created
     },
 
-    FIREBASE_URL: process.env.FIREBASE_URL
+    firebase: {
+      apiKey: environment.API_KEY,
+      authDomain: environment.AUTH_DOMAIN,
+      databaseURL: environment.DB_URL,
+      storageBucket: environment.PROCESS_BUCKET,
+    }
   };
 
   if (environment === 'development') {
@@ -42,6 +47,7 @@ module.exports = function (environment) {
     ENV.APP.LOG_VIEW_LOOKUPS = false;
 
     ENV.APP.rootElement = '#ember-testing';
+    ENV.APP.autoboot = false;
   }
 
   if (environment === 'production') {

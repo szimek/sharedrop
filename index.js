@@ -17,11 +17,16 @@ const cookieSession = require('cookie-session');
 const compression = require('compression');
 const uuid = require('node-uuid');
 const crypto = require('crypto');
-const FirebaseTokenGenerator = require("firebase-token-generator");
-const firebaseTokenGenerator = new FirebaseTokenGenerator(process.env.FIREBASE_SECRET);
 const app = express();
 const secret = process.env.SECRET;
 const base = ['dist'];
+const firebase = require("firebase");
+const config = {
+  apiKey: process.env.API_KEY,
+  authDomain: process.env.AUTH_DOMAIN,
+  databaseURL: process.env.DB_URL,
+  storageBucket: process.env.PROCESS_BUCKET
+}
 
 app.enable('trust proxy');
 
@@ -40,6 +45,7 @@ app.use(cookieSession({
 }));
 app.use(compression());
 
+firebase.initializeApp(config);
 //
 // Web server
 //
@@ -77,12 +83,8 @@ app.get('/room', (req, res) => {
 app.get('/auth', (req, res) => {
   const ip = req.headers['cf-connecting-ip'] || req.ip;
   const uid = uuid.v1();
-  const token = firebaseTokenGenerator.createToken(
-    {uid: uid, id: uid}, // will be available in Firebase security rules as 'auth'
-    {expires: 32503680000} // 01.01.3000 00:00
-  );
 
-  res.json({id: uid, token: token, public_ip: ip});
+  res.json({id: uid, public_ip: ip});
 });
 
 http

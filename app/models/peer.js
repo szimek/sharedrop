@@ -1,13 +1,15 @@
-import Ember from 'ember';
+import Object from '@ember/object';
+import Evented from '@ember/object/evented';
+import { computed, observer } from '@ember/object';
 
-export default Ember.Object.extend(Ember.Evented, {
+export default Object.extend(Evented, {
     uuid: null,
     email: null,
     public_ip: null,
     local_ip: null,
 
     init: function () {
-        this.set('peer', Ember.Object.create({
+        this.set('peer', Object.create({
             id: null,
             connection: null,
             // State of data channel connection. Possible states:
@@ -17,7 +19,7 @@ export default Ember.Object.extend(Ember.Evented, {
             state: 'disconnected'
         }));
 
-        this.set('transfer', Ember.Object.create({
+        this.set('transfer', Object.create({
             file: null,
             info: null,
             sendingProgress: 0,
@@ -27,21 +29,21 @@ export default Ember.Object.extend(Ember.Evented, {
         this._super();
     },
 
-    label: function () {
+    label: computed('email', 'local_ip', function () {
         return this.get('email') || this.get('local_ip');
-    }.property('email', 'local_ip'),
+    }),
 
-    labelWithPublicIp: function () {
+    labelWithPublicIp: computed('email', 'public_ip', 'local_ip', function () {
         return this.get('email') || this.get('public_ip') + '/' + this.get('local_ip');
-    }.property('email', 'public_ip', 'local_ip'),
+    }),
 
-    avatarUrl: function () {
+    avatarUrl: computed('email', function () {
         var email = this.get('email'),
             path;
 
         path = email ? this.MD5(email.trim().toLowerCase()) + '.jpg?s=128' : '?d=mm&s=128';
         return 'https://www.gravatar.com/avatar/' + path;
-    }.property('email'),
+    }),
 
     /* jshint ignore:start */
     MD5: function (s) {
@@ -64,12 +66,12 @@ export default Ember.Object.extend(Ember.Evented, {
     // - multiple_files
     errorCode: null,
 
-    stateChanged: function () {
+    stateChanged: observer('state', function () {
         console.log('Peer:\t State has changed: ', this.get('state'));
 
         // Automatically clear error code if transitioning to a non-error state
         if (this.get('state') !== 'error') {
             this.set('errorCode', null);
         }
-    }.observes('state').on('init')
+    })
 });

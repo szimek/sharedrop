@@ -1,8 +1,9 @@
-import Ember from 'ember';
+import Component from '@ember/component';
+import { computed } from '@ember/object';
 
-const equal = Ember.computed.equal;
+const { equal } = computed;
 
-export default Ember.Component.extend({
+export default Component.extend({
     classNames: ['peer'],
     classNameBindings: ['peer.peer.state'],
 
@@ -17,7 +18,7 @@ export default Ember.Component.extend({
     hasDeclinedFileTransfer: equal('peer.state', 'declined_file_transfer'),
     hasError: equal('peer.state', 'error'),
 
-    filename: function () {
+    filename: computed('peer.transfer.{file,info}', function () {
         const file = this.get('peer.transfer.file');
         const info = this.get('peer.transfer.info');
 
@@ -25,7 +26,7 @@ export default Ember.Component.extend({
         if (info) { return info.name; }
 
         return null;
-    }.property('peer.transfer.file', 'peer.transfer.info'),
+    }),
 
     actions: {
         // TODO: rename to something more meaningful (e.g. askIfWantToSendFile)
@@ -96,17 +97,17 @@ export default Ember.Component.extend({
         webrtc.sendFileResponse(connection, response);
     },
 
-    errorTemplateName: function () {
+    errorTemplateName: computed('peer.errorCode', function () {
         const errorCode = this.get('peer.errorCode');
 
         return errorCode ? 'errors/popovers/' + errorCode : null;
-    }.property('peer.errorCode'),
+    }),
 
-    label: function () {
+    label: computed('hasCustomRoomName', 'peer.{label,labelWithPublicIp}',function () {
         if (this.get('hasCustomRoomName')) {
             return this.get('peer.labelWithPublicIp');
         } else {
             return this.get('peer.label');
         }
-    }.property('hasCustomRoomName', 'peer.label', 'peer.labelWithPublicIp')
+    })
 });

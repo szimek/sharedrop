@@ -1,9 +1,9 @@
-import Ember from 'ember';
+import Component from '@ember/component';
 
-export default Ember.Component.extend({
+export default Component.extend({
     actions: {
         close: function () {
-            return this.sendAction();
+            return this.get('closeModal')();
         }
     }
 });

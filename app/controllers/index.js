@@ -1,10 +1,14 @@
-import Ember from 'ember';
 import WebRTC from '../services/web-rtc';
 import Peer from '../models/peer';
+import Controller from '@ember/controller';
+import { inject } from '@ember/controller';
+import { alias } from '@ember/object/computed';
+import $ from 'jquery';
+import { observer } from '@ember/object';
 
-export default Ember.Controller.extend({
-    application: Ember.inject.controller('application'),
-    you: Ember.computed.alias('application.you'),
+export default Controller.extend({
+    application: inject('application'),
+    you: alias('application.you'),
     room: null,
     webrtc: null,
 
@@ -65,7 +69,7 @@ export default Ember.Controller.extend({
             delete data.peer;
             // Firebase doesn't return keys with null values,
             // so we have to add them back.
-            peer.setProperties(Ember.$.extend({}, defaults, data));
+            peer.setProperties($.extend({}, defaults, data));
             peer.get('peer').setProperties(peerAttrs);
         }
     },
@@ -253,8 +257,8 @@ export default Ember.Controller.extend({
                 grep(offer.sdp);
                 rtc.setLocalDescription(offer);
             },
-            function (error) {
-                console.warn("Fetching local IP failed", error);
+            function (/*error*/) {
+                //console.warn("Fetching local IP failed", error);
             }
         );
 
@@ -288,7 +292,7 @@ export default Ember.Controller.extend({
     },
 
     // Broadcast some of user's property changes to other peers
-    userEmailDidChange: function () {
+    userEmailDidChange: observer('you.email', function () {
         var email = this.get('you.email'),
             room  = this.get('room');
 
@@ -296,9 +300,9 @@ export default Ember.Controller.extend({
             console.log('Broadcasting user\'s email: ', email);
             room.update({email: email});
         }
-    }.observes('you.email'),
+    }),
 
-    userLocalIPDidChange: function () {
+    userLocalIPDidChange: observer('you.local.ip', function () {
         var addr = this.get('you.local_ip'),
             room  = this.get('room');
 
@@ -306,5 +310,5 @@ export default Ember.Controller.extend({
             console.log('Broadcasting user\'s local IP: ', addr);
             room.update({local_ip: addr});
         }
-    }.observes('you.local_ip')
+    })
 });

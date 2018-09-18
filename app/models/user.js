@@ -1,5 +1,5 @@
-import Ember from "ember";
 import Peer from "./peer";
+import { computed, observer } from '@ember/object';
 
 export default Peer.extend({
     init() {
@@ -7,7 +7,7 @@ export default Peer.extend({
         this._super();
     },
 
-    local_ip: Ember.computed("local_ips.[]", {
+    local_ip: computed("local_ips.[]", {
         get: function () {
             const ips = this.get("local_ips");
             const storedIp = localStorage.getItem("local_ip");
@@ -30,7 +30,7 @@ export default Peer.extend({
         }
     }),
 
-    label: function () {
+    label: computed('email', 'local_ip', function () {
         var email = this.get("email"),
             local_ip = this.get("local_ip"),
             label;
@@ -46,9 +46,9 @@ export default Peer.extend({
         }
 
         return label;
-    }.property("email", "local_ip"),
+    }),
 
-    labelWithPublicIp: function () {
+    labelWithPublicIp: computed("email", "public_ip", "local_ip", function () {
         var email = this.get("email"),
             public_ip = this.get("public_ip"),
             local_ip = this.get("local_ip"),
@@ -65,7 +65,7 @@ export default Peer.extend({
         }
 
         return label;
-    }.property("email", "public_ip", "local_ip"),
+    }),
 
     serialize: function () {
         var data = {
@@ -86,7 +86,7 @@ export default Peer.extend({
 
     // Make user"s email available after page reload,
     // by storing it in local storage.
-    userEmailDidChange: function () {
+    userEmailDidChange: observer('email', function () {
         var email = this.get("email");
 
         if (email) {
@@ -94,5 +94,5 @@ export default Peer.extend({
         } else {
             localStorage.removeItem("email");
         }
-    }.observes("email")
+    })
 });
