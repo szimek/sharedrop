@@ -14,7 +14,7 @@
   },
   "scripts": {
     "build": "ember build",
-    "dev": "nf --procfile=Procfile.dev start",
+    "develop": "nf --procfile=Procfile.dev start",
     "start": "ember server",
     "test": "ember test",
     "heroku-postbuild": "ember build --environment production"

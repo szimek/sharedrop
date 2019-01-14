@@ -28,11 +28,11 @@ export default Ember.Object.extend(Ember.Evented, {
     },
 
     label: function () {
-        return this.get('email') || this.get('local_ip');
+        return this.get('email') || this.get('local_ip') || '0.0.0.0';
     }.property('email', 'local_ip'),
 
     labelWithPublicIp: function () {
-        return this.get('email') || this.get('public_ip') + '/' + this.get('local_ip');
+        return this.get('email') || (this.get('public_ip') + '/' + (this.get('local_ip') || '0.0.0.0'));
     }.property('email', 'public_ip', 'local_ip'),
 
     avatarUrl: function () {

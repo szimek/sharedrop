@@ -248,15 +248,15 @@ export default Ember.Controller.extend({
             }
         };
 
-        rtc.createOffer(
-            function (offer) {
-                grep(offer.sdp);
-                rtc.setLocalDescription(offer);
-            },
-            function (error) {
-                console.warn("Fetching local IP failed", error);
-            }
-        );
+        rtc
+          .createOffer({})
+          .then(function (offer) {
+            grep(offer.sdp);
+            rtc.setLocalDescription(offer);
+          })
+          .catch(function (error) {
+            console.warn("Fetching local IP failed", error);
+          });
 
         function grep(sdpOrCandidate) {
             var lines = sdpOrCandidate.split('\r\n'),

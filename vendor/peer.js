@@ -166,9 +166,7 @@ exports.RTCPeerConnection = window.mozRTCPeerConnection || window.webkitRTCPeerC
 exports.RTCIceCandidate = window.mozRTCIceCandidate || window.RTCIceCandidate;
 var defaultConfig = {
     'iceServers': [{
-        'url': 'stun:stun.l.google.com:19302'
-    }, {
-        'urls': 'stun:stun.l.google.com:19302'
+        'urls': 'stun:stun.l.google.com:19302',
     }]
 };
 
@@ -279,6 +277,7 @@ var util = {
         dc.binaryType = 'blob';
         binaryBlob = true;
       } catch (e) {
+        console.log(e);
       }
     }
 
@@ -772,6 +771,7 @@ DataConnection.prototype._configureDataChannel = function() {
 
   this._dc.onclose = function (e) {
     util.log('DataChannel closed for:', self.peer);
+    util.log(e);
     self.close();
   };
 };
@@ -1187,38 +1187,44 @@ Negotiator._makeOffer = function(connection) {
       src = connection.provider.id,
       dst = connection.peer;
 
-  pc.createOffer(function(offer) {
-    util.log('Created offer.');
+  pc
+    .createOffer(connection.options.constraints || {})
+    .then(function (offer) {
+      util.log('Created offer.');
 
-    pc.setLocalDescription(offer, function() {
-      // For some reason Firefox requires toJSON call
-      var o = offer;
-      offer = 'toJSON' in o ? o.toJSON() : o;
+      pc
+        .setLocalDescription(offer)
+        .then(function () {
+        // For some reason Firefox requires toJSON call
+        var o = offer;
+        offer = 'toJSON' in o ? o.toJSON() : o;
 
-      util.log('Set localDescription: offer', 'for:', dst);
-      connection.provider._messagesRef.child(dst).push({
-        type: 'OFFER',
-        payload: {
-          sdp: offer,
-          type: connection.type,
-          label: connection.label,
-          connectionId: connection.id,
-          reliable: connection.reliable,
-          serialization: connection.serialization,
-          metadata: connection.metadata,
-          browser: util.browser
-        },
-        src: src,
-        dst: dst
+        util.log('Set localDescription: offer', 'for:', dst);
+        connection.provider._messagesRef.child(dst).push({
+          type: 'OFFER',
+          payload: {
+            sdp: offer,
+            type: connection.type,
+            label: connection.label,
+            connectionId: connection.id,
+            reliable: connection.reliable,
+            serialization: connection.serialization,
+            metadata: connection.metadata,
+            browser: util.browser
+          },
+          src: src,
+          dst: dst
+        });
+      })
+      .catch(function (err) {
+        connection.provider.emit('error', err);
+        util.log('Failed to setLocalDescription, ', err);
       });
-    }, function(err) {
-      connection.provider.emit('error', err);
-      util.log('Failed to setLocalDescription, ', err);
-    });
-  }, function(err) {
+  })
+  .catch(function (err) {
     connection.provider.emit('error', err);
     util.log('Failed to createOffer, ', err);
-  }, connection.options.constraints || {});
+  });
 };
 
 Negotiator._makeAnswer = function(connection) {
@@ -1227,34 +1233,40 @@ Negotiator._makeAnswer = function(connection) {
       src = provider.id,
       dst = connection.peer;
 
-  pc.createAnswer(function(answer) {
-    util.log('Created answer.');
+  pc
+    .createAnswer()
+    .then(function(answer) {
+      util.log('Created answer.');
 
-    pc.setLocalDescription(answer, function() {
-      // For some reason Firefox requires toJSON call
-      var a = answer;
-      answer = 'toJSON' in a ? a.toJSON() : a;
+      pc
+        .setLocalDescription(answer)
+        .then(function() {
+        // For some reason Firefox requires toJSON call
+        var a = answer;
+        answer = 'toJSON' in a ? a.toJSON() : a;
 
-      util.log('Set localDescription: answer', 'for:', dst);
-      provider._messagesRef.child(dst).push({
-        type: 'ANSWER',
-        payload: {
-          sdp: answer,
-          type: connection.type,
-          connectionId: connection.id,
-          browser: util.browser
-        },
-        src: src,
-        dst: dst
+        util.log('Set localDescription: answer', 'for:', dst);
+        provider._messagesRef.child(dst).push({
+          type: 'ANSWER',
+          payload: {
+            sdp: answer,
+            type: connection.type,
+            connectionId: connection.id,
+            browser: util.browser
+          },
+          src: src,
+          dst: dst
+        });
+      })
+      .catch(function(err) {
+        connection.provider.emit('error', err);
+        util.log('Failed to setLocalDescription, ', err);
       });
-    }, function(err) {
+    })
+    .catch(function(err) {
       connection.provider.emit('error', err);
-      util.log('Failed to setLocalDescription, ', err);
+      util.log('Failed to create answer, ', err);
     });
-  }, function(err) {
-    connection.provider.emit('error', err);
-    util.log('Failed to create answer, ', err);
-  });
 };
 
 /** Handle an SDP. */
@@ -1263,16 +1275,19 @@ Negotiator.handleSDP = function(type, connection, sdp) {
   var pc = connection.pc;
 
   util.log('Setting remote description', sdp);
-  pc.setRemoteDescription(sdp, function() {
-    util.log('Set remoteDescription:', type, 'for:', connection.peer);
+  pc
+    .setRemoteDescription(sdp)
+    .then(function() {
+      util.log('Set remoteDescription:', type, 'for:', connection.peer);
 
-    if (type === 'OFFER') {
-      Negotiator._makeAnswer(connection);
-    }
-  }, function(err) {
-    connection.provider.emit('error', err);
-    util.log('Failed to setRemoteDescription, ', err);
-  });
+      if (type === 'OFFER') {
+        Negotiator._makeAnswer(connection);
+      }
+    })
+    .catch(function(err) {
+      connection.provider.emit('error', err);
+      util.log('Failed to setRemoteDescription, ', err);
+    });
 };
 
 /** Handle a candidate. */
