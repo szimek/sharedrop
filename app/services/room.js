@@ -1,4 +1,4 @@
-import Ember from 'ember';
+import $ from 'jquery';
 
 // TODO: use Ember.Object.extend()
 var Room = function (name, firebaseRef) {
@@ -33,7 +33,7 @@ Room.prototype.join = function (user) {
                     console.log('Firebase: User added to the room');
                     // Create a copy of user data,
                     // so that deleting properties won't affect the original variable
-                    Ember.$.publish('connected.room', Ember.$.extend(true, {}, user));
+                    $.publish('connected.room', $.extend(true, {}, user));
                 }
             });
 
@@ -41,29 +41,29 @@ Room.prototype.join = function (user) {
                 var user = snapshot.val();
 
                 console.log('Room:\t user_added: ', user);
-                Ember.$.publish('user_added.room', user);
+                $.publish('user_added.room', user);
             });
 
             self._usersRef.on('child_removed', function (snapshot) {
                 var user = snapshot.val();
 
                 console.log('Room:\t user_removed: ', user);
-                Ember.$.publish('user_removed.room', user);
+                $.publish('user_removed.room', user);
             }, function () {
                 // Handle case when the whole room is removed from Firebase
-                Ember.$.publish('disconnected.room');
+                $.publish('disconnected.room');
             });
 
             self._usersRef.on('child_changed', function (snapshot) {
                 var user = snapshot.val();
 
                 console.log('Room:\t user_changed: ', user);
-                Ember.$.publish('user_changed.room', user);
+                $.publish('user_changed.room', user);
             });
         } else {
             console.log('Firebase: Disconnected');
 
-            Ember.$.publish('disconnected.room');
+            $.publish('disconnected.room');
             self._usersRef.off();
         }
     });

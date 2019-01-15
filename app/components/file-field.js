@@ -1,6 +1,6 @@
-import Ember from 'ember';
+import TextField from '@ember/component/text-field';
 
-export default Ember.TextField.extend({
+export default TextField.extend({
     type: 'file',
     classNames: ['invisible'],
 
@@ -13,7 +13,7 @@ export default Ember.TextField.extend({
         const files = input.files;
         const file = files[0];
 
-        this.sendAction('action', { file: file });
+        this.onChange({file: file});
         this.reset();
     },
 

@@ -2,7 +2,7 @@
 // - provide TURN server config once it's possible to create rooms with custom names
 // - use Ember.Object.extend()
 
-import Ember from 'ember';
+import $ from 'jquery';
 import File from './file';
 
 var WebRTC = function (id, options) {
@@ -13,7 +13,7 @@ var WebRTC = function (id, options) {
         debug: 3
     };
 
-    this.conn = new window.Peer(id, Ember.$.extend(defaults, options));
+    this.conn = new window.Peer(id, $.extend(defaults, options));
 
     this.files = {
         outgoing: {},
@@ -22,16 +22,16 @@ var WebRTC = function (id, options) {
 
     // Listen for incoming connections
     this.conn.on('connection', function (connection) {
-        Ember.$.publish('incoming_peer_connection.p2p', {connection: connection});
+        $.publish('incoming_peer_connection.p2p', {connection: connection});
 
         connection.on('open', function () {
             console.log('Peer:\t Data channel connection opened: ', connection);
-            Ember.$.publish('incoming_dc_connection.p2p', {connection: connection});
+            $.publish('incoming_dc_connection.p2p', {connection: connection});
         });
 
         connection.on('error', function (error) {
             console.log('Peer:\t Data channel connection error', error);
-            Ember.$.publish('incoming_dc_connection_error.p2p', {connection: connection, error: error});
+            $.publish('incoming_dc_connection_error.p2p', {connection: connection, error: error});
         });
 
         this._onConnection(connection);
@@ -58,15 +58,15 @@ WebRTC.prototype.connect = function (id) {
 
     connection.on('open', function () {
         console.log('Peer:\t Data channel connection opened: ', connection);
-        Ember.$.publish('outgoing_dc_connection.p2p', {connection: connection});
+        $.publish('outgoing_dc_connection.p2p', {connection: connection});
     });
 
     connection.on('error', function (error) {
         console.log('Peer:\t Data channel connection error', error);
-        Ember.$.publish('outgoing_dc_connection_error.p2p', {connection: connection, error: error});
+        $.publish('outgoing_dc_connection_error.p2p', {connection: connection, error: error});
     });
 
-    Ember.$.publish('outgoing_peer_connection.p2p', {connection: connection});
+    $.publish('outgoing_peer_connection.p2p', {connection: connection});
     this._onConnection(connection);
 };
 
@@ -87,7 +87,7 @@ WebRTC.prototype._onConnection = function (connection) {
     });
 
     connection.on('close', function () {
-        Ember.$.publish('disconnected.p2p', {connection: connection});
+        $.publish('disconnected.p2p', {connection: connection});
         console.log('Peer:\t P2P connection closed: ', connection);
     });
 };
@@ -117,7 +117,7 @@ WebRTC.prototype._onBinaryData = function (data, connection) {
             if (lastChunkInFile) {
                 file.save();
 
-                Ember.$.publish('file_received.p2p', {
+                $.publish('file_received.p2p', {
                     blob: file,
                     info: info,
                     connection: connection
@@ -136,7 +136,7 @@ WebRTC.prototype._onJSONData = function (data, connection) {
     case 'info':
         var info = data.payload;
 
-        Ember.$.publish('info.p2p', {
+        $.publish('info.p2p', {
             connection: connection,
             info: info
         });
@@ -153,7 +153,7 @@ WebRTC.prototype._onJSONData = function (data, connection) {
         break;
 
     case 'cancel':
-        Ember.$.publish('file_canceled.p2p', {
+        $.publish('file_canceled.p2p', {
             connection: connection
         });
 
@@ -168,7 +168,7 @@ WebRTC.prototype._onJSONData = function (data, connection) {
             delete this.files.outgoing[connection.peer];
         }
 
-        Ember.$.publish('response.p2p', {
+        $.publish('response.p2p', {
             connection: connection,
             response: response
         });
@@ -294,7 +294,7 @@ WebRTC.prototype._sendBlock = function (connection, file, beginChunkNum) {
             }
 
             if (endChunkNum === info.chunksTotal - 1) {
-                Ember.$.publish('file_sent.p2p', {connection: connection});
+                $.publish('file_sent.p2p', {connection: connection});
             }
         }
     };

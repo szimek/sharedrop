@@ -1,7 +1,9 @@
-import Ember from 'ember';
+import Controller from '@ember/controller';
+import $ from 'jquery';
+
 import User from '../models/user';
 
-export default Ember.Controller.extend({
+export default Controller.extend({
     init: function () {
         this._super();
 
@@ -19,7 +21,7 @@ export default Ember.Controller.extend({
 
     actions: {
         redirect: function () {
-            var uuid = Ember.$.uuid(),
+            var uuid = $.uuid(),
                 key = 'show-instructions-for-room-' + uuid;
 
             sessionStorage.setItem(key, 'yup');

@@ -1,11 +1,11 @@
-import Ember from 'ember';
+import TextField from '@ember/component/text-field';
 
-export default Ember.TextField.extend({
+export default TextField.extend({
     classNames: ['room-url'],
 
-    becomeSelected: function () {
-        this.$().focus().select();
-    }.on('didInsertElement'),
+    didInsertElement() {
+      this.$().focus().select();
+    },
 
     copyValueToClipboard: function () {
         if (window.ClipboardEvent) {

@@ -1,8 +1,10 @@
-import Ember from 'ember';
+import Component from '@ember/component';
+import { alias } from '@ember/object/computed';
+import { later } from '@ember/runloop';
+import $ from 'jquery';
+import { Promise } from 'rsvp';
 
-var alias = Ember.computed.alias;
-
-export default Ember.Component.extend({
+export default Component.extend({
     tagName: 'img',
     classNames: ['gravatar'],
     attributeBindings: [
@@ -24,12 +26,12 @@ export default Ember.Component.extend({
         const toggleTransferCompletedClass = () => {
             const klass = 'transfer-completed';
 
-            Ember.run.later(this, function () {
+            later(this, function () {
                 this.$().parent('.avatar')
                 .addClass(klass)
                 .delay(2000)
                 .queue(function () {
-                    Ember.$(this).removeClass(klass).dequeue();
+                    $(this).removeClass(klass).dequeue();
                 });
             }, 250);
         };
@@ -81,11 +83,11 @@ export default Ember.Component.extend({
             if (files.length > 1) {
                 peer.setProperties({
                     state: 'error',
-                    errorCode: 'multiple_files'
+                    errorCode: 'multiple-files'
                 });
             } else {
                 this.isFile(file).then(() => {
-                    this.get('onFileDrop')({file: file});
+                    this.onFileDrop({file: file});
                 });
             }
         }
@@ -104,7 +106,7 @@ export default Ember.Component.extend({
     },
 
     isFile: function (file) {
-        return new Ember.RSVP.Promise(function (resolve, reject) {
+        return new Promise(function (resolve, reject) {
             if (file instanceof window.File) {
                 if (file.size > 1048576) {
                     // It's bigger than 1MB, so we assume it's a file

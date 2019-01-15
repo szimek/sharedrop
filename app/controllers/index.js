@@ -1,10 +1,14 @@
-import Ember from 'ember';
+import Controller, { inject as controller } from '@ember/controller';
+import { observer } from '@ember/object';
+import { alias } from '@ember/object/computed';
+import $ from 'jquery';
+
 import WebRTC from '../services/web-rtc';
 import Peer from '../models/peer';
 
-export default Ember.Controller.extend({
-    application: Ember.inject.controller('application'),
-    you: Ember.computed.alias('application.you'),
+export default Controller.extend({
+    application: controller('application'),
+    you: alias('application.you'),
     room: null,
     webrtc: null,
 
@@ -65,7 +69,7 @@ export default Ember.Controller.extend({
             delete data.peer;
             // Firebase doesn't return keys with null values,
             // so we have to add them back.
-            peer.setProperties(Ember.$.extend({}, defaults, data));
+            peer.setProperties($.extend({}, defaults, data));
             peer.get('peer').setProperties(peerAttrs);
         }
     },
@@ -102,8 +106,18 @@ export default Ember.Controller.extend({
 
         switch (error.type) {
             case 'failed':
-            peer.set('peer.connection', null);
-            break;
+              peer.setProperties({
+                'peer.connection': null,
+                'peer.state': 'disconnected',
+                state: 'error',
+                errorCode: 'connection-failed',
+              });
+              break;
+            case 'disconnected':
+              // TODO: notify both sides
+              break;
+            default:
+              break;
         }
     },
 
@@ -144,8 +158,8 @@ export default Ember.Controller.extend({
             peer.setProperties({
                 'peer.connection': null,
                 'peer.state': 'disconnected',
-                'state': 'error',
-                'errorCode': data.error.type
+                state: 'error',
+                errorCode: 'connection-failed',
             });
             break;
         }
@@ -288,7 +302,7 @@ export default Ember.Controller.extend({
     },
 
     // Broadcast some of user's property changes to other peers
-    userEmailDidChange: function () {
+    userEmailDidChange: observer('you.email', function () {
         var email = this.get('you.email'),
             room  = this.get('room');
 
@@ -296,9 +310,9 @@ export default Ember.Controller.extend({
             console.log('Broadcasting user\'s email: ', email);
             room.update({email: email});
         }
-    }.observes('you.email'),
+    }),
 
-    userLocalIPDidChange: function () {
+    userLocalIPDidChange: observer('you.local_ip', function () {
         var addr = this.get('you.local_ip'),
             room  = this.get('room');
 
@@ -306,5 +320,5 @@ export default Ember.Controller.extend({
             console.log('Broadcasting user\'s local IP: ', addr);
             room.update({local_ip: addr});
         }
-    }.observes('you.local_ip')
+    }),
 });

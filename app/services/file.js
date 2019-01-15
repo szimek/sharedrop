@@ -1,4 +1,4 @@
-import Ember from 'ember';
+import { Promise } from 'rsvp';
 
 var File = function (options) {
     var self = this;
@@ -10,7 +10,7 @@ var File = function (options) {
 
     this._reset();
 
-    return new Ember.RSVP.Promise(function (resolve, reject) {
+    return new Promise(function (resolve, reject) {
         var requestFileSystem = window.requestFileSystem || window.webkitRequestFileSystem;
 
         requestFileSystem(
@@ -29,7 +29,7 @@ var File = function (options) {
 };
 
 File.removeAll = function () {
-    return new Ember.RSVP.Promise(function (resolve, reject) {
+    return new Promise(function (resolve, reject) {
         var filer = new window.Filer();
 
         filer.init({persistent: false}, function () {
@@ -59,7 +59,7 @@ File.prototype.append = function (data) {
             create: this.create
         };
 
-    return new Ember.RSVP.Promise(function (resolve, reject) {
+    return new Promise(function (resolve, reject) {
         self.filesystem.root.getFile(self.localName, options, function (fileEntry) {
             if (self.create) {
                 self.create = false;
@@ -135,7 +135,7 @@ File.prototype.errorHandler = function (error) {
 File.prototype.remove = function () {
     var self = this;
 
-    return new Ember.RSVP.Promise(function (resolve, reject) {
+    return new Promise(function (resolve, reject) {
         self.filesystem.root.getFile(self.localName, {create: false}, function (fileEntry) {
             fileEntry.remove(function () {
                 console.debug('File: Removed file: ' + self.localName);

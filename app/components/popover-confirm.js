@@ -1,10 +1,11 @@
-import Ember from 'ember';
+import Component from '@ember/component';
+import { computed } from '@ember/object';
 
-export default Ember.Component.extend({
+export default Component.extend({
     classNames: ['popover-confirm'],
     isVisible: false,
 
-    iconClass: function () {
+    iconClass: computed('filename', function () {
         const filename = this.get('filename');
 
         if (filename) {
@@ -16,15 +17,15 @@ export default Ember.Component.extend({
                 return 'glyphicon-' + extension.toLowerCase();
             }
         }
-    }.property('filename'),
+    }),
 
     actions: {
         confirm: function () {
-            this.sendAction('confirm');
+            this.onConfirm();
         },
 
         cancel: function() {
-            this.sendAction('cancel');
+            this.onCancel();
         }
     }
 });

@@ -1,6 +1,10 @@
-import Ember from 'ember';
+import Route from '@ember/routing/route';
 
-export default Ember.Route.extend({
+export default Route.extend({
+    setupController(controller) {
+        controller.set('currentRoute', this);
+    },
+
     actions: {
         openModal: function (modalName) {
             return this.render(modalName, {

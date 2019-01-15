@@ -1,6 +1,8 @@
 /* jshint -W030 */
-import Ember from 'ember';
+import $ from 'jquery';
+import { Promise } from 'rsvp';
 import config from 'share-drop/config/environment';
+
 import FileSystem from '../services/file';
 import Analytics from '../services/analytics';
 
@@ -19,7 +21,7 @@ export function initialize(application) {
     });
 
     function checkWebRTCSupport() {
-        return new Ember.RSVP.Promise(function (resolve, reject) {
+        return new Promise(function (resolve, reject) {
             // window.util is a part of PeerJS library
             if (window.util.supports.sctp) {
                 resolve();
@@ -30,7 +32,7 @@ export function initialize(application) {
     }
 
     function clearFileSystem() {
-        return new Ember.RSVP.Promise(function (resolve, reject) {
+        return new Promise(function (resolve, reject) {
             // TODO: change File into a service and require it here
             FileSystem.removeAll()
             .then(function () {
@@ -43,8 +45,8 @@ export function initialize(application) {
     }
 
     function authenticateToFirebase() {
-        return new Ember.RSVP.Promise(function (resolve, reject) {
-            var xhr = Ember.$.getJSON('/auth');
+        return new Promise(function (resolve, reject) {
+            var xhr = $.getJSON('/auth');
             xhr.then(function (data) {
                 var ref = new window.Firebase(config.FIREBASE_URL);
                 application.ref = ref;
@@ -60,7 +62,7 @@ export function initialize(application) {
 
     // TODO: move it to a separate initializer
     function trackSizeOfReceivedFiles() {
-        Ember.$.subscribe('file_received.p2p', function (event, data) {
+        $.subscribe('file_received.p2p', function (event, data) {
             Analytics.trackEvent('file', 'received', 'size', Math.round(data.info.size / 1000));
         });
     }

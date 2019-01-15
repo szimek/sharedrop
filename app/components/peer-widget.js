@@ -1,8 +1,8 @@
-import Ember from 'ember';
+import Component from '@ember/component';
+import { computed } from '@ember/object';
+import { equal } from '@ember/object/computed';
 
-const equal = Ember.computed.equal;
-
-export default Ember.Component.extend({
+export default Component.extend({
     classNames: ['peer'],
     classNameBindings: ['peer.peer.state'],
 
@@ -11,13 +11,15 @@ export default Ember.Component.extend({
     webrtc: null, // TODO inject webrtc as a service
 
     isIdle: equal('peer.state', 'idle'),
+    hasSelectedFile: equal('peer.state', 'has_selected_file'),
+    isSendingFileInfo: equal('peer.state', 'sending_file_info'),
     isAwaitingFileInfo: equal('peer.state', 'awaiting_file_info'),
     isAwaitingResponse: equal('peer.state', 'awaiting_response'),
     hasReceivedFileInfo: equal('peer.state', 'received_file_info'),
     hasDeclinedFileTransfer: equal('peer.state', 'declined_file_transfer'),
     hasError: equal('peer.state', 'error'),
 
-    filename: function () {
+    filename: computed('peer.transfer.{file,info}', function () {
         const file = this.get('peer.transfer.file');
         const info = this.get('peer.transfer.info');
 
@@ -25,7 +27,7 @@ export default Ember.Component.extend({
         if (info) { return info.name; }
 
         return null;
-    }.property('peer.transfer.file', 'peer.transfer.info'),
+    }),
 
     actions: {
         // TODO: rename to something more meaningful (e.g. askIfWantToSendFile)
@@ -36,7 +38,7 @@ export default Ember.Component.extend({
             // Cache the file, so that it's available
             // when the response from the recipient comes in
             peer.set('transfer.file', file);
-            peer.set('state', 'awaiting_file_info');
+            peer.set('state', 'has_selected_file');
         },
 
         sendFileTransferInquiry: function () {
@@ -44,6 +46,7 @@ export default Ember.Component.extend({
             const peer = this.get('peer');
 
             webrtc.connect(peer.get('peer.id'));
+            peer.set('state', 'establishing_connection');
         },
 
         cancelFileTransfer: function () {
@@ -96,17 +99,17 @@ export default Ember.Component.extend({
         webrtc.sendFileResponse(connection, response);
     },
 
-    errorTemplateName: function () {
+    errorTemplateName: computed('peer.errorCode', function () {
         const errorCode = this.get('peer.errorCode');
 
         return errorCode ? 'errors/popovers/' + errorCode : null;
-    }.property('peer.errorCode'),
+    }),
 
-    label: function () {
+    label: computed('hasCustomRoomName', 'peer.{label,labelWithPublicIp}', function () {
         if (this.get('hasCustomRoomName')) {
             return this.get('peer.labelWithPublicIp');
         } else {
             return this.get('peer.label');
         }
-    }.property('hasCustomRoomName', 'peer.label', 'peer.labelWithPublicIp')
+    }),
 });
