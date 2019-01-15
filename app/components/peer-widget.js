@@ -3,113 +3,121 @@ import { computed } from '@ember/object';
 import { equal } from '@ember/object/computed';
 
 export default Component.extend({
-    classNames: ['peer'],
-    classNameBindings: ['peer.peer.state'],
+  classNames: ['peer'],
+  classNameBindings: ['peer.peer.state'],
 
-    peer: null,
-    hasCustomRoomName: false,
-    webrtc: null, // TODO inject webrtc as a service
+  peer: null,
+  hasCustomRoomName: false,
+  webrtc: null, // TODO inject webrtc as a service
 
-    isIdle: equal('peer.state', 'idle'),
-    hasSelectedFile: equal('peer.state', 'has_selected_file'),
-    isSendingFileInfo: equal('peer.state', 'sending_file_info'),
-    isAwaitingFileInfo: equal('peer.state', 'awaiting_file_info'),
-    isAwaitingResponse: equal('peer.state', 'awaiting_response'),
-    hasReceivedFileInfo: equal('peer.state', 'received_file_info'),
-    hasDeclinedFileTransfer: equal('peer.state', 'declined_file_transfer'),
-    hasError: equal('peer.state', 'error'),
+  isIdle: equal('peer.state', 'idle'),
+  hasSelectedFile: equal('peer.state', 'has_selected_file'),
+  isSendingFileInfo: equal('peer.state', 'sending_file_info'),
+  isAwaitingFileInfo: equal('peer.state', 'awaiting_file_info'),
+  isAwaitingResponse: equal('peer.state', 'awaiting_response'),
+  hasReceivedFileInfo: equal('peer.state', 'received_file_info'),
+  hasDeclinedFileTransfer: equal('peer.state', 'declined_file_transfer'),
+  hasError: equal('peer.state', 'error'),
 
-    filename: computed('peer.transfer.{file,info}', function () {
-        const file = this.get('peer.transfer.file');
-        const info = this.get('peer.transfer.info');
+  filename: computed('peer.transfer.{file,info}', function() {
+    const file = this.get('peer.transfer.file');
+    const info = this.get('peer.transfer.info');
 
-        if (file) { return file.name; }
-        if (info) { return info.name; }
+    if (file) {
+      return file.name;
+    }
+    if (info) {
+      return info.name;
+    }
 
-        return null;
-    }),
+    return null;
+  }),
 
-    actions: {
-        // TODO: rename to something more meaningful (e.g. askIfWantToSendFile)
-        uploadFile: function (data) {
-            const peer = this.get('peer');
-            const file = data.file;
+  actions: {
+    // TODO: rename to something more meaningful (e.g. askIfWantToSendFile)
+    uploadFile: function(data) {
+      const peer = this.get('peer');
+      const file = data.file;
 
-            // Cache the file, so that it's available
-            // when the response from the recipient comes in
-            peer.set('transfer.file', file);
-            peer.set('state', 'has_selected_file');
-        },
-
-        sendFileTransferInquiry: function () {
-            const webrtc = this.get('webrtc');
-            const peer = this.get('peer');
-
-            webrtc.connect(peer.get('peer.id'));
-            peer.set('state', 'establishing_connection');
-        },
-
-        cancelFileTransfer: function () {
-            this._cancelFileTransfer();
-        },
-
-        abortFileTransfer: function () {
-            this._cancelFileTransfer();
-
-            const webrtc = this.get('webrtc');
-            const connection = this.get('peer.peer.connection');
-
-            webrtc.sendCancelRequest(connection);
-        },
-
-        acceptFileTransfer: function () {
-            const peer = this.get('peer');
-
-            this._sendFileTransferResponse(true);
-
-            peer.get('peer.connection').on('receiving_progress', function (progress) {
-                peer.set('transfer.receivingProgress', progress);
-            });
-            peer.set('state', 'sending_file_data');
-        },
-
-        rejectFileTransfer: function () {
-            const peer = this.get('peer');
-
-            this._sendFileTransferResponse(false);
-            peer.set('transfer.info', null);
-            peer.set('state', 'idle');
-        }
+      // Cache the file, so that it's available
+      // when the response from the recipient comes in
+      peer.set('transfer.file', file);
+      peer.set('state', 'has_selected_file');
     },
 
-    _cancelFileTransfer: function () {
-        const peer = this.get('peer');
+    sendFileTransferInquiry: function() {
+      const webrtc = this.get('webrtc');
+      const peer = this.get('peer');
 
-        peer.setProperties({
-            'transfer.file': null,
-            'state': 'idle'
-        });
+      webrtc.connect(peer.get('peer.id'));
+      peer.set('state', 'establishing_connection');
     },
 
-    _sendFileTransferResponse: function (response) {
-        const webrtc = this.get('webrtc');
-        const peer = this.get('peer');
-        const connection = peer.get('peer.connection');
-
-        webrtc.sendFileResponse(connection, response);
+    cancelFileTransfer: function() {
+      this._cancelFileTransfer();
     },
 
-    errorTemplateName: computed('peer.errorCode', function () {
-        const errorCode = this.get('peer.errorCode');
+    abortFileTransfer: function() {
+      this._cancelFileTransfer();
 
-        return errorCode ? 'errors/popovers/' + errorCode : null;
-    }),
+      const webrtc = this.get('webrtc');
+      const connection = this.get('peer.peer.connection');
 
-    label: computed('hasCustomRoomName', 'peer.{label,labelWithPublicIp}', function () {
-        if (this.get('hasCustomRoomName')) {
-            return this.get('peer.labelWithPublicIp');
-        } else {
-            return this.get('peer.label');
-        }
-    }),
+      webrtc.sendCancelRequest(connection);
+    },
+
+    acceptFileTransfer: function() {
+      const peer = this.get('peer');
+
+      this._sendFileTransferResponse(true);
+
+      peer.get('peer.connection').on('receiving_progress', function(progress) {
+        peer.set('transfer.receivingProgress', progress);
+      });
+      peer.set('state', 'sending_file_data');
+    },
+
+    rejectFileTransfer: function() {
+      const peer = this.get('peer');
+
+      this._sendFileTransferResponse(false);
+      peer.set('transfer.info', null);
+      peer.set('state', 'idle');
+    },
+  },
+
+  _cancelFileTransfer: function() {
+    const peer = this.get('peer');
+
+    peer.setProperties({
+      'transfer.file': null,
+      state: 'idle',
+    });
+  },
+
+  _sendFileTransferResponse: function(response) {
+    const webrtc = this.get('webrtc');
+    const peer = this.get('peer');
+    const connection = peer.get('peer.connection');
+
+    webrtc.sendFileResponse(connection, response);
+  },
+
+  errorTemplateName: computed('peer.errorCode', function() {
+    const errorCode = this.get('peer.errorCode');
+
+    return errorCode ? 'errors/popovers/' + errorCode : null;
+  }),
+
+  label: computed(
+    'hasCustomRoomName',
+    'peer.{label,labelWithPublicIp}',
+    function() {
+      if (this.get('hasCustomRoomName')) {
+        return this.get('peer.labelWithPublicIp');
+      } else {
+        return this.get('peer.label');
+      }
+    }
+  ),
 });
