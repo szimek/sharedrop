@@ -40,13 +40,17 @@ export default Component.extend({
     );
   },
 
-  didInsertElement(...args) {
+  init(...args) {
     this._super(args);
-    const peer = this.get('peer');
 
     this.toggleTransferCompletedClass = this.toggleTransferCompletedClass.bind(
       this
     );
+  },
+
+  didInsertElement(...args) {
+    this._super(args);
+    const peer = this.get('peer');
 
     peer.on('didReceiveFile', this.toggleTransferCompletedClass);
     peer.on('didSendFile', this.toggleTransferCompletedClass);
