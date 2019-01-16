@@ -4160,6 +4160,13 @@ ember-popper@^0.9.0:
     fastboot-transform "^0.1.0"
     popper.js "^1.14.1"
 
+ember-qrcode-shim@^0.4.0:
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/ember-qrcode-shim/-/ember-qrcode-shim-0.4.0.tgz#bc4c61e8c33c7e731e98d68780a772d59eec4fc6"
+  integrity sha512-tmdxr7mqfeG5vK6Lb553qmFlhnZipZyGBPQIBh5TbRQozPH5ATVS7zq77eV//d9y3997R7hGIYTNbsGZ718lOw==
+  dependencies:
+    ember-cli-babel "^7.1.2"
+
 ember-qunit@^3.4.1:
   version "3.5.3"
   resolved "https://registry.yarnpkg.com/ember-qunit/-/ember-qunit-3.5.3.tgz#bfd0bff8298c78c77e870cca43fe0826e78a0d09"

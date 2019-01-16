@@ -3,11 +3,20 @@
   <h3>Share files between devices in different networks</h3>
 
   <p>
-    Copy provided address and send it to the other person.
+    Copy provided address and send it to the other person...
   </p>
 
   <p>
     {{room-url value=currentUrl readonly="readonly" style="display: block; margin: auto;"}}
+  </p>
+
+  <p>
+    Or you can scan it on the other device.
+  </p>
+
+
+  <p class="qr-code">
+    {{qr-code text=currentUrl}}
   </p>
 
   <p>
