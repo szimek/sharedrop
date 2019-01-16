@@ -1,7 +1,7 @@
 ---
 language: node_js
 node_js:
-  - "8"
+  - '10'
 
 sudo: false
 dist: trusty
@@ -25,5 +25,6 @@ install:
   - yarn install --non-interactive
 
 script:
+  - yarn lint:hbs
   - yarn lint:js
   - yarn test

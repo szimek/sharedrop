@@ -8,7 +8,6 @@ module.exports = {
   extends: ['airbnb-base', 'plugin:ember/recommended', 'prettier'],
   env: {
     browser: true,
-    node: true,
   },
   rules: {
     'func-names': 'off',

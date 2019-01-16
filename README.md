@@ -9,7 +9,8 @@ The main difference between ShareDrop and AirDrop is that ShareDrop requires Int
 ### Supported browsers
 *   Chrome (desktop and Android) 33+
 *   Opera (desktop and Android) 20+
-*   Firefox (desktop and Android) 28+ (though we suggest using Chrome or Opera for transferring larger files)
+*   Firefox (desktop and Android) 28+
+*   Safari (desktop) 12+
 
 ### How to set it up for local development
 1.  Setup Firebase:

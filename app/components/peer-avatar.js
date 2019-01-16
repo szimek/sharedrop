@@ -20,39 +20,44 @@ export default Component.extend({
   'data-sending-progress': alias('peer.transfer.sendingProgress'),
   'data-receiving-progress': alias('peer.transfer.receivingProgress'),
 
+  toggleTransferCompletedClass() {
+    const className = 'transfer-completed';
+
+    later(
+      this,
+      function toggleClass() {
+        this.$()
+          .parent('.avatar')
+          .addClass(className)
+          .delay(2000)
+          .queue(function removeClass() {
+            $(this)
+              .removeClass(className)
+              .dequeue();
+          });
+      },
+      250
+    );
+  },
+
   didInsertElement(...args) {
     this._super(args);
     const peer = this.get('peer');
-    const toggleTransferCompletedClass = () => {
-      const klass = 'transfer-completed';
 
-      later(
-        this,
-        function toggleClass() {
-          this.$()
-            .parent('.avatar')
-            .addClass(klass)
-            .delay(2000)
-            .queue(function removeClass() {
-              $(this)
-                .removeClass(klass)
-                .dequeue();
-            });
-        },
-        250
-      );
-    };
+    this.toggleTransferCompletedClass = this.toggleTransferCompletedClass.bind(
+      this
+    );
 
-    peer.on('didReceiveFile', toggleTransferCompletedClass);
-    peer.on('didSendFile', toggleTransferCompletedClass);
+    peer.on('didReceiveFile', this.toggleTransferCompletedClass);
+    peer.on('didSendFile', this.toggleTransferCompletedClass);
   },
 
   willDestroyElement(...args) {
     this._super(args);
     const peer = this.get('peer');
 
-    peer.off('didReceiveFile');
-    peer.off('didSendFile');
+    peer.off('didReceiveFile', this.toggleTransferCompletedClass);
+    peer.off('didSendFile', this.toggleTransferCompletedClass);
   },
 
   // Delegate click to hidden file field in peer template
