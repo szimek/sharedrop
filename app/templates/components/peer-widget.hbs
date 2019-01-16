@@ -58,20 +58,9 @@
 </div>
 
 <div class="user-info">
-  {{#if peer.email}}<div class="user-email">{{peer.email}}</div>{{/if}}
-
   <div class="user-ip">
     <div class="user-connection-status {{peer.peer.state}}"></div>
-
-    {{#if hasCustomRoomName}}
-      <strong>{{peer.public_ip}}</strong>
-    {{/if}}
-
-    {{#if peer.local_ip}}
-      {{peer.local_ip}}
-    {{else}}
-      0.0.0.0
-    {{/if}}
+    <span>{{peer.label}}</span>
   </div>
 </div>
 

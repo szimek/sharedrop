@@ -1,18 +1,23 @@
 import Controller from '@ember/controller';
-import $ from 'jquery';
+import { inject as service } from '@ember/service';
+import uuidv4 from 'uuid';
 
 import User from '../models/user';
 
 export default Controller.extend({
-  init() {
-    this._super();
+  avatarService: service('avatar'),
+
+  init(...args) {
+    this._super(args);
 
     const id = window.ShareDrop.userId;
     const ip = window.ShareDrop.publicIp;
+    const avatar = this.avatarService.get();
     const you = User.create({
       uuid: id,
       public_ip: ip,
-      email: localStorage.email || null,
+      avatarUrl: avatar.url,
+      label: avatar.label,
     });
 
     you.set('peer.id', id);
@@ -21,7 +26,7 @@ export default Controller.extend({
 
   actions: {
     redirect() {
-      const uuid = $.uuid();
+      const uuid = uuidv4();
       const key = `show-instructions-for-room-${uuid}`;
 
       sessionStorage.setItem(key, 'yup');

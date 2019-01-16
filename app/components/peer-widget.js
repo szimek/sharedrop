@@ -1,6 +1,6 @@
 import Component from '@ember/component';
 import { computed } from '@ember/object';
-import { equal } from '@ember/object/computed';
+import { alias, equal } from '@ember/object/computed';
 
 export default Component.extend({
   classNames: ['peer'],
@@ -9,6 +9,8 @@ export default Component.extend({
   peer: null,
   hasCustomRoomName: false,
   webrtc: null, // TODO inject webrtc as a service
+
+  label: alias('peer.label'),
 
   isIdle: equal('peer.state', 'idle'),
   hasSelectedFile: equal('peer.state', 'has_selected_file'),
@@ -108,15 +110,4 @@ export default Component.extend({
 
     return errorCode ? `errors/popovers/${errorCode}` : null;
   }),
-
-  label: computed(
-    'hasCustomRoomName',
-    'peer.{label,labelWithPublicIp}',
-    function() {
-      if (this.get('hasCustomRoomName')) {
-        return this.get('peer.labelWithPublicIp');
-      }
-      return this.get('peer.label');
-    }
-  ),
 });

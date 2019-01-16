@@ -29,6 +29,7 @@
     "bootstrap-sass": "3.3.7",
     "broccoli-asset-rev": "^2.7.0",
     "ember-ajax": "^3.1.0",
+    "ember-auto-import": "^1.2.19",
     "ember-cli": "~3.7.1",
     "ember-cli-app-version": "^3.2.0",
     "ember-cli-babel": "^7.1.2",
@@ -69,9 +70,11 @@
     "ember-bootstrap": "^1.0.0-alpha.8",
     "express": "^4.10.6",
     "firebase-token-generator": "~2.0.0",
+    "lodash": "^4.17.11",
     "morgan": "^1.5.0",
     "newrelic": "^1.36.1",
-    "node-uuid": "~1.4.2"
+    "node-uuid": "~1.4.2",
+    "uuid": "^3.3.2"
   },
   "husky": {
     "hooks": {

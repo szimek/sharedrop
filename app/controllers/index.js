@@ -1,5 +1,4 @@
 import Controller, { inject as controller } from '@ember/controller';
-import { observer } from '@ember/object';
 import { alias } from '@ember/object/computed';
 import $ from 'jquery';
 
@@ -20,9 +19,6 @@ export default Controller.extend({
     // eslint-disable-next-line no-param-reassign
     delete data.peer;
     you.setProperties(data);
-
-    // Find and set your local IP
-    this._setUserLocalIP();
 
     // Initialize WebRTC
     this.set(
@@ -64,9 +60,7 @@ export default Controller.extend({
     const peerAttrs = data.peer;
     const defaults = {
       uuid: null,
-      email: null,
       public_ip: null,
-      local_ip: null,
     };
 
     if (peer) {
@@ -251,85 +245,4 @@ export default Controller.extend({
     peer.set('state', 'idle');
     peer.trigger('didSendFile');
   },
-
-  // Based on http://net.ipcalf.com/
-  _setUserLocalIP() {
-    const ips = this.get('you.local_ips');
-
-    function grep(sdpOrCandidate) {
-      const lines = sdpOrCandidate.split('\r\n');
-      let parts;
-      let addr;
-      let type;
-
-      for (let i = 0; i < lines.length; i += 1) {
-        const line = lines[i];
-
-        // eslint-disable-next-line no-bitwise
-        if (~line.indexOf('a=candidate') || line.match(/^candidate:\d+\s/)) {
-          parts = line.split(' ');
-          // eslint-disable-next-line prefer-destructuring
-          addr = parts[4];
-          // eslint-disable-next-line prefer-destructuring
-          type = parts[7];
-
-          if (type === 'host') {
-            if (addr !== '0.0.0.0') {
-              ips.addObject(addr);
-            }
-          }
-          // eslint-disable-next-line no-bitwise
-        } else if (~line.indexOf('c=')) {
-          parts = line.split(' ');
-          // eslint-disable-next-line prefer-destructuring
-          addr = parts[2];
-
-          if (addr !== '0.0.0.0') {
-            ips.addObject(addr);
-          }
-        }
-      }
-    }
-
-    // RTCPeerConnection is provided by PeerJS library
-    const rtc = new window.RTCPeerConnection({ iceServers: [] });
-    rtc.createDataChannel('', { reliable: false });
-
-    rtc.onicecandidate = function(event) {
-      if (event.candidate) {
-        grep(event.candidate.candidate);
-      }
-    };
-
-    rtc
-      .createOffer({})
-      .then((offer) => {
-        grep(offer.sdp);
-        rtc.setLocalDescription(offer);
-      })
-      .catch((error) => {
-        console.warn('Fetching local IP failed', error);
-      });
-  },
-
-  // Broadcast some of user's property changes to other peers
-  userEmailDidChange: observer('you.email', function() {
-    const email = this.get('you.email');
-    const room = this.get('room');
-
-    if (room) {
-      console.log("Broadcasting user's email: ", email);
-      room.update({ email });
-    }
-  }),
-
-  userLocalIPDidChange: observer('you.local_ip', function() {
-    const addr = this.get('you.local_ip');
-    const room = this.get('room');
-
-    if (room && addr) {
-      console.log("Broadcasting user's local IP: ", addr);
-      room.update({ local_ip: addr });
-    }
-  }),
 });

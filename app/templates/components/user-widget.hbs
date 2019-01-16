@@ -1,21 +1,9 @@
 <div class="avatar">
-  <img class="gravatar" src={{user.avatarUrl}} alt={{users.label}} title={{user.uuid}}>
+  <img class="gravatar" src={{user.avatarUrl}} alt={{users.label}} title="peer id: {{user.uuid}}">
 </div>
 <div class="user-info">
   <div class="user-label">You</div>
   <div class="user-ip">
-    {{#if hasCustomRoomName}}
-      <strong>{{user.public_ip}}</strong>
-    {{/if}}
-
-    {{#if user.local_ip}}
-      {{#if user.hasManyLocalIps}}
-        {{ip-select content=localIps action=(action (mut user.local_ip))}}
-      {{else}}
-        {{user.local_ip}}
-      {{/if}}
-    {{else}}
-      <span title="Could not get private IP address of this device.">0.0.0.0</span>
-    {{/if}}
+    <span>{{user.label}}</span>
   </div>
 </div>

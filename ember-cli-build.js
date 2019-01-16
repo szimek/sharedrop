@@ -58,7 +58,6 @@ module.exports = function(defaults) {
   app.import('vendor/ba-tiny-pubsub.min.js');
   app.import('vendor/filer.min.js');
   app.import('vendor/idb.filesystem.min.js');
-  app.import('vendor/jquery-uuid.js');
   app.import('vendor/peer.js');
 
   return app.toTree();
