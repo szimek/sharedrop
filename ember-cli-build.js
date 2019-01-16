@@ -13,7 +13,10 @@ module.exports = function(defaults) {
     },
 
     fingerprint: {
-      extensions: ['js', 'css', 'png', 'jpg', 'gif', 'map', 'svg'],
+      // Don't include SVG files, because of animal icons being loaded dynamically
+      extensions: ['js', 'css', 'png', 'jpg', 'gif', 'map'],
+      generateAssetMap: true,
+      fingerprintAssetMap: true,
     },
 
     'ember-bootstrap': {
