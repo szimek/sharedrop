@@ -7,26 +7,26 @@ const Room = function(name, firebaseRef) {
 };
 
 Room.prototype.join = function(user) {
-  var self = this;
+  const self = this;
 
   // Setup Firebase refs
   self._connectionRef = self._ref.child('.info/connected');
-  self._roomRef = self._ref.child('rooms/' + this.name);
+  self._roomRef = self._ref.child(`rooms/${this.name}`);
   self._usersRef = self._roomRef.child('users');
   self._userRef = self._usersRef.child(user.uuid);
 
   console.log('Room:\t Connecting to: ', this.name);
 
-  self._connectionRef.on('value', function(snapshot) {
+  self._connectionRef.on('value', (connectionSnapshot) => {
     // Once connected (or reconnected) to Firebase
-    if (snapshot.val() === true) {
+    if (connectionSnapshot.val() === true) {
       console.log('Firebase: (Re)Connected');
 
       // Remove yourself from the room when disconnected
       self._userRef.onDisconnect().remove();
 
       // Join the room
-      self._userRef.set(user, function(error) {
+      self._userRef.set(user, (error) => {
         if (error) {
           console.warn('Firebase: Adding user to the room failed: ', error);
         } else {
@@ -37,32 +37,32 @@ Room.prototype.join = function(user) {
         }
       });
 
-      self._usersRef.on('child_added', function(snapshot) {
-        var user = snapshot.val();
+      self._usersRef.on('child_added', (userAddedSnapshot) => {
+        const addedUser = userAddedSnapshot.val();
 
-        console.log('Room:\t user_added: ', user);
-        $.publish('user_added.room', user);
+        console.log('Room:\t user_added: ', addedUser);
+        $.publish('user_added.room', addedUser);
       });
 
       self._usersRef.on(
         'child_removed',
-        function(snapshot) {
-          var user = snapshot.val();
+        (userRemovedSnapshot) => {
+          const removedUser = userRemovedSnapshot.val();
 
-          console.log('Room:\t user_removed: ', user);
-          $.publish('user_removed.room', user);
+          console.log('Room:\t user_removed: ', removedUser);
+          $.publish('user_removed.room', removedUser);
         },
-        function() {
+        () => {
           // Handle case when the whole room is removed from Firebase
           $.publish('disconnected.room');
         }
       );
 
-      self._usersRef.on('child_changed', function(snapshot) {
-        var user = snapshot.val();
+      self._usersRef.on('child_changed', (userChangedSnapshot) => {
+        const changedUser = userChangedSnapshot.val();
 
-        console.log('Room:\t user_changed: ', user);
-        $.publish('user_changed.room', user);
+        console.log('Room:\t user_changed: ', changedUser);
+        $.publish('user_changed.room', changedUser);
       });
     } else {
       console.log('Firebase: Disconnected');

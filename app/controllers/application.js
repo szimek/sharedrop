@@ -4,7 +4,7 @@ import $ from 'jquery';
 import User from '../models/user';
 
 export default Controller.extend({
-  init: function() {
+  init() {
     this._super();
 
     const id = window.ShareDrop.userId;
@@ -20,9 +20,9 @@ export default Controller.extend({
   },
 
   actions: {
-    redirect: function() {
+    redirect() {
       const uuid = $.uuid();
-      const key = 'show-instructions-for-room-' + uuid;
+      const key = `show-instructions-for-room-${uuid}`;
 
       sessionStorage.setItem(key, 'yup');
       this.transitionToRoute('room', uuid);

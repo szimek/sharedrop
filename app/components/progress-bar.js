@@ -11,7 +11,7 @@ export default Component.extend({
 
   transfer: null,
 
-  didInsertElement: function() {
+  didInsertElement() {
     this.set('path', this.$().find('path'));
   },
 
@@ -34,7 +34,7 @@ export default Component.extend({
     }
   ),
 
-  _calculateSVGAnim: function(progress) {
+  _calculateSVGAnim(progress) {
     const path = this.get('path');
     if (!path) {
       return;
@@ -46,7 +46,7 @@ export default Component.extend({
     const mid = α > 180 ? 1 : 0;
     const x = Math.sin(r) * 38;
     const y = Math.cos(r) * -38;
-    const anim = 'M 0 0 v -38 A 38 38 1 ' + mid + ' 1 ' + x + ' ' + y + ' z';
+    const anim = `M 0 0 v -38 A 38 38 1 ${mid} 1 ${x} ${y} z`;
 
     path.attr('d', anim);
   },

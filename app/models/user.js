@@ -8,18 +8,17 @@ export default Peer.extend({
   },
 
   local_ip: computed('local_ips.[]', {
-    get: function() {
+    get() {
       const ips = this.get('local_ips');
       const storedIp = localStorage.getItem('local_ip');
 
       if (storedIp && ips.includes(storedIp)) {
         return storedIp;
-      } else {
-        return ips[0] || null;
       }
+      return ips[0] || null;
     },
 
-    set: function(key, value) {
+    set(key, value) {
       const ips = this.get('local_ips');
 
       if (value && ips.includes(value)) {
@@ -31,14 +30,14 @@ export default Peer.extend({
   }),
 
   label: computed('email', 'local_ip', function() {
-    var email = this.get('email'),
-      local_ip = this.get('local_ip'),
-      label;
+    const email = this.get('email');
+    const localIp = this.get('local_ip');
+    let label;
 
-    if (email && local_ip) {
-      label = email + ' (' + local_ip + ')';
-    } else if (local_ip) {
-      label = local_ip;
+    if (email && localIp) {
+      label = `${email} (${localIp})`;
+    } else if (localIp) {
+      label = localIp;
     } else if (email) {
       label = email;
     } else {
@@ -49,17 +48,17 @@ export default Peer.extend({
   }),
 
   labelWithPublicIp: computed('email', 'public_ip', 'local_ip', function() {
-    var email = this.get('email'),
-      public_ip = this.get('public_ip'),
-      local_ip = this.get('local_ip'),
-      label;
+    const email = this.get('email');
+    const publicIp = this.get('public_ip');
+    const localIp = this.get('local_ip');
+    let label;
 
-    if (email && local_ip) {
-      label = email + ' (' + public_ip + '/' + local_ip + ')';
-    } else if (local_ip) {
-      label = public_ip + '/' + local_ip;
+    if (email && localIp) {
+      label = `${email} (${publicIp}/${localIp})`;
+    } else if (localIp) {
+      label = `${publicIp}/${localIp}`;
     } else if (email) {
-      label = email + ' (' + public_ip + ')';
+      label = `${email} (${publicIp})`;
     } else {
       label = null;
     }
@@ -67,19 +66,19 @@ export default Peer.extend({
     return label;
   }),
 
-  serialize: function() {
-    var data = {
-        uuid: this.get('uuid'),
-        email: this.get('email'),
-        public_ip: this.get('public_ip'),
-        peer: {
-          id: this.get('peer.id'),
-        },
+  serialize() {
+    const data = {
+      uuid: this.get('uuid'),
+      email: this.get('email'),
+      public_ip: this.get('public_ip'),
+      peer: {
+        id: this.get('peer.id'),
       },
-      local_ip;
+    };
+    const localIp = this.get('local_ip');
 
-    if ((local_ip = this.get('local_ip'))) {
-      data.local_ip = local_ip;
+    if (localIp) {
+      data.local_ip = localIp;
     }
 
     return data;
@@ -88,7 +87,7 @@ export default Peer.extend({
   // Make user"s email available after page reload,
   // by storing it in local storage.
   userEmailDidChange: observer('email', function() {
-    var email = this.get('email');
+    const email = this.get('email');
 
     if (email) {
       localStorage.email = email;

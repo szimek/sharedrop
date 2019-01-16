@@ -5,8 +5,8 @@
 import $ from 'jquery';
 import File from './file';
 
-var WebRTC = function(id, options) {
-  var defaults = {
+const WebRTC = function(id, options) {
+  const defaults = {
     config: { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] },
     debug: 3,
   };
@@ -19,33 +19,30 @@ var WebRTC = function(id, options) {
   };
 
   // Listen for incoming connections
-  this.conn.on(
-    'connection',
-    function(connection) {
-      $.publish('incoming_peer_connection.p2p', { connection: connection });
+  this.conn.on('connection', (connection) => {
+    $.publish('incoming_peer_connection.p2p', { connection });
 
-      connection.on('open', function() {
-        console.log('Peer:\t Data channel connection opened: ', connection);
-        $.publish('incoming_dc_connection.p2p', { connection: connection });
+    connection.on('open', () => {
+      console.log('Peer:\t Data channel connection opened: ', connection);
+      $.publish('incoming_dc_connection.p2p', { connection });
+    });
+
+    connection.on('error', (error) => {
+      console.log('Peer:\t Data channel connection error', error);
+      $.publish('incoming_dc_connection_error.p2p', {
+        connection,
+        error,
       });
+    });
 
-      connection.on('error', function(error) {
-        console.log('Peer:\t Data channel connection error', error);
-        $.publish('incoming_dc_connection_error.p2p', {
-          connection: connection,
-          error: error,
-        });
-      });
+    this._onConnection(connection);
+  });
 
-      this._onConnection(connection);
-    }.bind(this)
-  );
-
-  this.conn.on('close', function() {
+  this.conn.on('close', () => {
     console.log('Peer:\t Connection to server closed.');
   });
 
-  this.conn.on('error', function(error) {
+  this.conn.on('error', (error) => {
     console.log('Peer:\t Error while connecting to server: ', error);
   });
 };
@@ -54,7 +51,7 @@ WebRTC.CHUNK_MTU = 16000;
 WebRTC.CHUNKS_PER_ACK = 64;
 
 WebRTC.prototype.connect = function(id) {
-  var connection = this.conn.connect(
+  const connection = this.conn.connect(
     id,
     {
       label: 'file',
@@ -63,29 +60,29 @@ WebRTC.prototype.connect = function(id) {
     }
   );
 
-  connection.on('open', function() {
+  connection.on('open', () => {
     console.log('Peer:\t Data channel connection opened: ', connection);
-    $.publish('outgoing_dc_connection.p2p', { connection: connection });
+    $.publish('outgoing_dc_connection.p2p', { connection });
   });
 
-  connection.on('error', function(error) {
+  connection.on('error', (error) => {
     console.log('Peer:\t Data channel connection error', error);
     $.publish('outgoing_dc_connection_error.p2p', {
-      connection: connection,
-      error: error,
+      connection,
+      error,
     });
   });
 
-  $.publish('outgoing_peer_connection.p2p', { connection: connection });
+  $.publish('outgoing_peer_connection.p2p', { connection });
   this._onConnection(connection);
 };
 
 WebRTC.prototype._onConnection = function(connection) {
-  var self = this;
+  const self = this;
 
   console.log('Peer:\t Opening data channel connection...', connection);
 
-  connection.on('data', function(data) {
+  connection.on('data', (data) => {
     // Lame type check
     if (data.byteLength !== undefined) {
       // ArrayBuffer
@@ -96,23 +93,17 @@ WebRTC.prototype._onConnection = function(connection) {
     }
   });
 
-  connection.on('close', function() {
-    $.publish('disconnected.p2p', { connection: connection });
+  connection.on('close', () => {
+    $.publish('disconnected.p2p', { connection });
     console.log('Peer:\t P2P connection closed: ', connection);
   });
 };
 
 WebRTC.prototype._onBinaryData = function(data, connection) {
-  var self = this,
-    incoming = this.files.incoming[connection.peer],
-    info = incoming.info,
-    file = incoming.file,
-    block = incoming.block,
-    receivedChunkNum = incoming.receivedChunkNum,
-    chunksPerAck = WebRTC.CHUNKS_PER_ACK,
-    nextChunkNum,
-    lastChunkInFile,
-    lastChunkInBlock;
+  const self = this;
+  const incoming = this.files.incoming[connection.peer];
+  const { info, file, block, receivedChunkNum } = incoming;
+  const chunksPerAck = WebRTC.CHUNKS_PER_ACK;
 
   // TODO move it after requesting a new block to speed things up
   connection.emit(
@@ -123,20 +114,21 @@ WebRTC.prototype._onBinaryData = function(data, connection) {
 
   block.push(data);
 
-  nextChunkNum = incoming.receivedChunkNum = receivedChunkNum + 1;
-  lastChunkInFile = receivedChunkNum === info.chunksTotal - 1;
-  lastChunkInBlock =
+  incoming.receivedChunkNum = receivedChunkNum + 1;
+  const nextChunkNum = incoming.receivedChunkNum;
+  const lastChunkInFile = receivedChunkNum === info.chunksTotal - 1;
+  const lastChunkInBlock =
     receivedChunkNum > 0 && (receivedChunkNum + 1) % chunksPerAck === 0;
 
   if (lastChunkInFile || lastChunkInBlock) {
-    file.append(block).then(function() {
+    file.append(block).then(() => {
       if (lastChunkInFile) {
         file.save();
 
         $.publish('file_received.p2p', {
           blob: file,
-          info: info,
-          connection: connection,
+          info,
+          connection,
         });
       } else {
         // console.log('Requesting block starting at: ' + (nextChunkNum));
@@ -149,17 +141,17 @@ WebRTC.prototype._onBinaryData = function(data, connection) {
 
 WebRTC.prototype._onJSONData = function(data, connection) {
   switch (data.type) {
-    case 'info':
-      var info = data.payload;
+    case 'info': {
+      const info = data.payload;
 
       $.publish('info.p2p', {
-        connection: connection,
-        info: info,
+        connection,
+        info,
       });
 
       // Store incoming file info for later
       this.files.incoming[connection.peer] = {
-        info: info,
+        info,
         file: null,
         block: [],
         receivedChunkNum: 0,
@@ -167,17 +159,17 @@ WebRTC.prototype._onJSONData = function(data, connection) {
 
       console.log('Peer:\t File info: ', data);
       break;
-
-    case 'cancel':
+    }
+    case 'cancel': {
       $.publish('file_canceled.p2p', {
-        connection: connection,
+        connection,
       });
 
       console.log('Peer:\t Sender canceled file transfer');
       break;
-
-    case 'response':
-      var response = data.payload;
+    }
+    case 'response': {
+      const response = data.payload;
 
       // If recipient rejected the file, delete stored file
       if (!response) {
@@ -185,20 +177,21 @@ WebRTC.prototype._onJSONData = function(data, connection) {
       }
 
       $.publish('response.p2p', {
-        connection: connection,
-        response: response,
+        connection,
+        response,
       });
 
       console.log('Peer:\t File response: ', data);
       break;
-
-    case 'block_request':
-      var file = this.files.outgoing[connection.peer].file;
+    }
+    case 'block_request': {
+      const { file } = this.files.outgoing[connection.peer];
 
       // console.log('Peer:\t Block request: ', data.payload);
 
       this._sendBlock(connection, file, data.payload);
       break;
+    }
     default:
       console.log('Peer:\t Unknown message: ', data);
   }
@@ -215,7 +208,7 @@ WebRTC.prototype.getFileInfo = function(file) {
 };
 
 WebRTC.prototype.sendFileInfo = function(connection, info) {
-  var message = {
+  const message = {
     type: 'info',
     payload: info,
   };
@@ -224,7 +217,7 @@ WebRTC.prototype.sendFileInfo = function(connection, info) {
 };
 
 WebRTC.prototype.sendCancelRequest = function(connection) {
-  var message = {
+  const message = {
     type: 'cancel',
   };
 
@@ -232,18 +225,18 @@ WebRTC.prototype.sendCancelRequest = function(connection) {
 };
 
 WebRTC.prototype.sendFileResponse = function(connection, response) {
-  var message = {
+  const message = {
     type: 'response',
     payload: response,
   };
 
   if (response) {
     // If recipient accepted the file, request required space to store the file on HTML5 filesystem
-    var incoming = this.files.incoming[connection.peer],
-      info = incoming.info;
+    const incoming = this.files.incoming[connection.peer];
+    const { info } = incoming;
 
     new File({ name: info.name, size: info.size, type: info.type }).then(
-      function(file) {
+      (file) => {
         incoming.file = file;
         connection.send(JSON.stringify(message));
       }
@@ -258,7 +251,7 @@ WebRTC.prototype.sendFileResponse = function(connection, response) {
 WebRTC.prototype.sendFile = function(connection, file) {
   // Save the file for later
   this.files.outgoing[connection.peer] = {
-    file: file,
+    file,
     info: this.getFileInfo(file),
   };
 
@@ -267,7 +260,7 @@ WebRTC.prototype.sendFile = function(connection, file) {
 };
 
 WebRTC.prototype._requestFileBlock = function(connection, chunkNum) {
-  var message = {
+  const message = {
     type: 'block_request',
     payload: chunkNum,
   };
@@ -275,33 +268,39 @@ WebRTC.prototype._requestFileBlock = function(connection, chunkNum) {
 };
 
 WebRTC.prototype._sendBlock = function(connection, file, beginChunkNum) {
-  var info = this.files.outgoing[connection.peer].info,
-    chunkSize = WebRTC.CHUNK_MTU,
-    chunksPerAck = WebRTC.CHUNKS_PER_ACK,
-    remainingChunks = info.chunksTotal - beginChunkNum,
-    chunksToSend = Math.min(remainingChunks, chunksPerAck),
-    endChunkNum = beginChunkNum + chunksToSend - 1,
-    begin = beginChunkNum * chunkSize,
-    end = endChunkNum * chunkSize + chunkSize,
-    reader = new FileReader(),
-    blockBlob,
-    chunkNum;
+  const { info } = this.files.outgoing[connection.peer];
+  const chunkSize = WebRTC.CHUNK_MTU;
+  const chunksPerAck = WebRTC.CHUNKS_PER_ACK;
+  const remainingChunks = info.chunksTotal - beginChunkNum;
+  const chunksToSend = Math.min(remainingChunks, chunksPerAck);
+  const endChunkNum = beginChunkNum + chunksToSend - 1;
+  const blockBegin = beginChunkNum * chunkSize;
+  const blockEnd = endChunkNum * chunkSize + chunkSize;
+  const reader = new FileReader();
+  let chunkNum;
 
   // Read the whole block from file
-  blockBlob = file.slice(begin, end);
+  const blockBlob = file.slice(blockBegin, blockEnd);
 
   // console.log('Sending block: start chunk: ' + beginChunkNum + ' end chunk: ' + endChunkNum);
   // console.log('Sending block: start byte : ' + begin + ' end byte : ' + end);
 
   reader.onload = function(event) {
     if (reader.readyState === FileReader.DONE) {
-      var blockBuffer = event.target.result;
+      const blockBuffer = event.target.result;
 
-      for (chunkNum = beginChunkNum; chunkNum < endChunkNum + 1; chunkNum++) {
+      for (
+        chunkNum = beginChunkNum;
+        chunkNum < endChunkNum + 1;
+        chunkNum += 1
+      ) {
         // Send each chunk (begin index is inclusive, end index is exclusive)
-        var begin = (chunkNum % chunksPerAck) * chunkSize,
-          end = Math.min(begin + chunkSize, blockBuffer.byteLength),
-          chunkBuffer = blockBuffer.slice(begin, end);
+        const bufferBegin = (chunkNum % chunksPerAck) * chunkSize;
+        const bufferEnd = Math.min(
+          bufferBegin + chunkSize,
+          blockBuffer.byteLength
+        );
+        const chunkBuffer = blockBuffer.slice(bufferBegin, bufferEnd);
 
         connection.send(chunkBuffer);
 
@@ -312,7 +311,7 @@ WebRTC.prototype._sendBlock = function(connection, file, beginChunkNum) {
       }
 
       if (endChunkNum === info.chunksTotal - 1) {
-        $.publish('file_sent.p2p', { connection: connection });
+        $.publish('file_sent.p2p', { connection });
       }
     }
   };

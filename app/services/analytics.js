@@ -1,9 +1,9 @@
 export default {
-  hasAnalytics: function() {
+  hasAnalytics() {
     return window.ga && typeof window.ga === 'function';
   },
 
-  trackEvent: function(category, action, label, value) {
+  trackEvent(category, action, label, value) {
     if (this.hasAnalytics()) {
       window.ga('send', 'event', category, action, label, value);
     }

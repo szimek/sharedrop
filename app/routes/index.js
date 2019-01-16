@@ -4,22 +4,20 @@ import $ from 'jquery';
 import Room from '../services/room';
 
 export default Route.extend({
-  beforeModel: function() {
-    var error = window.ShareDrop.error;
+  beforeModel() {
+    const { error } = window.ShareDrop;
 
     if (error) {
       throw new Error(error);
     }
   },
 
-  model: function() {
+  model() {
     // Get room name from the server
-    return $.getJSON('/room').then(function(data) {
-      return data.name;
-    });
+    return $.getJSON('/room').then((data) => data.name);
   },
 
-  setupController: function(ctrl, model) {
+  setupController(ctrl, model) {
     ctrl.set('model', []);
     ctrl.set('hasCustomRoomName', false);
 
@@ -63,12 +61,12 @@ export default Route.extend({
     $.subscribe('file_sent.p2p', ctrl._onPeerP2PFileSent.bind(ctrl));
 
     // Join the room
-    var room = new Room(model, window.ShareDrop.ref);
+    const room = new Room(model, window.ShareDrop.ref);
     room.join(ctrl.get('you').serialize());
     ctrl.set('room', room);
   },
 
-  renderTemplate: function() {
+  renderTemplate() {
     this.render();
 
     this.render('about_you', {
@@ -76,7 +74,7 @@ export default Route.extend({
       outlet: 'about_you',
     });
 
-    var key = 'show-instructions-for-app';
+    const key = 'show-instructions-for-app';
     if (!localStorage.getItem(key)) {
       this.send('openModal', 'about_app');
       localStorage.setItem(key, 'yup');
@@ -84,7 +82,7 @@ export default Route.extend({
   },
 
   actions: {
-    willTransition: function() {
+    willTransition() {
       $.unsubscribe('.room');
       $.unsubscribe('.p2p');
 

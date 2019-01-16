@@ -5,13 +5,21 @@ module.exports = {
     sourceType: 'module',
   },
   plugins: ['ember', 'prettier'],
-  extends: ['eslint:recommended', 'plugin:ember/recommended', 'prettier'],
+  extends: ['airbnb-base', 'plugin:ember/recommended', 'prettier'],
   env: {
     browser: true,
     node: true,
   },
   rules: {
+    'func-names': 'off',
     'no-console': 'off',
+    'no-underscore-dangle': 'off',
+
+    strict: 'off',
+
+    'import/no-extraneous-dependencies': 'off',
+    'import/no-unresolved': 'off',
+
     'prettier/prettier': 'error',
   },
   overrides: [

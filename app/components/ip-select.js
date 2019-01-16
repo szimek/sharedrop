@@ -4,8 +4,8 @@ export default Component.extend({
   content: null,
   selectedValue: null,
 
-  didInitAttrs: function() {
-    this._super(...arguments);
+  didInitAttrs(...args) {
+    this._super(args);
     const content = this.get('content');
 
     if (!content) {
@@ -14,10 +14,10 @@ export default Component.extend({
   },
 
   actions: {
-    change: function() {
+    change() {
       const changeAction = this.get('action');
       const selectedEl = this.$('select')[0];
-      const selectedIndex = selectedEl.selectedIndex;
+      const { selectedIndex } = selectedEl;
       const content = this.get('content');
       const selectedValue = content[selectedIndex];
 

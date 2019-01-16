@@ -6,14 +6,14 @@ export default Route.extend({
   },
 
   actions: {
-    openModal: function(modalName) {
+    openModal(modalName) {
       return this.render(modalName, {
         outlet: 'modal',
         into: 'application',
       });
     },
 
-    closeModal: function() {
+    closeModal() {
       return this.disconnectOutlet({
         outlet: 'modal',
         parentView: 'application',

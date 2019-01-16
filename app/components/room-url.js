@@ -9,7 +9,7 @@ export default TextField.extend({
       .select();
   },
 
-  copyValueToClipboard: function() {
+  copyValueToClipboard() {
     if (window.ClipboardEvent) {
       const pasteEvent = new window.ClipboardEvent('paste', {
         dataType: 'text/plain',

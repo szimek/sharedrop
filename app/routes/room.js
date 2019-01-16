@@ -3,27 +3,27 @@ import IndexRoute from './index';
 export default IndexRoute.extend({
   controllerName: 'index',
 
-  model: function(params) {
+  model(params) {
     // Get room name from params
     return params.room_id;
   },
 
-  afterModel: function(model, transition) {
-    transition.then(function(route) {
+  afterModel(model, transition) {
+    transition.then((route) => {
       route
         .controllerFor('application')
         .set('currentUrl', window.location.href);
     });
   },
 
-  setupController: function(ctrl, model) {
+  setupController(ctrl, model) {
     // Call this method on "index" controller
     this._super(ctrl, model);
 
     ctrl.set('hasCustomRoomName', true);
   },
 
-  renderTemplate: function(ctrl) {
+  renderTemplate(ctrl) {
     this.render('index');
 
     this.render('about_you', {
@@ -31,8 +31,8 @@ export default IndexRoute.extend({
       outlet: 'about_you',
     });
 
-    var room = ctrl.get('room').name,
-      key = 'show-instructions-for-room-' + room;
+    const room = ctrl.get('room').name;
+    const key = `show-instructions-for-room-${room}`;
 
     if (sessionStorage.getItem(key)) {
       this.send('openModal', 'about_room');

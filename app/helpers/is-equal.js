@@ -1,5 +1,3 @@
 import { helper as buildHelper } from '@ember/component/helper';
 
-export default buildHelper(function([leftSide, rightSide]) {
-  return leftSide === rightSide;
-});
+export default buildHelper(([leftSide, rightSide]) => leftSide === rightSide);

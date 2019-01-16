@@ -14,17 +14,19 @@ export default Component.extend({
       const extension = match && match[1];
 
       if (extension) {
-        return 'glyphicon-' + extension.toLowerCase();
+        return `glyphicon-${extension.toLowerCase()}`;
       }
     }
+
+    return undefined;
   }),
 
   actions: {
-    confirm: function() {
+    confirm() {
       this.onConfirm();
     },
 
-    cancel: function() {
+    cancel() {
       this.onCancel();
     },
   },

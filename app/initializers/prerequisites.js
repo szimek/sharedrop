@@ -7,54 +7,50 @@ import FileSystem from '../services/file';
 import Analytics from '../services/analytics';
 
 export function initialize(application) {
-  application.deferReadiness();
-
-  checkWebRTCSupport()
-    .then(clearFileSystem)
-    .catch(function(error) {
-      application.error = error;
-    })
-    .then(authenticateToFirebase)
-    .then(trackSizeOfReceivedFiles)
-    .then(function() {
-      application.advanceReadiness();
-    });
-
   function checkWebRTCSupport() {
-    return new Promise(function(resolve, reject) {
+    return new Promise((resolve, reject) => {
       // window.util is a part of PeerJS library
       if (window.util.supports.sctp) {
         resolve();
       } else {
+        // eslint-disable-next-line prefer-promise-reject-errors
         reject('browser-unsupported');
       }
     });
   }
 
   function clearFileSystem() {
-    return new Promise(function(resolve, reject) {
+    return new Promise((resolve, reject) => {
       // TODO: change File into a service and require it here
       FileSystem.removeAll()
-        .then(function() {
+        .then(() => {
           resolve();
         })
-        .catch(function() {
+        .catch(() => {
+          // eslint-disable-next-line prefer-promise-reject-errors
           reject('filesystem-unavailable');
         });
     });
   }
 
   function authenticateToFirebase() {
-    return new Promise(function(resolve, reject) {
+    return new Promise((resolve, reject) => {
       const xhr = $.getJSON('/auth');
-      xhr.then(function(data) {
-        var ref = new window.Firebase(config.FIREBASE_URL);
+      xhr.then((data) => {
+        const ref = new window.Firebase(config.FIREBASE_URL);
+        // eslint-disable-next-line no-param-reassign
         application.ref = ref;
+        // eslint-disable-next-line no-param-reassign
         application.userId = data.id;
+        // eslint-disable-next-line no-param-reassign
         application.publicIp = data.public_ip;
 
-        ref.authWithCustomToken(data.token, function(error) {
-          error ? reject(error) : resolve();
+        ref.authWithCustomToken(data.token, (error) => {
+          if (error) {
+            reject(error);
+          } else {
+            resolve();
+          }
         });
       });
     });
@@ -62,7 +58,7 @@ export function initialize(application) {
 
   // TODO: move it to a separate initializer
   function trackSizeOfReceivedFiles() {
-    $.subscribe('file_received.p2p', function(event, data) {
+    $.subscribe('file_received.p2p', (event, data) => {
       Analytics.trackEvent(
         'file',
         'received',
@@ -71,9 +67,23 @@ export function initialize(application) {
       );
     });
   }
+
+  application.deferReadiness();
+
+  checkWebRTCSupport()
+    .then(clearFileSystem)
+    .catch((error) => {
+      // eslint-disable-next-line no-param-reassign
+      application.error = error;
+    })
+    .then(authenticateToFirebase)
+    .then(trackSizeOfReceivedFiles)
+    .then(() => {
+      application.advanceReadiness();
+    });
 }
 
 export default {
   name: 'prerequisites',
-  initialize: initialize,
+  initialize,
 };

@@ -35,9 +35,9 @@ export default Component.extend({
 
   actions: {
     // TODO: rename to something more meaningful (e.g. askIfWantToSendFile)
-    uploadFile: function(data) {
+    uploadFile(data) {
       const peer = this.get('peer');
-      const file = data.file;
+      const { file } = data;
 
       // Cache the file, so that it's available
       // when the response from the recipient comes in
@@ -45,7 +45,7 @@ export default Component.extend({
       peer.set('state', 'has_selected_file');
     },
 
-    sendFileTransferInquiry: function() {
+    sendFileTransferInquiry() {
       const webrtc = this.get('webrtc');
       const peer = this.get('peer');
 
@@ -53,11 +53,11 @@ export default Component.extend({
       peer.set('state', 'establishing_connection');
     },
 
-    cancelFileTransfer: function() {
+    cancelFileTransfer() {
       this._cancelFileTransfer();
     },
 
-    abortFileTransfer: function() {
+    abortFileTransfer() {
       this._cancelFileTransfer();
 
       const webrtc = this.get('webrtc');
@@ -66,18 +66,18 @@ export default Component.extend({
       webrtc.sendCancelRequest(connection);
     },
 
-    acceptFileTransfer: function() {
+    acceptFileTransfer() {
       const peer = this.get('peer');
 
       this._sendFileTransferResponse(true);
 
-      peer.get('peer.connection').on('receiving_progress', function(progress) {
+      peer.get('peer.connection').on('receiving_progress', (progress) => {
         peer.set('transfer.receivingProgress', progress);
       });
       peer.set('state', 'sending_file_data');
     },
 
-    rejectFileTransfer: function() {
+    rejectFileTransfer() {
       const peer = this.get('peer');
 
       this._sendFileTransferResponse(false);
@@ -86,7 +86,7 @@ export default Component.extend({
     },
   },
 
-  _cancelFileTransfer: function() {
+  _cancelFileTransfer() {
     const peer = this.get('peer');
 
     peer.setProperties({
@@ -95,7 +95,7 @@ export default Component.extend({
     });
   },
 
-  _sendFileTransferResponse: function(response) {
+  _sendFileTransferResponse(response) {
     const webrtc = this.get('webrtc');
     const peer = this.get('peer');
     const connection = peer.get('peer.connection');
@@ -106,7 +106,7 @@ export default Component.extend({
   errorTemplateName: computed('peer.errorCode', function() {
     const errorCode = this.get('peer.errorCode');
 
-    return errorCode ? 'errors/popovers/' + errorCode : null;
+    return errorCode ? `errors/popovers/${errorCode}` : null;
   }),
 
   label: computed(
@@ -115,9 +115,8 @@ export default Component.extend({
     function() {
       if (this.get('hasCustomRoomName')) {
         return this.get('peer.labelWithPublicIp');
-      } else {
-        return this.get('peer.label');
       }
+      return this.get('peer.label');
     }
   ),
 });

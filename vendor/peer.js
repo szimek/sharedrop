@@ -161,9 +161,10 @@ EventEmitter.prototype.emit = function(type) {
   }
 };
 
-exports.RTCSessionDescription = window.mozRTCSessionDescription || window.RTCSessionDescription;
-exports.RTCPeerConnection = window.mozRTCPeerConnection || window.webkitRTCPeerConnection || window.RTCPeerConnection;
-exports.RTCIceCandidate = window.mozRTCIceCandidate || window.RTCIceCandidate;
+exports.RTCSessionDescription = window.RTCSessionDescription || window.mozRTCSessionDescription;
+exports.RTCPeerConnection = window.RTCPeerConnection || window.mozRTCPeerConnection || window.webkitRTCPeerConnection;
+exports.RTCIceCandidate = window.RTCIceCandidate || window.mozRTCIceCandidate;
+
 var defaultConfig = {
     'iceServers': [{
         'urls': 'stun:stun.l.google.com:19302',
