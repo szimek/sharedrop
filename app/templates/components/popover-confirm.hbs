@@ -1,4 +1,4 @@
-{{#bs-popover visible=isVisible placement="top" renderInPlace=true triggerEvents=""}}
+{{#ember-popover isShown=isVisible event="none" side="top" delay=0 delayOnChange=false effect="none" popoverHideDelay=0 spacing=10}}
   <div class="popover-body">
     <div class="popover-icon">
       <i class={{iconClass}}></i>
@@ -7,13 +7,13 @@
     <p>{{yield}}</p>
 
     <div class="popover-buttons">
-      {{#if cancel-button-label}}
-        <button type="button" class="button cancel" {{action "cancel"}}>{{cancel-button-label}}</button>
+      {{#if cancelButtonLabel}}
+        <button type="button" class="button cancel" {{action "cancel"}}>{{cancelButtonLabel}}</button>
       {{/if}}
 
-      {{#if confirm-button-label}}
-        <button type="button" class="button confirm" {{action "confirm"}}>{{confirm-button-label}}</button>
+      {{#if confirmButtonLabel}}
+        <button type="button" class="button confirm" {{action "confirm"}}>{{confirmButtonLabel}}</button>
       {{/if}}
     </div>
   </div>
-{{/bs-popover}}
+{{/ember-popover}}

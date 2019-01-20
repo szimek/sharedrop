@@ -19,10 +19,6 @@ module.exports = function(defaults) {
       fingerprintAssetMap: true,
     },
 
-    'ember-bootstrap': {
-      importBootstrapCSS: false,
-    },
-
     inlineContent: {
       analytics: {
         file: 'app/analytics.html',
