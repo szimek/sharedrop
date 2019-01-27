@@ -5,6 +5,7 @@
   onCancel=(action "cancelFileTransfer")
   confirmButtonLabel="Send"
   cancelButtonLabel="Cancel"
+  filename=filename
 }}
   Do you want to send <strong>"{{filename}}"</strong> to <strong>"{{label}}"</strong>?
 {{/popover-confirm}}
@@ -13,6 +14,7 @@
   isVisible=isAwaitingResponse
   onCancel=(action "abortFileTransfer")
   cancelButtonLabel="Cancel"
+  filename=filename
 }}
   Waiting for <strong>"{{label}}"</strong> to accept&hellip;
 {{/popover-confirm}}
@@ -21,6 +23,7 @@
   isVisible=hasDeclinedFileTransfer
   onConfirm=(action "cancelFileTransfer")
   confirmButtonLabel="Ok"
+  filename=filename
 }}
   <strong>"{{label}}"</strong> has declined your request.
 {{/popover-confirm}}
@@ -29,6 +32,7 @@
   isVisible=hasError
   onConfirm=(action "cancelFileTransfer")
   confirmButtonLabel="Ok"
+  filename=filename
 }}
   {{partial errorTemplateName}}
 {{/popover-confirm}}
@@ -40,6 +44,7 @@
   onCancel=(action "rejectFileTransfer")
   confirmButtonLabel="Save"
   cancelButtonLabel="Decline"
+  filename=filename
 }}
   <strong>"{{label}}"</strong> wants to send you <strong>"{{filename}}"</strong>.
 {{/popover-confirm}}
