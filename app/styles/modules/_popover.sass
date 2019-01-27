@@ -1,40 +1,71 @@
+$popover-border-color: #c0c0c0
+
 .popover
-  position: absolute !important
-  background: white
-  border: 1px solid #c0c0c0
+  position: absolute
+  bottom: 100%
+  left: 50%
+  transform: translateX(-50%)
+  z-index: 10
+  background-color: #fff
+  border: 1px solid $popover-border-color
   padding: 10px
   border-radius: 5px
   width: 360px
-  z-index: 100
   box-shadow: rgba(black,.3) 0 1px 3px
   text-align: left
+  margin-bottom: 5px;
   &::after
-    content: ""
     position: absolute
-    bottom: -6px
+    bottom: 0
     left: 50%
-    margin-left: -5px
+    margin: 0 0 -5px -5px
+    content: ''
     width: 10px
     height: 10px
-    background: white
-    border-right: 1px solid #c0c0c0
-    border-bottom: 1px solid #c0c0c0
+    background: inherit
     transform: rotate(45deg)
-  .popover-body
-    position: relative
-    padding-left: 60px
-    > p
-      word-break: break-all
-      overflow: hidden
-      font-size: 1.2rem
-      line-height: 1.4em
-      margin-bottom: 1em
-      min-height: 28px
-  .popover-icon
-    position: absolute
+    border: 1px solid transparent
+    border-right-color: $popover-border-color
+    border-bottom-color: $popover-border-color
+
+.popover-body
+  position: relative
+  padding-left: 60px
+  p
+    word-break: break-all
+    overflow: hidden
+    font-size: 12px
+    line-height: 1.4em
+    margin-bottom: 1em
+    min-height: 28px
+
+.popover-icon
+  position: absolute
+  left: 0
+  top: 0
+  font-size: 50px
+
+.popover-buttons
+  text-align: right
+
+
+@media (max-width: 768px)
+  .popover
     left: 0
+    right: 0
     top: 0
-    font-size: 5rem
+    bottom: 0
+    border: none
+    width: auto
+    box-shadow: none
+    border-radius: 0
+    margin: 0
+    transform: none
+    background-color: rgba(#f0f0f0, 0.9)
+    &::after
+      display: none
 
   .popover-buttons
-    text-align: right
+    button
+      font-size: 18px
+

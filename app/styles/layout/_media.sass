@@ -18,60 +18,11 @@
     .note
       display: block
 
-  .popover
-    $bg_color: #f4f4f4
-    left: 100px !important
-    right: 0
-    top: 0 !important
-    bottom: 0
-    border: none
-    width: auto
-    box-shadow: none
-    border-radius: 0
-    padding: 15px
-    background-color: $bg_color
-    &::after
-      left: 0
-      bottom: 50%
-      margin-bottom: -6px
-      background-color: $bg_color
-      border: none
-    .popover-content
-      padding-right: 100px
-      .popover-body
-        padding-left: 0
-        > p
-          max-height: 76px
-      .popover-icon
-        display: none
-      .popover-buttons
-        position: absolute
-        top: -15px
-        right: -115px
-        width: 100px
-        height: 106px
-        text-align: right
-        button
-          +button_reset
-          height: 106px
-          line-height: 106px
-          width: 50%
-          font-size: 1.2rem
-          margin-left: -3px
-          color: #fff
-          &.cancel
-            background: #d0d0d0
-            &:active
-              background: #c0c0c0
-          &.confirm
-            background: rgba($blue,.6)
-            &:active
-              background: $blue
-
   .l-content
     padding: 80px 0 115px
     min-height inherit
     height: auto
+
   .user
     .peer
       position: relative
