@@ -453,21 +453,27 @@ util.inherits(Peer, EventEmitter);
 
 /** Initialize a connection with the server. */
 Peer.prototype._initialize = function (id) {
-  var self = this;
   this.id = id;
 
   // Firebase
   this._ref = this.options.firebaseRef;
+  this._connectionRef = this._ref.child('.info/connected');
   this._messagesRef = this._ref.child('rooms/' + this.options.room + '/messages');
-  this._yourMessagesRef = this._messagesRef.child(id);
+  this._receivedMessagesRef = this._messagesRef.child(id);
 
-  // Remove received messages on disconnect
-  this._yourMessagesRef.onDisconnect().remove();
+  this._connectionRef.on('value', (connectionSnapshot) => {
+    if (connectionSnapshot.val() === true) {
+      // Remove received messages on disconnect
+      this._receivedMessagesRef.onDisconnect().remove();
 
-  // Listen to incoming messages
-  this._yourMessagesRef.on('child_added', function (snapshot) {
-    var message = snapshot.val();
-    self._handleMessage(message);
+      // Listen to incoming messages
+      this._receivedMessagesRef.on('child_added', (snapshot) => {
+        const message = snapshot.val();
+        this._handleMessage(message);
+      });
+    } else {
+      this._receivedMessagesRef.off();
+    }
   });
 
   // The connection to the server is open

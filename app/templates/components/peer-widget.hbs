@@ -1,53 +1,50 @@
 <!-- Sender related popups -->
 {{#popover-confirm
+  isVisible=hasSelectedFile
   onConfirm=(action "sendFileTransferInquiry")
   onCancel=(action "cancelFileTransfer")
-  isVisible=hasSelectedFile
+  confirmButtonLabel="Send"
+  cancelButtonLabel="Cancel"
   filename=filename
-  label=label
-  confirm-button-label="Send"
-  cancel-button-label="Cancel"
 }}
   Do you want to send <strong>"{{filename}}"</strong> to <strong>"{{label}}"</strong>?
 {{/popover-confirm}}
 
 {{#popover-confirm
-  onCancel=(action "abortFileTransfer")
   isVisible=isAwaitingResponse
+  onCancel=(action "abortFileTransfer")
+  cancelButtonLabel="Cancel"
   filename=filename
-  label=label
-  cancel-button-label="Cancel"
 }}
   Waiting for <strong>"{{label}}"</strong> to accept&hellip;
 {{/popover-confirm}}
 
 {{#popover-confirm
-  onConfirm=(action "cancelFileTransfer")
   isVisible=hasDeclinedFileTransfer
+  onConfirm=(action "cancelFileTransfer")
+  confirmButtonLabel="Ok"
   filename=filename
-  label=label
-  confirm-button-label="Ok"
 }}
   <strong>"{{label}}"</strong> has declined your request.
 {{/popover-confirm}}
 
 {{#popover-confirm
-  onConfirm=(action "cancelFileTransfer")
   isVisible=hasError
-  confirm-button-label="Ok"
+  onConfirm=(action "cancelFileTransfer")
+  confirmButtonLabel="Ok"
+  filename=filename
 }}
   {{partial errorTemplateName}}
 {{/popover-confirm}}
 
 <!-- Recipient related popups -->
 {{#popover-confirm
+  isVisible=hasReceivedFileInfo
   onConfirm=(action "acceptFileTransfer")
   onCancel=(action "rejectFileTransfer")
-  isVisible=hasReceivedFileInfo
+  confirmButtonLabel="Save"
+  cancelButtonLabel="Decline"
   filename=filename
-  label=label
-  confirm-button-label="Save"
-  cancel-button-label="Decline"
 }}
   <strong>"{{label}}"</strong> wants to send you <strong>"{{filename}}"</strong>.
 {{/popover-confirm}}
