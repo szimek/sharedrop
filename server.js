@@ -16,7 +16,7 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const cookieSession = require('cookie-session');
 const compression = require('compression');
-const uuid = require('uuid');
+const uuidv4 = require('uuid/v4');
 const crypto = require('crypto');
 const FirebaseTokenGenerator = require('firebase-token-generator');
 
@@ -87,7 +87,7 @@ app.get('/room', (req, res) => {
 
 app.get('/auth', (req, res) => {
   const ip = req.headers['cf-connecting-ip'] || req.ip;
-  const uid = uuid.v1();
+  const uid = uuidv4();
   const token = firebaseTokenGenerator.createToken(
     { uid, id: uid }, // will be available in Firebase security rules as 'auth'
     { expires: 32503680000 } // 01.01.3000 00:00
