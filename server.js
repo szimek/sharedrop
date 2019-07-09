@@ -16,7 +16,7 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const cookieSession = require('cookie-session');
 const compression = require('compression');
-const uuid = require('node-uuid');
+const uuid = require('uuid');
 const crypto = require('crypto');
 const FirebaseTokenGenerator = require('firebase-token-generator');
 

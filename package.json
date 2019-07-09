@@ -71,7 +71,6 @@
     "lodash": "^4.17.11",
     "morgan": "^1.5.0",
     "newrelic": "^1.36.1",
-    "node-uuid": "~1.4.2",
     "uuid": "^3.3.2"
   },
   "husky": {
