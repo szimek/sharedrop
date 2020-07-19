@@ -4,7 +4,7 @@ const EmberApp = require('ember-cli/lib/broccoli/ember-app');
 const env = process.env.EMBER_ENV;
 const config = require('./config/environment')(env);
 
-module.exports = function(defaults) {
+module.exports = function (defaults) {
   const app = new EmberApp(defaults, {
     dotEnv: {
       clientAllowedKeys: ['FIREBASE_URL'],

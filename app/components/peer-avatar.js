@@ -31,9 +31,7 @@ export default Component.extend({
           .addClass(className)
           .delay(2000)
           .queue(function removeClass() {
-            $(this)
-              .removeClass(className)
-              .dequeue();
+            $(this).removeClass(className).dequeue();
           });
       },
       250,
@@ -67,10 +65,7 @@ export default Component.extend({
   // Delegate click to hidden file field in peer template
   click() {
     if (this.canSendFile()) {
-      $(this.element)
-        .closest('.peer')
-        .find('input[type=file]')
-        .click();
+      $(this.element).closest('.peer').find('input[type=file]').click();
     }
   },
 
@@ -78,9 +73,7 @@ export default Component.extend({
   dragEnter(event) {
     this.cancelEvent(event);
 
-    $(this.element)
-      .parent('.avatar')
-      .addClass('hover');
+    $(this.element).parent('.avatar').addClass('hover');
   },
 
   dragOver(event) {
@@ -88,16 +81,12 @@ export default Component.extend({
   },
 
   dragLeave() {
-    $(this.element)
-      .parent('.avatar')
-      .removeClass('hover');
+    $(this.element).parent('.avatar').removeClass('hover');
   },
 
   drop(event) {
     this.cancelEvent(event);
-    $(this.element)
-      .parent('.avatar')
-      .removeClass('hover');
+    $(this.element).parent('.avatar').removeClass('hover');
 
     const { peer } = this;
     const dt = event.originalEvent.dataTransfer;
@@ -140,10 +129,10 @@ export default Component.extend({
           // Try to read it using FileReader - if it's not a file,
           // it should trigger onerror handler
           const reader = new FileReader();
-          reader.onload = function() {
+          reader.onload = function () {
             resolve();
           };
-          reader.onerror = function() {
+          reader.onerror = function () {
             reject();
           };
           reader.readAsArrayBuffer(file);

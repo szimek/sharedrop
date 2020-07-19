@@ -16,7 +16,7 @@ export default Component.extend({
     this.set('path', $(this.element).find('path'));
   },
 
-  sendingProgressDidChange: observer('transfer.sendingProgress', function() {
+  sendingProgressDidChange: observer('transfer.sendingProgress', function () {
     const progress = this.get('transfer.sendingProgress');
 
     if (this.path) {
@@ -26,7 +26,7 @@ export default Component.extend({
 
   receivingProgressDidChange: observer(
     'transfer.receivingProgress',
-    function() {
+    function () {
       const progress = this.get('transfer.receivingProgress');
 
       if (this.path) {

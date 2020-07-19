@@ -1,4 +1,4 @@
-module.exports = function(environment) {
+module.exports = function (environment) {
   const ENV = {
     modulePrefix: 'share-drop',
     environment,

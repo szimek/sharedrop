@@ -9,7 +9,7 @@ export default class Router extends EmberRouter {
 }
 
 // eslint-disable-next-line array-callback-return
-Router.map(function() {
+Router.map(function () {
   this.route('room', {
     path: '/rooms/:room_id',
   });

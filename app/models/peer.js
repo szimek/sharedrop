@@ -50,7 +50,7 @@ export default EmberObject.extend(Evented, {
 
   stateChanged: on(
     'init',
-    observer('state', function() {
+    observer('state', function () {
       console.log('Peer:\t State has changed: ', this.state);
 
       // Automatically clear error code if transitioning to a non-error state

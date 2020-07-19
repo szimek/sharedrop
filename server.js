@@ -14,7 +14,7 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const cookieSession = require('cookie-session');
 const compression = require('compression');
-const uuid = require('node-uuid');
+const { v4: uuidv4 } = require('uuid');
 const crypto = require('crypto');
 const FirebaseTokenGenerator = require('firebase-token-generator');
 
@@ -75,17 +75,14 @@ app.get('/rooms/:id', (req, res) => {
 
 app.get('/room', (req, res) => {
   const ip = req.headers['cf-connecting-ip'] || req.ip;
-  const name = crypto
-    .createHmac('md5', secret)
-    .update(ip)
-    .digest('hex');
+  const name = crypto.createHmac('md5', secret).update(ip).digest('hex');
 
   res.json({ name });
 });
 
 app.get('/auth', (req, res) => {
   const ip = req.headers['cf-connecting-ip'] || req.ip;
-  const uid = uuid.v1();
+  const uid = uuidv4();
   const token = firebaseTokenGenerator.createToken(
     { uid, id: uid }, // will be available in Firebase security rules as 'auth'
     { expires: 32503680000 }, // 01.01.3000 00:00

@@ -1,12 +1,12 @@
 import $ from 'jquery';
 
 // TODO: use Ember.Object.extend()
-const Room = function(name, firebaseRef) {
+const Room = function (name, firebaseRef) {
   this._ref = firebaseRef;
   this.name = name;
 };
 
-Room.prototype.join = function(user) {
+Room.prototype.join = function (user) {
   const self = this;
 
   // Setup Firebase refs
@@ -75,11 +75,11 @@ Room.prototype.join = function(user) {
   return this;
 };
 
-Room.prototype.update = function(attrs) {
+Room.prototype.update = function (attrs) {
   this._userRef.update(attrs);
 };
 
-Room.prototype.leave = function() {
+Room.prototype.leave = function () {
   this._userRef.remove();
   this._usersRef.off();
 };

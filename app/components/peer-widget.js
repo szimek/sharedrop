@@ -21,7 +21,7 @@ export default Component.extend({
   hasDeclinedFileTransfer: equal('peer.state', 'declined_file_transfer'),
   hasError: equal('peer.state', 'error'),
 
-  filename: computed('peer.transfer.{file,info}', function() {
+  filename: computed('peer.transfer.{file,info}', function () {
     const file = this.get('peer.transfer.file');
     const info = this.get('peer.transfer.info');
 
@@ -105,7 +105,7 @@ export default Component.extend({
     webrtc.sendFileResponse(connection, response);
   },
 
-  errorTemplateName: computed('peer.errorCode', function() {
+  errorTemplateName: computed('peer.errorCode', function () {
     const errorCode = this.get('peer.errorCode');
 
     return errorCode ? `errors/popovers/${errorCode}` : null;

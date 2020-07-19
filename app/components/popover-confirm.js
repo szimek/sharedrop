@@ -3,7 +3,7 @@ import { computed } from '@ember/object';
 
 export default Component.extend({
   classNames: ['popover-confirm'],
-  iconClass: computed('filename', function() {
+  iconClass: computed('filename', function () {
     const { filename } = this;
 
     if (filename) {

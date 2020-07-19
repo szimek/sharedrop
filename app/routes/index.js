@@ -86,9 +86,7 @@ export default Route.extend({
       $.unsubscribe('.room');
       $.unsubscribe('.p2p');
 
-      this.controllerFor('index')
-        .get('room')
-        .leave();
+      this.controllerFor('index').get('room').leave();
 
       return true;
     },

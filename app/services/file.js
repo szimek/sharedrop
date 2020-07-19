@@ -1,6 +1,6 @@
 import { Promise } from 'rsvp';
 
-const File = function(options) {
+const File = function (options) {
   const self = this;
 
   this.name = options.name;
@@ -29,7 +29,7 @@ const File = function(options) {
   });
 };
 
-File.removeAll = function() {
+File.removeAll = function () {
   return new Promise((resolve, reject) => {
     const filer = new window.Filer();
 
@@ -58,7 +58,7 @@ File.removeAll = function() {
   });
 };
 
-File.prototype.append = function(data) {
+File.prototype.append = function (data) {
   const self = this;
   const options = {
     create: this.create,
@@ -82,13 +82,13 @@ File.prototype.append = function(data) {
             // console.log('File: Appending ' + blob.size + ' bytes at ' + self.seek);
 
             // eslint-disable-next-line no-param-reassign
-            writer.onwriteend = function() {
+            writer.onwriteend = function () {
               self.seek += blob.size;
               resolve(fileEntry);
             };
 
             // eslint-disable-next-line no-param-reassign
-            writer.onerror = function(error) {
+            writer.onerror = function (error) {
               self.errorHandler(error);
               reject(error);
             };
@@ -110,7 +110,7 @@ File.prototype.append = function(data) {
   });
 };
 
-File.prototype.save = function() {
+File.prototype.save = function () {
   const self = this;
 
   console.log('File: Saving file: ', this.fileEntry);
@@ -143,11 +143,11 @@ File.prototype.save = function() {
   }
 };
 
-File.prototype.errorHandler = function(error) {
+File.prototype.errorHandler = function (error) {
   console.error('File error: ', error);
 };
 
-File.prototype.remove = function() {
+File.prototype.remove = function () {
   const self = this;
 
   return new Promise((resolve, reject) => {
@@ -174,14 +174,14 @@ File.prototype.remove = function() {
   });
 };
 
-File.prototype._reset = function() {
+File.prototype._reset = function () {
   this.create = true;
   this.filesystem = null;
   this.fileEntry = null;
   this.seek = 0;
 };
 
-File.prototype._isWebKit = function() {
+File.prototype._isWebKit = function () {
   return !!window.webkitRequestFileSystem;
 };
 

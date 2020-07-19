@@ -5,9 +5,7 @@ export default TextField.extend({
   classNames: ['room-url'],
 
   didInsertElement() {
-    $(this.element)
-      .focus()
-      .select();
+    $(this.element).focus().select();
   },
 
   copyValueToClipboard() {

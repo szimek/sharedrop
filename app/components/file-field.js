@@ -23,11 +23,7 @@ export default TextField.extend({
   // the 'change' event is triggered correctly.
   reset() {
     const field = $(this.element);
-    field
-      .wrap('<form>')
-      .closest('form')
-      .get(0)
-      .reset();
+    field.wrap('<form>').closest('form').get(0).reset();
     field.unwrap();
   },
 });
