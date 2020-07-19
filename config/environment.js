@@ -21,6 +21,8 @@ module.exports = function (environment) {
     },
 
     FIREBASE_URL: process.env.FIREBASE_URL,
+
+    exportApplicationGlobal: true,
   };
 
   if (environment === 'development') {
@@ -46,8 +48,6 @@ module.exports = function (environment) {
   if (environment === 'production') {
     ENV.GOOGLE_ANALYTICS_ID = 'UA-41889586-2';
   }
-
-  // ENV.exportApplicationGlobal = true;
 
   return ENV;
 };
