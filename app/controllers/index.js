@@ -12,8 +12,8 @@ export default Controller.extend({
   webrtc: null,
 
   _onRoomConnected(event, data) {
-    const you = this.get('you');
-    const room = this.get('room');
+    const { you } = this;
+    const { room } = this;
 
     you.get('peer').setProperties(data.peer);
     // eslint-disable-next-line no-param-reassign
@@ -26,17 +26,17 @@ export default Controller.extend({
       new WebRTC(you.get('uuid'), {
         room: room.name,
         firebaseRef: window.ShareDrop.ref,
-      })
+      }),
     );
   },
 
   _onRoomDisconnected() {
-    this.get('model').clear();
+    this.model.clear();
     this.set('webrtc', null);
   },
 
   _onRoomUserAdded(event, data) {
-    const you = this.get('you');
+    const { you } = this;
 
     if (you.get('uuid') !== data.uuid) {
       this._addPeer(data);
@@ -51,11 +51,11 @@ export default Controller.extend({
     const peer = Peer.create(attrs);
     peer.get('peer').setProperties(peerAttrs);
 
-    this.get('model').pushObject(peer);
+    this.model.pushObject(peer);
   },
 
   _onRoomUserChanged(event, data) {
-    const peers = this.get('model');
+    const peers = this.model;
     const peer = peers.findBy('uuid', data.uuid);
     const peerAttrs = data.peer;
     const defaults = {
@@ -74,7 +74,7 @@ export default Controller.extend({
   },
 
   _onRoomUserRemoved(event, data) {
-    const peers = this.get('model');
+    const peers = this.model;
     const peer = peers.findBy('uuid', data.uuid);
 
     peers.removeObject(peer);
@@ -82,7 +82,7 @@ export default Controller.extend({
 
   _onPeerP2PIncomingConnection(event, data) {
     const { connection } = data;
-    const peers = this.get('model');
+    const peers = this.model;
     const peer = peers.findBy('peer.id', connection.peer);
 
     // Don't switch to 'connecting' state on incoming connection,
@@ -92,7 +92,7 @@ export default Controller.extend({
 
   _onPeerDCIncomingConnection(event, data) {
     const { connection } = data;
-    const peers = this.get('model');
+    const peers = this.model;
     const peer = peers.findBy('peer.id', connection.peer);
 
     peer.set('peer.state', 'connected');
@@ -100,7 +100,7 @@ export default Controller.extend({
 
   _onPeerDCIncomingConnectionError(event, data) {
     const { connection, error } = data;
-    const peers = this.get('model');
+    const peers = this.model;
     const peer = peers.findBy('peer.id', connection.peer);
 
     switch (error.type) {
@@ -122,7 +122,7 @@ export default Controller.extend({
 
   _onPeerP2POutgoingConnection(event, data) {
     const { connection } = data;
-    const peers = this.get('model');
+    const peers = this.model;
     const peer = peers.findBy('peer.id', connection.peer);
 
     peer.setProperties({
@@ -133,10 +133,10 @@ export default Controller.extend({
 
   _onPeerDCOutgoingConnection(event, data) {
     const { connection } = data;
-    const peers = this.get('model');
+    const peers = this.model;
     const peer = peers.findBy('peer.id', connection.peer);
     const file = peer.get('transfer.file');
-    const webrtc = this.get('webrtc');
+    const { webrtc } = this;
     const info = webrtc.getFileInfo(file);
 
     peer.set('peer.state', 'connected');
@@ -148,7 +148,7 @@ export default Controller.extend({
 
   _onPeerDCOutgoingConnectionError(event, data) {
     const { connection, error } = data;
-    const peers = this.get('model');
+    const peers = this.model;
     const peer = peers.findBy('peer.id', connection.peer);
 
     switch (error.type) {
@@ -167,7 +167,7 @@ export default Controller.extend({
 
   _onPeerP2PDisconnected(event, data) {
     const { connection } = data;
-    const peers = this.get('model');
+    const peers = this.model;
     const peer = peers.findBy('peer.id', connection.peer);
 
     if (peer) {
@@ -180,7 +180,7 @@ export default Controller.extend({
     console.log('Peer:\t Received file info', data);
 
     const { connection, info } = data;
-    const peers = this.get('model');
+    const peers = this.model;
     const peer = peers.findBy('peer.id', connection.peer);
 
     peer.set('transfer.info', info);
@@ -191,9 +191,9 @@ export default Controller.extend({
     console.log('Peer:\t Received file response', data);
 
     const { connection, response } = data;
-    const peers = this.get('model');
+    const peers = this.model;
     const peer = peers.findBy('peer.id', connection.peer);
-    const webrtc = this.get('webrtc');
+    const { webrtc } = this;
 
     if (response) {
       const file = peer.get('transfer.file');
@@ -210,7 +210,7 @@ export default Controller.extend({
 
   _onPeerP2PFileCanceled(event, data) {
     const { connection } = data;
-    const peers = this.get('model');
+    const peers = this.model;
     const peer = peers.findBy('peer.id', connection.peer);
 
     connection.close();
@@ -223,7 +223,7 @@ export default Controller.extend({
     console.log('Peer:\t Received file', data);
 
     const { connection } = data;
-    const peers = this.get('model');
+    const peers = this.model;
     const peer = peers.findBy('peer.id', connection.peer);
 
     connection.close();
@@ -237,7 +237,7 @@ export default Controller.extend({
     console.log('Peer:\t Sent file', data);
 
     const { connection } = data;
-    const peers = this.get('model');
+    const peers = this.model;
     const peer = peers.findBy('peer.id', connection.peer);
 
     peer.set('transfer.sendingProgress', 0);

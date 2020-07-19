@@ -1,6 +1,4 @@
-/* global process, require, __dirname */
-
-'use strict';
+/* eslint-env node */
 
 if (process.env.NODE_ENV === 'production') {
   // eslint-disable-next-line global-require
@@ -16,12 +14,12 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const cookieSession = require('cookie-session');
 const compression = require('compression');
-const uuid = require('node-uuid');
+const { v4: uuidv4 } = require('uuid');
 const crypto = require('crypto');
 const FirebaseTokenGenerator = require('firebase-token-generator');
 
 const firebaseTokenGenerator = new FirebaseTokenGenerator(
-  process.env.FIREBASE_SECRET
+  process.env.FIREBASE_SECRET,
 );
 const app = express();
 const secret = process.env.SECRET;
@@ -42,7 +40,7 @@ app.use(
     },
     secret,
     proxy: true,
-  })
+  }),
 );
 app.use(compression());
 
@@ -57,7 +55,7 @@ base.forEach((dir) => {
       `/${subdir}`,
       express.static(`${dir}/${subdir}`, {
         maxAge: 31104000000, // ~1 year
-      })
+      }),
     );
   });
 });
@@ -77,20 +75,17 @@ app.get('/rooms/:id', (req, res) => {
 
 app.get('/room', (req, res) => {
   const ip = req.headers['cf-connecting-ip'] || req.ip;
-  const name = crypto
-    .createHmac('md5', secret)
-    .update(ip)
-    .digest('hex');
+  const name = crypto.createHmac('md5', secret).update(ip).digest('hex');
 
   res.json({ name });
 });
 
 app.get('/auth', (req, res) => {
   const ip = req.headers['cf-connecting-ip'] || req.ip;
-  const uid = uuid.v1();
+  const uid = uuidv4();
   const token = firebaseTokenGenerator.createToken(
     { uid, id: uid }, // will be available in Firebase security rules as 'auth'
-    { expires: 32503680000 } // 01.01.3000 00:00
+    { expires: 32503680000 }, // 01.01.3000 00:00
   );
 
   res.json({ id: uid, token, public_ip: ip });
@@ -101,6 +96,6 @@ http
   .listen(process.env.PORT)
   .on('listening', () => {
     console.log(
-      `Started ShareDrop web server at http://localhost:${process.env.PORT}...`
+      `Started ShareDrop web server at http://localhost:${process.env.PORT}...`,
     );
   });

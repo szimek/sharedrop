@@ -31,27 +31,27 @@ export default Route.extend({
     // Handle peer events
     $.subscribe(
       'incoming_peer_connection.p2p',
-      ctrl._onPeerP2PIncomingConnection.bind(ctrl)
+      ctrl._onPeerP2PIncomingConnection.bind(ctrl),
     );
     $.subscribe(
       'incoming_dc_connection.p2p',
-      ctrl._onPeerDCIncomingConnection.bind(ctrl)
+      ctrl._onPeerDCIncomingConnection.bind(ctrl),
     );
     $.subscribe(
       'incoming_dc_connection_error.p2p',
-      ctrl._onPeerDCIncomingConnectionError.bind(ctrl)
+      ctrl._onPeerDCIncomingConnectionError.bind(ctrl),
     );
     $.subscribe(
       'outgoing_peer_connection.p2p',
-      ctrl._onPeerP2POutgoingConnection.bind(ctrl)
+      ctrl._onPeerP2POutgoingConnection.bind(ctrl),
     );
     $.subscribe(
       'outgoing_dc_connection.p2p',
-      ctrl._onPeerDCOutgoingConnection.bind(ctrl)
+      ctrl._onPeerDCOutgoingConnection.bind(ctrl),
     );
     $.subscribe(
       'outgoing_dc_connection_error.p2p',
-      ctrl._onPeerDCOutgoingConnectionError.bind(ctrl)
+      ctrl._onPeerDCOutgoingConnectionError.bind(ctrl),
     );
     $.subscribe('disconnected.p2p', ctrl._onPeerP2PDisconnected.bind(ctrl));
     $.subscribe('info.p2p', ctrl._onPeerP2PFileInfo.bind(ctrl));
@@ -86,9 +86,7 @@ export default Route.extend({
       $.unsubscribe('.room');
       $.unsubscribe('.p2p');
 
-      this.controllerFor('index')
-        .get('room')
-        .leave();
+      this.controllerFor('index').get('room').leave();
 
       return true;
     },

@@ -1,5 +1,6 @@
 import Component from '@ember/component';
 import { observer } from '@ember/object';
+import $ from 'jquery';
 
 export default Component.extend({
   tagName: 'svg',
@@ -12,30 +13,30 @@ export default Component.extend({
   transfer: null,
 
   didInsertElement() {
-    this.set('path', this.$().find('path'));
+    this.set('path', $(this.element).find('path'));
   },
 
-  sendingProgressDidChange: observer('transfer.sendingProgress', function() {
+  sendingProgressDidChange: observer('transfer.sendingProgress', function () {
     const progress = this.get('transfer.sendingProgress');
 
-    if (this.get('path')) {
+    if (this.path) {
       this._calculateSVGAnim(progress);
     }
   }),
 
   receivingProgressDidChange: observer(
     'transfer.receivingProgress',
-    function() {
+    function () {
       const progress = this.get('transfer.receivingProgress');
 
-      if (this.get('path')) {
+      if (this.path) {
         this._calculateSVGAnim(progress);
       }
-    }
+    },
   ),
 
   _calculateSVGAnim(progress) {
-    const path = this.get('path');
+    const { path } = this;
     if (!path) {
       return;
     }

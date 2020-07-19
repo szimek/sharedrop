@@ -603,6 +603,7 @@ Peer.prototype.connect = function(peer, options) {
     this.emit('error', new Error('Cannot connect to new Peer after disconnecting from server.'));
     return;
   }
+
   var connection = new DataConnection(peer, this, options);
   this._addConnection(peer, connection);
   return connection;

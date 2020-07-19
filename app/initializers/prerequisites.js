@@ -63,7 +63,7 @@ export function initialize(application) {
         'file',
         'received',
         'size',
-        Math.round(data.info.size / 1000)
+        Math.round(data.info.size / 1000),
       );
     });
   }

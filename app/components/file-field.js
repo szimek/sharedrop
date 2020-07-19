@@ -1,4 +1,5 @@
 import TextField from '@ember/component/text-field';
+import $ from 'jquery';
 
 export default TextField.extend({
   type: 'file',
@@ -21,12 +22,8 @@ export default TextField.extend({
   // so if sender wants later to send the same file again,
   // the 'change' event is triggered correctly.
   reset() {
-    const field = this.$();
-    field
-      .wrap('<form>')
-      .closest('form')
-      .get(0)
-      .reset();
+    const field = $(this.element);
+    field.wrap('<form>').closest('form').get(0).reset();
     field.unwrap();
   },
 });

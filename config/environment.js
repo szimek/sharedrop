@@ -1,6 +1,4 @@
-/* jshint node: true */
-
-module.exports = function(environment) {
+module.exports = function (environment) {
   const ENV = {
     modulePrefix: 'share-drop',
     environment,
@@ -9,7 +7,7 @@ module.exports = function(environment) {
     EmberENV: {
       FEATURES: {
         // Here you can enable experimental features on an ember canary build
-        // e.g. 'with-controller': true
+        // e.g. EMBER_NATIVE_DECORATOR_SUPPORT: true
       },
       EXTEND_PROTOTYPES: {
         // Prevent Ember Data from overriding Date.parse.
@@ -23,6 +21,8 @@ module.exports = function(environment) {
     },
 
     FIREBASE_URL: process.env.FIREBASE_URL,
+
+    exportApplicationGlobal: true,
   };
 
   if (environment === 'development') {
@@ -42,13 +42,12 @@ module.exports = function(environment) {
     ENV.APP.LOG_VIEW_LOOKUPS = false;
 
     ENV.APP.rootElement = '#ember-testing';
+    ENV.APP.autoboot = false;
   }
 
   if (environment === 'production') {
     ENV.GOOGLE_ANALYTICS_ID = 'UA-41889586-2';
   }
-
-  ENV.exportApplicationGlobal = true;
 
   return ENV;
 };

@@ -1,6 +1,6 @@
 import Controller from '@ember/controller';
 import { inject as service } from '@ember/service';
-import uuidv4 from 'uuid';
+import { v4 as uuidv4 } from 'uuid';
 
 import User from '../models/user';
 

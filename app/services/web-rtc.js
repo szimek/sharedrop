@@ -5,7 +5,7 @@
 import $ from 'jquery';
 import File from './file';
 
-const WebRTC = function(id, options) {
+const WebRTC = function (id, options) {
   const defaults = {
     config: { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] },
     debug: 3,
@@ -50,15 +50,12 @@ const WebRTC = function(id, options) {
 WebRTC.CHUNK_MTU = 16000;
 WebRTC.CHUNKS_PER_ACK = 64;
 
-WebRTC.prototype.connect = function(id) {
-  const connection = this.conn.connect(
-    id,
-    {
-      label: 'file',
-      reliable: true,
-      serialization: 'none', // we handle serialization ourselves
-    }
-  );
+WebRTC.prototype.connect = function (id) {
+  const connection = this.conn.connect(id, {
+    label: 'file',
+    reliable: true,
+    serialization: 'none', // we handle serialization ourselves
+  });
 
   connection.on('open', () => {
     console.log('Peer:\t Data channel connection opened: ', connection);
@@ -77,7 +74,7 @@ WebRTC.prototype.connect = function(id) {
   this._onConnection(connection);
 };
 
-WebRTC.prototype._onConnection = function(connection) {
+WebRTC.prototype._onConnection = function (connection) {
   const self = this;
 
   console.log('Peer:\t Opening data channel connection...', connection);
@@ -99,7 +96,7 @@ WebRTC.prototype._onConnection = function(connection) {
   });
 };
 
-WebRTC.prototype._onBinaryData = function(data, connection) {
+WebRTC.prototype._onBinaryData = function (data, connection) {
   const self = this;
   const incoming = this.files.incoming[connection.peer];
   const { info, file, block, receivedChunkNum } = incoming;
@@ -108,7 +105,7 @@ WebRTC.prototype._onBinaryData = function(data, connection) {
   // TODO move it after requesting a new block to speed things up
   connection.emit(
     'receiving_progress',
-    (receivedChunkNum + 1) / info.chunksTotal
+    (receivedChunkNum + 1) / info.chunksTotal,
   );
   // console.log('Got chunk no ' + (receivedChunkNum + 1) + ' out of ' + info.chunksTotal);
 
@@ -139,7 +136,7 @@ WebRTC.prototype._onBinaryData = function(data, connection) {
   }
 };
 
-WebRTC.prototype._onJSONData = function(data, connection) {
+WebRTC.prototype._onJSONData = function (data, connection) {
   switch (data.type) {
     case 'info': {
       const info = data.payload;
@@ -197,7 +194,7 @@ WebRTC.prototype._onJSONData = function(data, connection) {
   }
 };
 
-WebRTC.prototype.getFileInfo = function(file) {
+WebRTC.prototype.getFileInfo = function (file) {
   return {
     lastModifiedDate: file.lastModifiedDate,
     name: file.name,
@@ -207,7 +204,7 @@ WebRTC.prototype.getFileInfo = function(file) {
   };
 };
 
-WebRTC.prototype.sendFileInfo = function(connection, info) {
+WebRTC.prototype.sendFileInfo = function (connection, info) {
   const message = {
     type: 'info',
     payload: info,
@@ -216,7 +213,7 @@ WebRTC.prototype.sendFileInfo = function(connection, info) {
   connection.send(JSON.stringify(message));
 };
 
-WebRTC.prototype.sendCancelRequest = function(connection) {
+WebRTC.prototype.sendCancelRequest = function (connection) {
   const message = {
     type: 'cancel',
   };
@@ -224,7 +221,7 @@ WebRTC.prototype.sendCancelRequest = function(connection) {
   connection.send(JSON.stringify(message));
 };
 
-WebRTC.prototype.sendFileResponse = function(connection, response) {
+WebRTC.prototype.sendFileResponse = function (connection, response) {
   const message = {
     type: 'response',
     payload: response,
@@ -239,7 +236,7 @@ WebRTC.prototype.sendFileResponse = function(connection, response) {
       (file) => {
         incoming.file = file;
         connection.send(JSON.stringify(message));
-      }
+      },
     );
   } else {
     // Otherwise, delete stored file info
@@ -248,7 +245,7 @@ WebRTC.prototype.sendFileResponse = function(connection, response) {
   }
 };
 
-WebRTC.prototype.sendFile = function(connection, file) {
+WebRTC.prototype.sendFile = function (connection, file) {
   // Save the file for later
   this.files.outgoing[connection.peer] = {
     file,
@@ -259,7 +256,7 @@ WebRTC.prototype.sendFile = function(connection, file) {
   this._sendBlock(connection, file, 0);
 };
 
-WebRTC.prototype._requestFileBlock = function(connection, chunkNum) {
+WebRTC.prototype._requestFileBlock = function (connection, chunkNum) {
   const message = {
     type: 'block_request',
     payload: chunkNum,
@@ -267,7 +264,7 @@ WebRTC.prototype._requestFileBlock = function(connection, chunkNum) {
   connection.send(JSON.stringify(message));
 };
 
-WebRTC.prototype._sendBlock = function(connection, file, beginChunkNum) {
+WebRTC.prototype._sendBlock = function (connection, file, beginChunkNum) {
   const { info } = this.files.outgoing[connection.peer];
   const chunkSize = WebRTC.CHUNK_MTU;
   const chunksPerAck = WebRTC.CHUNKS_PER_ACK;
@@ -285,7 +282,7 @@ WebRTC.prototype._sendBlock = function(connection, file, beginChunkNum) {
   // console.log('Sending block: start chunk: ' + beginChunkNum + ' end chunk: ' + endChunkNum);
   // console.log('Sending block: start byte : ' + begin + ' end byte : ' + end);
 
-  reader.onload = function(event) {
+  reader.onload = function (event) {
     if (reader.readyState === FileReader.DONE) {
       const blockBuffer = event.target.result;
 
@@ -298,7 +295,7 @@ WebRTC.prototype._sendBlock = function(connection, file, beginChunkNum) {
         const bufferBegin = (chunkNum % chunksPerAck) * chunkSize;
         const bufferEnd = Math.min(
           bufferBegin + chunkSize,
-          blockBuffer.byteLength
+          blockBuffer.byteLength,
         );
         const chunkBuffer = blockBuffer.slice(bufferBegin, bufferEnd);
 
