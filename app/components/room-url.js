@@ -1,10 +1,11 @@
 import TextField from '@ember/component/text-field';
+import $ from 'jquery';
 
 export default TextField.extend({
   classNames: ['room-url'],
 
   didInsertElement() {
-    this.$()
+    $(this.element)
       .focus()
       .select();
   },
@@ -13,7 +14,7 @@ export default TextField.extend({
     if (window.ClipboardEvent) {
       const pasteEvent = new window.ClipboardEvent('paste', {
         dataType: 'text/plain',
-        data: this.$().val(),
+        data: this.element.value,
       });
       document.dispatchEvent(pasteEvent);
     }

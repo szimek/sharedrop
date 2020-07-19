@@ -38,7 +38,7 @@ export default Component.extend({
   actions: {
     // TODO: rename to something more meaningful (e.g. askIfWantToSendFile)
     uploadFile(data) {
-      const peer = this.get('peer');
+      const { peer } = this;
       const { file } = data;
 
       // Cache the file, so that it's available
@@ -48,8 +48,8 @@ export default Component.extend({
     },
 
     sendFileTransferInquiry() {
-      const webrtc = this.get('webrtc');
-      const peer = this.get('peer');
+      const { webrtc } = this;
+      const { peer } = this;
 
       webrtc.connect(peer.get('peer.id'));
       peer.set('state', 'establishing_connection');
@@ -62,14 +62,14 @@ export default Component.extend({
     abortFileTransfer() {
       this._cancelFileTransfer();
 
-      const webrtc = this.get('webrtc');
+      const { webrtc } = this;
       const connection = this.get('peer.peer.connection');
 
       webrtc.sendCancelRequest(connection);
     },
 
     acceptFileTransfer() {
-      const peer = this.get('peer');
+      const { peer } = this;
 
       this._sendFileTransferResponse(true);
 
@@ -80,7 +80,7 @@ export default Component.extend({
     },
 
     rejectFileTransfer() {
-      const peer = this.get('peer');
+      const { peer } = this;
 
       this._sendFileTransferResponse(false);
       peer.set('transfer.info', null);
@@ -89,7 +89,7 @@ export default Component.extend({
   },
 
   _cancelFileTransfer() {
-    const peer = this.get('peer');
+    const { peer } = this;
 
     peer.setProperties({
       'transfer.file': null,
@@ -98,8 +98,8 @@ export default Component.extend({
   },
 
   _sendFileTransferResponse(response) {
-    const webrtc = this.get('webrtc');
-    const peer = this.get('peer');
+    const { webrtc } = this;
+    const { peer } = this;
     const connection = peer.get('peer.connection');
 
     webrtc.sendFileResponse(connection, response);

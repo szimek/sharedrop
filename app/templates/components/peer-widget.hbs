@@ -1,53 +1,58 @@
-<!-- Sender related popups -->
-{{#popover-confirm
-  isVisible=hasSelectedFile
-  onConfirm=(action "sendFileTransferInquiry")
-  onCancel=(action "cancelFileTransfer")
-  confirmButtonLabel="Send"
-  cancelButtonLabel="Cancel"
-  filename=filename
-}}
-  Do you want to send <strong>"{{filename}}"</strong> to <strong>"{{label}}"</strong>?
-{{/popover-confirm}}
+{{! Sender related popups }}
+{{#if hasSelectedFile}}
+  {{#popover-confirm
+    onConfirm=(action "sendFileTransferInquiry")
+    onCancel=(action "cancelFileTransfer")
+    confirmButtonLabel="Send"
+    cancelButtonLabel="Cancel"
+    filename=filename
+  }}
+    Do you want to send <strong>"{{filename}}"</strong> to <strong>"{{label}}"</strong>?
+  {{/popover-confirm}}
+{{/if}}
 
-{{#popover-confirm
-  isVisible=isAwaitingResponse
-  onCancel=(action "abortFileTransfer")
-  cancelButtonLabel="Cancel"
-  filename=filename
-}}
-  Waiting for <strong>"{{label}}"</strong> to accept&hellip;
-{{/popover-confirm}}
+{{#if isAwaitingResponse}}
+  {{#popover-confirm
+    onCancel=(action "abortFileTransfer")
+    cancelButtonLabel="Cancel"
+    filename=filename
+  }}
+    Waiting for <strong>"{{label}}"</strong> to accept&hellip;
+  {{/popover-confirm}}
+{{/if}}
 
-{{#popover-confirm
-  isVisible=hasDeclinedFileTransfer
-  onConfirm=(action "cancelFileTransfer")
-  confirmButtonLabel="Ok"
-  filename=filename
-}}
-  <strong>"{{label}}"</strong> has declined your request.
-{{/popover-confirm}}
+{{#if hasDeclinedFileTransfer}}
+  {{#popover-confirm
+    onConfirm=(action "cancelFileTransfer")
+    confirmButtonLabel="Ok"
+    filename=filename
+  }}
+    <strong>"{{label}}"</strong> has declined your request.
+  {{/popover-confirm}}
+{{/if}}
 
-{{#popover-confirm
-  isVisible=hasError
-  onConfirm=(action "cancelFileTransfer")
-  confirmButtonLabel="Ok"
-  filename=filename
-}}
-  {{partial errorTemplateName}}
-{{/popover-confirm}}
+{{#if hasError}}
+  {{#popover-confirm
+    onConfirm=(action "cancelFileTransfer")
+    confirmButtonLabel="Ok"
+    filename=filename
+  }}
+    {{partial errorTemplateName}}
+  {{/popover-confirm}}
+{{/if}}
 
-<!-- Recipient related popups -->
-{{#popover-confirm
-  isVisible=hasReceivedFileInfo
-  onConfirm=(action "acceptFileTransfer")
-  onCancel=(action "rejectFileTransfer")
-  confirmButtonLabel="Save"
-  cancelButtonLabel="Decline"
-  filename=filename
-}}
-  <strong>"{{label}}"</strong> wants to send you <strong>"{{filename}}"</strong>.
-{{/popover-confirm}}
+{{! Recipient related popups }}
+{{#if hasReceivedFileInfo}}
+  {{#popover-confirm
+    onConfirm=(action "acceptFileTransfer")
+    onCancel=(action "rejectFileTransfer")
+    confirmButtonLabel="Save"
+    cancelButtonLabel="Decline"
+    filename=filename
+  }}
+    <strong>"{{label}}"</strong> wants to send you <strong>"{{filename}}"</strong>.
+  {{/popover-confirm}}
+{{/if}}
 
 <div class="avatar">
   {{progress-bar transfer=peer.transfer}}

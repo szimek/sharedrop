@@ -3,9 +3,8 @@ import { computed } from '@ember/object';
 
 export default Component.extend({
   classNames: ['popover-confirm'],
-  isVisible: false,
   iconClass: computed('filename', function() {
-    const filename = this.get('filename');
+    const { filename } = this;
 
     if (filename) {
       const regex = /\.([0-9a-z]+)$/i;

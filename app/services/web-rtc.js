@@ -57,7 +57,7 @@ WebRTC.prototype.connect = function(id) {
       label: 'file',
       reliable: true,
       serialization: 'none', // we handle serialization ourselves
-    }
+    },
   );
 
   connection.on('open', () => {
@@ -108,7 +108,7 @@ WebRTC.prototype._onBinaryData = function(data, connection) {
   // TODO move it after requesting a new block to speed things up
   connection.emit(
     'receiving_progress',
-    (receivedChunkNum + 1) / info.chunksTotal
+    (receivedChunkNum + 1) / info.chunksTotal,
   );
   // console.log('Got chunk no ' + (receivedChunkNum + 1) + ' out of ' + info.chunksTotal);
 
@@ -239,7 +239,7 @@ WebRTC.prototype.sendFileResponse = function(connection, response) {
       (file) => {
         incoming.file = file;
         connection.send(JSON.stringify(message));
-      }
+      },
     );
   } else {
     // Otherwise, delete stored file info
@@ -298,7 +298,7 @@ WebRTC.prototype._sendBlock = function(connection, file, beginChunkNum) {
         const bufferBegin = (chunkNum % chunksPerAck) * chunkSize;
         const bufferEnd = Math.min(
           bufferBegin + chunkSize,
-          blockBuffer.byteLength
+          blockBuffer.byteLength,
         );
         const chunkBuffer = blockBuffer.slice(bufferBegin, bufferEnd);
 

@@ -1,6 +1,4 @@
-/* global process, require, __dirname */
-
-'use strict';
+/* eslint-env node */
 
 if (process.env.NODE_ENV === 'production') {
   // eslint-disable-next-line global-require
@@ -21,7 +19,7 @@ const crypto = require('crypto');
 const FirebaseTokenGenerator = require('firebase-token-generator');
 
 const firebaseTokenGenerator = new FirebaseTokenGenerator(
-  process.env.FIREBASE_SECRET
+  process.env.FIREBASE_SECRET,
 );
 const app = express();
 const secret = process.env.SECRET;
@@ -42,7 +40,7 @@ app.use(
     },
     secret,
     proxy: true,
-  })
+  }),
 );
 app.use(compression());
 
@@ -57,7 +55,7 @@ base.forEach((dir) => {
       `/${subdir}`,
       express.static(`${dir}/${subdir}`, {
         maxAge: 31104000000, // ~1 year
-      })
+      }),
     );
   });
 });
@@ -90,7 +88,7 @@ app.get('/auth', (req, res) => {
   const uid = uuid.v1();
   const token = firebaseTokenGenerator.createToken(
     { uid, id: uid }, // will be available in Firebase security rules as 'auth'
-    { expires: 32503680000 } // 01.01.3000 00:00
+    { expires: 32503680000 }, // 01.01.3000 00:00
   );
 
   res.json({ id: uid, token, public_ip: ip });
@@ -101,6 +99,6 @@ http
   .listen(process.env.PORT)
   .on('listening', () => {
     console.log(
-      `Started ShareDrop web server at http://localhost:${process.env.PORT}...`
+      `Started ShareDrop web server at http://localhost:${process.env.PORT}...`,
     );
   });

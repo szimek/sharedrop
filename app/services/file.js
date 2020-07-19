@@ -24,7 +24,7 @@ const File = function(options) {
       (error) => {
         self.errorHandler(error);
         reject(error);
-      }
+      },
     );
   });
 };
@@ -53,7 +53,7 @@ File.removeAll = function() {
       (error) => {
         console.log(error);
         reject(error);
-      }
+      },
     );
   });
 };
@@ -99,13 +99,13 @@ File.prototype.append = function(data) {
           (error) => {
             self.errorHandler(error);
             reject(error);
-          }
+          },
         );
       },
       (error) => {
         self.errorHandler(error);
         reject(error);
-      }
+      },
     );
   });
 };
@@ -163,13 +163,13 @@ File.prototype.remove = function() {
           (error) => {
             self.errorHandler(error);
             reject(error);
-          }
+          },
         );
       },
       (error) => {
         self.errorHandler(error);
         reject(error);
-      }
+      },
     );
   });
 };

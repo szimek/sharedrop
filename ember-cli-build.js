@@ -1,5 +1,3 @@
-'use strict';
-
 /* eslint-env node */
 const EmberApp = require('ember-cli/lib/broccoli/ember-app');
 
@@ -26,7 +24,7 @@ module.exports = function(defaults) {
         postProcess(content) {
           return content.replace(
             /\{\{GOOGLE_ANALYTICS_ID\}\}/g,
-            config.GOOGLE_ANALYTICS_ID
+            config.GOOGLE_ANALYTICS_ID,
           );
         },
       },

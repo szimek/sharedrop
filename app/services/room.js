@@ -55,7 +55,7 @@ Room.prototype.join = function(user) {
         () => {
           // Handle case when the whole room is removed from Firebase
           $.publish('disconnected.room');
-        }
+        },
       );
 
       self._usersRef.on('child_changed', (userChangedSnapshot) => {

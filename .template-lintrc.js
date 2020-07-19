@@ -1,16 +1,11 @@
-'use strict';
-
 module.exports = {
-  extends: 'recommended',
+  extends: 'octane',
+
+  // TODO: enable these
   rules: {
-    'no-html-comments': false,
+    'no-action': false,
+    'no-curly-component-invocation': false,
+    'no-implicit-this': false,
     'no-partial': false,
   },
-  ignore: [
-    './node_modules/**',
-    './vendor/**',
-    './tmp/**',
-    './dist/**',
-    './tests/**',
-  ],
 };
