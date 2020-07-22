@@ -59,12 +59,11 @@ export function initialize(application) {
   // TODO: move it to a separate initializer
   function trackSizeOfReceivedFiles() {
     $.subscribe('file_received.p2p', (event, data) => {
-      Analytics.trackEvent(
-        'file',
-        'received',
-        'size',
-        Math.round(data.info.size / 1000),
-      );
+      Analytics.trackEvent('received', {
+        event_category: 'file',
+        event_label: 'size',
+        value: Math.round(data.info.size / 1000),
+      });
     });
   }
 

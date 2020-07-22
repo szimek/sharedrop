@@ -93,5 +93,10 @@
   },
   "ember": {
     "edition": "octane"
+  },
+  "ember-addon": {
+    "paths": [
+      "lib/google-analytics"
+    ]
   }
 }

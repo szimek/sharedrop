@@ -1,9 +1,6 @@
 /* eslint-env node */
 const EmberApp = require('ember-cli/lib/broccoli/ember-app');
 
-const env = process.env.EMBER_ENV;
-const config = require('./config/environment')(env);
-
 module.exports = function (defaults) {
   const app = new EmberApp(defaults, {
     dotEnv: {
@@ -15,19 +12,6 @@ module.exports = function (defaults) {
       extensions: ['js', 'css', 'png', 'jpg', 'gif', 'map'],
       generateAssetMap: true,
       fingerprintAssetMap: true,
-    },
-
-    inlineContent: {
-      analytics: {
-        file: 'app/analytics.html',
-        enabled: !!config.GOOGLE_ANALYTICS_ID,
-        postProcess(content) {
-          return content.replace(
-            /\{\{GOOGLE_ANALYTICS_ID\}\}/g,
-            config.GOOGLE_ANALYTICS_ID,
-          );
-        },
-      },
     },
 
     sassOptions: {
