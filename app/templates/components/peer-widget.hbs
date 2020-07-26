@@ -55,7 +55,14 @@
 {{/if}}
 
 <div class="avatar">
-  {{progress-bar transfer=peer.transfer}}
+  {{#if peer.transfer}}
+    {{#if peer.transfer.receivingProgress}}
+      <CircularProgress @value={{peer.transfer.receivingProgress}} />
+    {{else if peer.transfer.sendingProgress}}
+      <CircularProgress @value={{peer.transfer.sendingProgress}} />
+    {{/if}}
+  {{/if}}
+
   {{peer-avatar peer=peer onFileDrop=(action "uploadFile")}}
 </div>
 
