@@ -3,6 +3,11 @@ const EmberApp = require('ember-cli/lib/broccoli/ember-app');
 
 module.exports = function (defaults) {
   const app = new EmberApp(defaults, {
+    autoImport: {
+      alias: {
+        jszip: require.resolve('jszip/lib/index.js'),
+      },
+    },
     dotEnv: {
       clientAllowedKeys: ['FIREBASE_URL'],
     },

@@ -1,5 +1,6 @@
 import TextField from '@ember/component/text-field';
 import $ from 'jquery';
+import JSZip from 'jszip';
 
 export default TextField.extend({
   type: 'file',
@@ -12,9 +13,23 @@ export default TextField.extend({
   change(event) {
     const input = event.target;
     const { files } = input;
-    const file = files[0];
 
-    this.onChange({ file });
+    if (files.length > 1) {
+      const zip = new JSZip();
+      files.forEach((file) => {
+        zip.file(file.name, file);
+      });
+
+      zip.generateAsync({ type: 'blob' }).then(function (blob) {
+        this.onChange({
+          file: new File([blob], 'sharedrop.zip', {
+            type: 'application/zip',
+          }),
+        });
+      });
+    } else {
+      this.onchange({ file: files[0] });
+    }
     this.reset();
   },
 
