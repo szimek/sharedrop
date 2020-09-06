@@ -48,6 +48,7 @@
     "ember-resolver": "^7.0.0",
     "ember-source": "~3.17.0",
     "ember-template-lint": "^2.4.0",
+    "emberx-file-input": "^1.2.1",
     "eslint": "^7.5.0",
     "eslint-config-airbnb-base": "^14.1.0",
     "eslint-config-prettier": "^6.11.0",
@@ -75,6 +76,7 @@
     "lodash": "^4.17.11",
     "morgan": "^1.5.0",
     "newrelic": "^6.11.0",
+    "stream": "^0.0.2",
     "uuid": "^8.2.0"
   },
   "husky": {
@@ -90,7 +92,7 @@
     ]
   },
   "engines": {
-    "node": "12.*"
+    "node": ">=12.*"
   },
   "ember": {
     "edition": "octane"
