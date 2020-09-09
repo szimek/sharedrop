@@ -48,7 +48,6 @@
     "ember-resolver": "^7.0.0",
     "ember-source": "~3.17.0",
     "ember-template-lint": "^2.4.0",
-    "emberx-file-input": "^1.2.1",
     "eslint": "^7.5.0",
     "eslint-config-airbnb-base": "^14.1.0",
     "eslint-config-prettier": "^6.11.0",
