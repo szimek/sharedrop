@@ -1,32 +1,7 @@
 import Component from '@ember/component';
 import { computed } from '@ember/object';
-import { alias, equal } from '@ember/object/computed';
+import { alias, equal, gt } from '@ember/object/computed';
 import JSZip from 'jszip';
-
-function reduceFiles(files) {
-  if (files.length === 1) {
-    return Promise.resolve(files[0]);
-  }
-
-  const zip = new JSZip();
-  Array.prototype.forEach.call(files, (file) => {
-    zip.file(file.name, file);
-  });
-
-  return zip.generateAsync({ type: 'blob' }).then(
-    (blob) =>
-      new File(
-        [blob],
-        `sharedrop-${new Date()
-          .toISOString()
-          .substring(0, 19)
-          .replace('T', '-')}.zip`,
-        {
-          type: 'application/zip',
-        },
-      ),
-  );
-}
 
 export default Component.extend({
   classNames: ['peer'],
@@ -48,6 +23,9 @@ export default Component.extend({
   hasDeclinedFileTransfer: equal('peer.state', 'declined_file_transfer'),
   hasError: equal('peer.state', 'error'),
 
+  isReceivingFile: gt('peer.transfer.receivingProgress', 0),
+  isSendingFile: gt('peer.transfer.sendingProgress', 0),
+
   filename: computed('peer.transfer.{file,info}', function () {
     const file = this.get('peer.transfer.file');
     const info = this.get('peer.transfer.info');
@@ -62,6 +40,12 @@ export default Component.extend({
     return null;
   }),
 
+  errorTemplateName: computed('peer.errorCode', function () {
+    const errorCode = this.get('peer.errorCode');
+
+    return errorCode ? `errors/popovers/${errorCode}` : null;
+  }),
+
   actions: {
     // TODO: rename to something more meaningful (e.g. askIfWantToSendFile)
     uploadFile(data) {
@@ -69,10 +53,11 @@ export default Component.extend({
       const { files } = data;
 
       peer.set('state', 'is_preparing_file_transfer');
+      peer.set('bundlingProgress', 0);
 
       // Cache the file, so that it's available
       // when the response from the recipient comes in
-      reduceFiles(files).then((file) => {
+      this._reduceFiles(files).then((file) => {
         peer.set('transfer.file', file);
         peer.set('state', 'has_selected_file');
       });
@@ -136,9 +121,35 @@ export default Component.extend({
     webrtc.sendFileResponse(connection, response);
   },
 
-  errorTemplateName: computed('peer.errorCode', function () {
-    const errorCode = this.get('peer.errorCode');
+  async _reduceFiles(files) {
+    const { peer } = this;
 
-    return errorCode ? `errors/popovers/${errorCode}` : null;
-  }),
+    if (files.length === 1) {
+      return Promise.resolve(files[0]);
+    }
+
+    const zip = new JSZip();
+
+    Array.prototype.forEach.call(files, (file) => {
+      zip.file(file.name, file);
+    });
+
+    const blob = await zip.generateAsync(
+      { type: 'blob', streamFiles: true },
+      (metadata) => {
+        peer.set('bundlingProgress', metadata.percent / 100);
+      },
+    );
+
+    return new File(
+      [blob],
+      `sharedrop-${new Date()
+        .toISOString()
+        .substring(0, 19)
+        .replace('T', '-')}.zip`,
+      {
+        type: 'application/zip',
+      },
+    );
+  },
 });

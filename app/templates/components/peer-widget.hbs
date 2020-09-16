@@ -55,11 +55,13 @@
 {{/if}}
 
 <div class="avatar">
-  {{#if peer.transfer}}
+  {{#if isPreparingFileTransfer}}
+    <CircularProgress @value={{peer.bundlingProgress}} @color="orange" />
+  {{else if peer.transfer}}
     {{#if peer.transfer.receivingProgress}}
-      <CircularProgress @value={{peer.transfer.receivingProgress}} />
+      <CircularProgress @value={{peer.transfer.receivingProgress}} @color="blue" />
     {{else if peer.transfer.sendingProgress}}
-      <CircularProgress @value={{peer.transfer.sendingProgress}} />
+      <CircularProgress @value={{peer.transfer.sendingProgress}} @color="blue" />
     {{/if}}
   {{/if}}
 
@@ -70,13 +72,18 @@
   <div class="user-ip">
     <div class="user-connection-status {{peer.peer.state}}"></div>
     <span>{{peer.label}}</span>
+
     {{#if isPreparingFileTransfer}}
-    <div>
-        Is packaging selected files
+      <div>
+        Bundling files...
         <br><br>
         TIP: You can archive files on your device beforehand to speed up the operation
-        </div>
-      {{/if}}
+      </div>
+    {{else if isReceivingFile}}
+      <div>Receiving file...</div>
+    {{else if isSendingFile}}
+      <div>Sending file...</div>
+    {{/if}}
   </div>
 </div>
 

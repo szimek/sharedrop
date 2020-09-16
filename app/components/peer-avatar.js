@@ -112,7 +112,11 @@ export default Component.extend({
     const { peer } = this;
 
     // Can't send files if another file transfer is already in progress
-    return !(peer.get('transfer.file') || peer.get('transfer.info'));
+    return !(
+      peer.get('state') === 'is_preparing_file_transfer' ||
+      peer.get('transfer.file') ||
+      peer.get('transfer.info')
+    );
   },
 
   isTransferableBundle(files) {

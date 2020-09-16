@@ -1,6 +1,19 @@
 import Component from '@glimmer/component';
+import { htmlSafe } from '@ember/template';
+
+const COLORS = {
+  blue: '0, 136, 204',
+  orange: '197, 197, 51',
+};
 
 export default class CircularProgress extends Component {
+  constructor(owner, args) {
+    super(owner, args);
+
+    const rgb = COLORS[args.color];
+    this.style = htmlSafe(`fill: rgba(${rgb}, .5)`);
+  }
+
   get path() {
     const π = Math.PI;
     const α = this.args.value * 360;
