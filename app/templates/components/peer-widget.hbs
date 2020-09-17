@@ -1,4 +1,4 @@
-{{! Sender related popups }}
+{{! Sender related messages }}
 {{#if hasSelectedFile}}
   {{#popover-confirm
     onConfirm=(action "sendFileTransferInquiry")
@@ -70,7 +70,14 @@
   <div class="user-ip">
     <div class="user-connection-status {{peer.peer.state}}"></div>
     <span>{{peer.label}}</span>
+    {{#if isPreparingFileTransfer}}
+    <div>
+        Is packaging selected files
+        <br><br>
+        TIP: You can archive files on your device beforehand to speed up the operation
+        </div>
+      {{/if}}
   </div>
 </div>
 
-{{file-field onChange=(action "uploadFile")}}
+{{file-field multiple=true onChange=(action "uploadFile")}}

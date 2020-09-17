@@ -1,6 +1,32 @@
 import Component from '@ember/component';
 import { computed } from '@ember/object';
 import { alias, equal } from '@ember/object/computed';
+import JSZip from 'jszip';
+
+function reduceFiles(files) {
+  if (files.length === 1) {
+    return Promise.resolve(files[0]);
+  }
+
+  const zip = new JSZip();
+  Array.prototype.forEach.call(files, (file) => {
+    zip.file(file.name, file);
+  });
+
+  return zip.generateAsync({ type: 'blob' }).then(
+    (blob) =>
+      new File(
+        [blob],
+        `sharedrop-${new Date()
+          .toISOString()
+          .substring(0, 19)
+          .replace('T', '-')}.zip`,
+        {
+          type: 'application/zip',
+        },
+      ),
+  );
+}
 
 export default Component.extend({
   classNames: ['peer'],
@@ -13,6 +39,7 @@ export default Component.extend({
   label: alias('peer.label'),
 
   isIdle: equal('peer.state', 'idle'),
+  isPreparingFileTransfer: equal('peer.state', 'is_preparing_file_transfer'),
   hasSelectedFile: equal('peer.state', 'has_selected_file'),
   isSendingFileInfo: equal('peer.state', 'sending_file_info'),
   isAwaitingFileInfo: equal('peer.state', 'awaiting_file_info'),
@@ -39,12 +66,16 @@ export default Component.extend({
     // TODO: rename to something more meaningful (e.g. askIfWantToSendFile)
     uploadFile(data) {
       const { peer } = this;
-      const { file } = data;
+      const { files } = data;
+
+      peer.set('state', 'is_preparing_file_transfer');
 
       // Cache the file, so that it's available
       // when the response from the recipient comes in
-      peer.set('transfer.file', file);
-      peer.set('state', 'has_selected_file');
+      reduceFiles(files).then((file) => {
+        peer.set('transfer.file', file);
+        peer.set('state', 'has_selected_file');
+      });
     },
 
     sendFileTransferInquiry() {

@@ -12,9 +12,7 @@ export default TextField.extend({
   change(event) {
     const input = event.target;
     const { files } = input;
-    const file = files[0];
-
-    this.onChange({ file });
+    this.onChange({ files });
     this.reset();
   },
 

@@ -71,9 +71,11 @@
     "cookie-session": "^1.1.0",
     "express": "^4.10.6",
     "firebase-token-generator": "~2.0.0",
+    "jszip": "^3.5.0",
     "lodash": "^4.17.11",
     "morgan": "^1.5.0",
     "newrelic": "^6.11.0",
+    "stream": "^0.0.2",
     "uuid": "^8.2.0"
   },
   "husky": {
@@ -89,7 +91,7 @@
     ]
   },
   "engines": {
-    "node": "12.*"
+    "node": ">=12.*"
   },
   "ember": {
     "edition": "octane"

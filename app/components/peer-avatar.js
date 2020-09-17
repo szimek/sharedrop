@@ -2,7 +2,6 @@ import Component from '@ember/component';
 import { alias } from '@ember/object/computed';
 import { later } from '@ember/runloop';
 import $ from 'jquery';
-import { Promise } from 'rsvp';
 
 export default Component.extend({
   tagName: 'img',
@@ -91,18 +90,15 @@ export default Component.extend({
     const { peer } = this;
     const dt = event.originalEvent.dataTransfer;
     const { files } = dt;
-    const file = files[0];
 
     if (this.canSendFile()) {
-      if (files.length > 1) {
+      if (!this.isTransferableBundle(files)) {
         peer.setProperties({
           state: 'error',
           errorCode: 'multiple-files',
         });
       } else {
-        this.isFile(file).then(() => {
-          this.onFileDrop({ file });
-        });
+        this.onFileDrop({ files });
       }
     }
   },
@@ -119,27 +115,25 @@ export default Component.extend({
     return !(peer.get('transfer.file') || peer.get('transfer.info'));
   },
 
-  isFile(file) {
-    return new Promise((resolve, reject) => {
-      if (file instanceof window.File) {
-        if (file.size > 1048576) {
-          // It's bigger than 1MB, so we assume it's a file
-          resolve();
-        } else {
-          // Try to read it using FileReader - if it's not a file,
-          // it should trigger onerror handler
-          const reader = new FileReader();
-          reader.onload = function () {
-            resolve();
-          };
-          reader.onerror = function () {
-            reject();
-          };
-          reader.readAsArrayBuffer(file);
-        }
-      } else {
-        reject();
+  isTransferableBundle(files) {
+    if (files.length === 1 && files[0] instanceof window.File) return true;
+
+    const fileSizeLimit = 50 * 1024 * 1024;
+    const bundleSizeLimit = 200 * 1024 * 1024;
+    let aggregatedSize = 0;
+    // eslint-disable-next-line no-restricted-syntax
+    for (const file of files) {
+      if (!(file instanceof window.File)) {
+        return false;
       }
-    });
+      if (file.size > fileSizeLimit) {
+        return false;
+      }
+      aggregatedSize += file.size;
+      if (aggregatedSize > bundleSizeLimit) {
+        return false;
+      }
+    }
+    return true;
   },
 });
