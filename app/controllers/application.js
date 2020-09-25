@@ -10,8 +10,8 @@ export default Controller.extend({
   init(...args) {
     this._super(args);
 
-    const id = window.ShareDrop.userId;
-    const ip = window.ShareDrop.publicIp;
+    const id = window.Sharedrop.userId;
+    const ip = window.Sharedrop.publicIp;
     const avatar = this.avatarService.get();
     const you = User.create({
       uuid: id,

@@ -1,7 +1,7 @@
 /* jshint -W030 */
 import $ from 'jquery';
 import { Promise } from 'rsvp';
-import config from 'share-drop/config/environment';
+import config from 'sharedrop/config/environment';
 
 import FileSystem from '../services/file';
 import Analytics from '../services/analytics';

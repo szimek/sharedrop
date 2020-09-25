@@ -65,12 +65,13 @@ base.forEach((dir) => {
 //
 app.get('/', (req, res) => {
   const root = path.join(__dirname, base[0]);
-  res.sendfile(`${root}/index.html`);
+  console.log({ root });
+  res.sendFile(`${root}/index.html`);
 });
 
 app.get('/rooms/:id', (req, res) => {
   const root = path.join(__dirname, base[0]);
-  res.sendfile(`${root}/index.html`);
+  res.sendFile(`${root}/index.html`);
 });
 
 app.get('/room', (req, res) => {

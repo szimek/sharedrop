@@ -1,6 +1,5 @@
 import EmberRouter from '@ember/routing/router';
-// eslint-disable-next-line import/extensions
-import config from './config/environment';
+import config from 'sharedrop/config/environment';
 
 export default class Router extends EmberRouter {
   location = config.locationType;

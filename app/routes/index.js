@@ -5,7 +5,7 @@ import Room from '../services/room';
 
 export default Route.extend({
   beforeModel() {
-    const { error } = window.ShareDrop;
+    const { error } = window.Sharedrop;
 
     if (error) {
       throw new Error(error);
@@ -61,7 +61,7 @@ export default Route.extend({
     $.subscribe('file_sent.p2p', ctrl._onPeerP2PFileSent.bind(ctrl));
 
     // Join the room
-    const room = new Room(model, window.ShareDrop.ref);
+    const room = new Room(model, window.Sharedrop.ref);
     room.join(ctrl.get('you').serialize());
     ctrl.set('room', room);
   },
@@ -86,7 +86,9 @@ export default Route.extend({
       $.unsubscribe('.room');
       $.unsubscribe('.p2p');
 
-      this.controllerFor('index').get('room').leave();
+      // eslint-disable-next-line ember/no-controller-access-in-routes
+      const controller = this.controllerFor('index');
+      controller.get('room').leave();
 
       return true;
     },

@@ -1,6 +1,6 @@
 module.exports = function (environment) {
   const ENV = {
-    modulePrefix: 'share-drop',
+    modulePrefix: 'sharedrop',
     environment,
     rootURL: '/',
     locationType: 'auto',

@@ -1,10 +1,8 @@
 /* eslint */
 import { setApplication } from '@ember/test-helpers';
 import { start } from 'ember-qunit';
-// eslint-disable-next-line import/extensions
-import Application from '../app';
-// eslint-disable-next-line import/extensions
-import config from '../config/environment';
+import Application from 'sharedrop/app';
+import config from 'sharedrop/config/environment';
 
 setApplication(Application.create(config.APP));
 

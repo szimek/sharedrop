@@ -25,7 +25,7 @@ export default Controller.extend({
       'webrtc',
       new WebRTC(you.get('uuid'), {
         room: room.name,
-        firebaseRef: window.ShareDrop.ref,
+        firebaseRef: window.Sharedrop.ref,
       }),
     );
   },

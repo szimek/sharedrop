@@ -3,10 +3,6 @@ const EmberApp = require('ember-cli/lib/broccoli/ember-app');
 
 module.exports = function (defaults) {
   const app = new EmberApp(defaults, {
-    dotEnv: {
-      clientAllowedKeys: ['FIREBASE_URL'],
-    },
-
     fingerprint: {
       // Don't include SVG files, because of animal icons being loaded dynamically
       extensions: ['js', 'css', 'png', 'jpg', 'gif', 'map'],
