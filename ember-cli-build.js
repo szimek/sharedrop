@@ -3,20 +3,17 @@ const EmberApp = require('ember-cli/lib/broccoli/ember-app');
 
 module.exports = function (defaults) {
   const app = new EmberApp(defaults, {
+    // Don't include SVG files, because of animal icons being loaded dynamically
     fingerprint: {
-      // Don't include SVG files, because of animal icons being loaded dynamically
       extensions: ['js', 'css', 'png', 'jpg', 'gif', 'map'],
-      generateAssetMap: true,
-      fingerprintAssetMap: true,
     },
 
-    sassOptions: {
-      extension: 'sass',
-    },
+    // Generate source maps in production as well
+    sourcemaps: { enabled: true },
 
-    SRI: {
-      enabled: false,
-    },
+    sassOptions: { extension: 'sass' },
+
+    SRI: { enabled: false },
   });
 
   // Use `app.import` to add additional libraries to the generated
