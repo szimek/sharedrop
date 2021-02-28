@@ -95,7 +95,7 @@
     ]
   },
   "engines": {
-    "node": ">=12.*"
+    "node": "^12.21.0"
   },
   "ember": {
     "edition": "octane"
