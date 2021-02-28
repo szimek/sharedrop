@@ -48,7 +48,7 @@ app.use(compression());
 // Web server
 //
 base.forEach((dir) => {
-  const subdirs = ['assets'];
+  const subdirs = ['assets', '.well-known'];
 
   subdirs.forEach((subdir) => {
     app.use(

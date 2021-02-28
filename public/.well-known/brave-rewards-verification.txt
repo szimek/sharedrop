@@ -1,0 +1,4 @@
+This is a Brave Rewards publisher verification file.
+
+Domain: sharedrop.io
+Token: d463c371edd92de3a09b0ccf1ce8143b9ee7f8c5611734f7ab58e2b67934b4bb
