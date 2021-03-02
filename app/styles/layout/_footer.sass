@@ -2,8 +2,8 @@
   position: fixed
   z-index: 200
   bottom: 0
-  width: 100%
-  height: 54px
+  left: 0
+  right: 0
   background-color: rgba(white,.6)
   text-align: center
   color: #b0b0b0
@@ -20,57 +20,30 @@
     font-size: 1.1rem
     line-height: 1.4
     margin-top: .2em
+    padding: 0 10px
 
-  .cowbell-labs
-    position: absolute
-    left: 15px
-    bottom: 15px
-    font-size: 1rem
-    > a
-      display: inline-block
-      vertical-align: middle
-      margin: -1px 0 0 2px
-      width: 102px
-      height: 16px
-      background: transparent url("../assets/images/cowbell-labs.svg") no-repeat center
+  .logos
+    display: flex
+    align-items: center
+    justify-content: space-between
+    padding: 10px
+
+  .left,
+  .right
+    display: flex
 
   .github
-    position: absolute
-    left: 175px
-    bottom: 13px
     width: 20px
     height: 20px
     background: transparent url("../assets/images/github.svg") no-repeat center
 
-  .facebook
-    position: absolute
-    left: 280px
-    bottom: 11px
-    height: 21px
-    border: none
-    overflow: hidden
-
   .twitter
-    position: absolute
-    left: 210px
-    bottom: 12px
     width: 60px
     height: 20px
+    margin-left: 8px
 
   .webrtc
-    position: absolute
-    right: 106px
-    bottom: 17px
     width: 72px
     height: 12px
     background: transparent url("../assets/images/webrtc.png") no-repeat center
     background-size: 71px 12px
-
-  .firebase
-    position: absolute
-    right: 15px
-    bottom: 15px
-    width: 76px
-    height: 20px
-    background: transparent url("../assets/images/firebase.png") no-repeat center
-    background-size: 76px 20px
