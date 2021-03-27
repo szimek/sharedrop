@@ -81,8 +81,10 @@
       </div>
     {{else if isReceivingFile}}
       <div>Receiving file...</div>
+      <div>{{peer.transfer.receivingProgress}}% completed</div>
     {{else if isSendingFile}}
       <div>Sending file...</div>
+      <div>{{peer.transfer.sendingProgress}}% completed</div>
     {{/if}}
   </div>
 </div>
