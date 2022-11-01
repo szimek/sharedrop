@@ -6,14 +6,20 @@ ShareDrop allows you to send files to other devices in the same local network (i
 
 The main difference between ShareDrop and AirDrop is that ShareDrop requires Internet connection to discover other devices, while AirDrop doesn't need one, as it creates ad-hoc wireless network between them. On the other hand, ShareDrop allows you to share files between mobile (Android and iOS) and desktop devices and even between networks.
 
-### Supported browsers
+## Support ShareDrop!
+
+ShareDrop is free, however it still costs money to run.
+
+If you use it and like it, please consider making a small donation via [PayPal](https://www.paypal.com/donate/?business=99MJKQUTTQVYY&no_recurring=0&item_name=Help+cover+the+server+costs+for+sharedrop.io&currency_code=EUR) to help me keep it free for everyone.
+
+## Supported browsers
 *   Chrome
 *   Edge (Chromium based)
 *   Firefox
 *   Opera
 *   Safari 13+
 
-### How to set it up for local development
+## Local development
 1.  Setup Firebase:
     1.  [Sign up](https://www.firebase.com) for a Firebase account and create a database.
     2.  Go to "Security Rules" tab, click "Load Rules" button and select `firebase_rules.json` file.
@@ -25,8 +31,8 @@ The main difference between ShareDrop and AirDrop is that ShareDrop requires Int
     -   `NEW_RELIC_*` keys are only necessary in production
 5.  Run `yarn develop` to start the app.
 
-### Deployment
-#### Heroku
+## Deployment
+### Heroku
 Create a new Heroku app:
 ```
 heroku create <app-name>
