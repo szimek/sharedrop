@@ -1,4 +1,7 @@
-# ![ShareDrop](https://www.sharedrop.io/assets/images/sharedrop.svg)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://user-images.githubusercontent.com/9873/200137755-47fe06a7-3c37-439f-b44c-cee9168418fa.svg">
+  <img alt="ShareDrop" src="https://user-images.githubusercontent.com/9873/200137972-bfd145a2-36eb-48ad-8568-53184d3599c1.svg">
+</picture>
 
 ShareDrop is a web application inspired by Apple [AirDrop](http://support.apple.com/kb/ht4783) service. It allows you to transfer files directly between devices, without having to upload them to any server first. It uses [WebRTC](http://www.webrtc.org) for secure peer-to-peer file transfer and [Firebase](https://www.firebase.com) for presence management and WebRTC signaling.
 
