@@ -13,7 +13,15 @@ The main difference between ShareDrop and AirDrop is that ShareDrop requires Int
 
 ShareDrop is free, however, it still costs money to run.
 
-If you use it and like it, please consider making a small donation via [PayPal](https://www.paypal.com/donate/?business=99MJKQUTTQVYY&no_recurring=0&item_name=Help+cover+the+server+costs+for+sharedrop.io&currency_code=EUR) to help me keep it free for everyone.
+If you use it and like it, please consider making a small donation either via
+
+[PayPal](https://www.paypal.com/donate/?business=99MJKQUTTQVYY&no_recurring=0&item_name=Help+cover+the+server+costs+for+sharedrop.io&currency_code=EUR)
+
+or
+
+[![Support ShareDrop](https://www.buymeacoffee.com/assets/img/guidelines/download-assets-sm-1.svg)](https://www.buymeacoffee.com/sharedropio)
+
+to help me keep it free for everyone. Thanks!
 
 ## Supported browsers
 
