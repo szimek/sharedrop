@@ -17,6 +17,7 @@
     "build": "ember build --environment=production",
     "lint": "npm-run-all --aggregate-output --continue-on-error --parallel lint:*",
     "develop": "yarn install --frozen-lockfile && nf --procfile=Procfile.dev start",
+    "dev": "yarn develop",
     "lint:hbs": "ember-template-lint .",
     "lint:js": "eslint .",
     "start": "ember serve",
